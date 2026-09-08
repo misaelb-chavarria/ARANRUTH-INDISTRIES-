@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="ARGUS — multi-spectral perception engineered for persistent detection, identification and tracking in contested and degraded environments.">
+<title>ARGUS — ARANRUTH INDUSTRIES</title>
+
+
+<style>
+:root{
+  --bg:#050607;
+  --ink:#edf0ec;
+  --paper:#f2f0e9;
+  --muted:#9ca49f;
+  --dim:#5f6864;
+  --line:rgba(238,240,236,.13);
+  --line-strong:rgba(238,240,236,.25);
+  --cyan:#2d72ff;
+  --cyan-soft:rgba(45,114,255,.14);
+  --thermal:#d28d5a;
+  --thermal-soft:rgba(210,141,90,.11);
+  --panel:#0a0d0f;
+  --panel2:#0e1215;
+  --grid:rgba(238,240,236,.035);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Arial Narrow","Helvetica Neue",Helvetica,Arial,sans-serif;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit}
+.argus-page{min-height:100vh;background:var(--bg)}
+
+/* HERO */
+.argus-hero{min-height:calc(100vh - 45px);display:grid;grid-template-columns:minmax(0,.9fr) minmax(420px,1.1fr);border-bottom:1px solid var(--line);background:#07090a}
+.argus-hero-copy{padding:clamp(70px,8vw,125px) clamp(22px,4vw,64px) 64px 24px;display:flex;flex-direction:column;justify-content:flex-end;position:relative;z-index:2}
+.argus-kicker{color:var(--cyan);font-size:10px;letter-spacing:.28em;text-transform:uppercase;margin-bottom:18px}
+.argus-title{margin:0;font-size:clamp(82px,13vw,184px);line-height:.73;letter-spacing:-.065em;text-transform:uppercase;font-weight:700}
+.argus-title .accent{color:var(--cyan)}
+.argus-dek{max-width:660px;margin:31px 0 0;color:#d4dad6;font-size:clamp(20px,2.3vw,29px);line-height:1.16;letter-spacing:-.018em}
+.argus-hero-description{max-width:650px;margin:22px 0 0;color:#8f9994;font-size:14px;line-height:1.6}
+.argus-meta{display:grid;grid-template-columns:repeat(3,minmax(120px,1fr));max-width:700px;margin-top:36px;border-top:1px solid var(--line)}
+.argus-meta-item{padding:13px 12px 12px 0;border-right:1px solid var(--line)}
+.argus-meta-item:last-child{border-right:0;padding-left:12px}
+.argus-meta-label{display:block;color:var(--dim);font-size:9px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:7px}
+.argus-meta-value{color:#dde2de;font-size:12px;line-height:1.35}
+
+/* VIDEO SENSOR WINDOW */
+.argus-hero-media{position:relative;min-height:620px;border-left:1px solid var(--line);background:linear-gradient(180deg,#081013,#050708);overflow:hidden}
+.argus-media-frame{position:absolute;inset:28px 28px 64px;overflow:hidden;border:1px solid var(--line-strong);background:#020405}
+.argus-media-frame video{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.65) contrast(1.12) brightness(.78)}
+.argus-media-frame::before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(180deg,rgba(0,0,0,.05),rgba(0,0,0,.44)),repeating-linear-gradient(0deg,transparent 0,transparent 29px,rgba(238,240,236,.028) 30px),linear-gradient(90deg,rgba(2,6,7,.65),transparent 25%,transparent 72%,rgba(2,6,7,.55))}
+.argus-media-frame::after{content:"";position:absolute;left:9%;right:9%;top:16%;bottom:16%;z-index:2;border:1px solid rgba(45,114,255,.16);clip-path:polygon(0 0,100% 0,100% 100%,0 100%,0 90%,4% 90%,4% 10%,0 10%);pointer-events:none}
+.argus-crosshair{position:absolute;z-index:3;left:50%;top:50%;width:160px;height:160px;transform:translate(-50%,-50%);border:1px solid rgba(45,114,255,.27);border-radius:50%;box-shadow:0 0 0 38px rgba(45,114,255,.025),0 0 0 76px rgba(45,114,255,.012)}
+.argus-crosshair::before,.argus-crosshair::after{content:"";position:absolute;left:50%;top:50%;background:rgba(45,114,255,.33);transform:translate(-50%,-50%)}
+.argus-crosshair::before{width:220px;height:1px}.argus-crosshair::after{width:1px;height:220px}
+.argus-media-ui{position:absolute;z-index:4;left:16px;right:16px;top:16px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;font-size:9px;letter-spacing:.17em;text-transform:uppercase;color:#8c9792}
+.argus-media-ui strong{color:var(--cyan);font-weight:500}
+.argus-media-corner{position:absolute;z-index:4;right:16px;bottom:16px;width:180px;padding:11px 12px;border-left:2px solid var(--thermal);background:rgba(5,7,8,.78)}
+.argus-media-corner small{display:block;color:var(--thermal);font-size:8px;letter-spacing:.2em;margin-bottom:6px}.argus-media-corner b{font-size:10px;letter-spacing:.12em;font-weight:600;color:#e6ebe7}
+.argus-video-placeholder{position:absolute;inset:0;z-index:5;display:flex;align-items:center;justify-content:center;padding:24px;transition:opacity 0.4s ease}
+.argus-video-placeholder .box{width:min(480px,78%);padding:22px;border-left:2px solid var(--cyan);background:rgba(4,6,7,.86);backdrop-filter:blur(3px)}
+.argus-video-placeholder small{display:block;color:var(--cyan);font-size:9px;letter-spacing:.24em;margin-bottom:10px}.argus-video-placeholder strong{display:block;font-size:12px;letter-spacing:.14em;text-transform:uppercase}.argus-video-placeholder p{margin:9px 0 0;color:#818984;font-size:11px;line-height:1.45}.argus-video-placeholder.hidden{opacity:0;pointer-events:none}
+.argus-media-caption{position:absolute;left:28px;right:28px;bottom:22px;display:flex;justify-content:space-between;gap:15px;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:#66716c}.argus-media-caption .cyan{color:var(--cyan)}
+
+/* SECTIONS */
+.argus-section{border-bottom:1px solid var(--line)}
+.argus-section-head{display:grid;grid-template-columns:120px 1fr;gap:30px;padding:19px 24px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.005)}
+.argus-index{color:var(--cyan);font-size:10px;letter-spacing:.2em;text-transform:uppercase}
+.argus-section-head h2{margin:0;font-size:clamp(31px,5vw,64px);line-height:.91;letter-spacing:-.03em;font-weight:600;text-transform:uppercase}
+
+/* 01 */
+.argus-role{display:grid;grid-template-columns:.65fr 1.7fr;gap:48px;padding:84px 24px 95px}
+.argus-role-label{color:#6e7974;font-size:10px;letter-spacing:.22em;text-transform:uppercase}
+.argus-role-copy{max-width:980px}.argus-role-copy p{margin:0;color:var(--paper);font-size:clamp(32px,4.8vw,69px);line-height:1.0;letter-spacing:-.03em}.argus-role-copy p+p{margin-top:25px;color:#aab2ae;font-size:17px;line-height:1.6;letter-spacing:0}
+
+/* 02 */
+.argus-capabilities{display:grid;grid-template-columns:repeat(2,1fr)}
+.argus-cap{min-height:330px;padding:32px 34px 44px 24px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);position:relative;overflow:hidden;background:linear-gradient(180deg,rgba(255,255,255,.007),transparent)}
+.argus-cap:nth-child(2n){border-right:0}.argus-cap:nth-last-child(-n+2){border-bottom:0}
+.argus-cap-no{color:var(--cyan);font-size:10px;letter-spacing:.18em}.argus-cap h3{margin:48px 0 0;font-size:clamp(29px,3.6vw,48px);line-height:.9;letter-spacing:-.028em;font-weight:600;text-transform:uppercase}.argus-cap p{max-width:610px;margin:18px 0 0;color:#9fa8a3;font-size:15px;line-height:1.55}
+.argus-cap::after{content:"";position:absolute;right:24px;bottom:22px;width:54px;height:1px;background:linear-gradient(90deg,var(--cyan),transparent)}
+.argus-cap::before{content:"";position:absolute;right:-38px;top:-48px;width:190px;height:190px;border:1px solid rgba(45,114,255,.07);border-radius:50%;box-shadow:0 0 0 38px rgba(45,114,255,.025),0 0 0 76px rgba(45,114,255,.012)}
+
+/* 03 */
+.argus-edge{display:grid;grid-template-columns:1.15fr .85fr;min-height:570px;background:var(--panel)}
+.argus-edge-copy{padding:74px 24px 80px;border-right:1px solid var(--line);position:relative}.argus-edge-kicker{color:var(--cyan);font-size:9px;letter-spacing:.22em;text-transform:uppercase}.argus-edge-copy h3{margin:20px 0 0;font-size:clamp(55px,7.5vw,103px);line-height:.84;letter-spacing:-.05em;text-transform:uppercase;font-weight:600}.argus-edge-copy p{max-width:790px;margin:28px 0 0;color:#a9b2ad;font-size:17px;line-height:1.55}.argus-edge-copy p+p{margin-top:18px}
+.argus-edge-graphic{position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;background:linear-gradient(180deg,#0a0e10,#050708)}
+.argus-grid{position:absolute;inset:0;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:38px 38px;opacity:0.5}
+
+/* Minimal Node */
+.argus-edge-node{position:relative;z-index:2;width:min(380px,80%);padding:32px 36px;border:1px solid var(--line-strong);background:rgba(8,12,14,.4);backdrop-filter:blur(8px)}
+.argus-edge-node small{display:flex;align-items:center;gap:8px;color:var(--cyan);font-size:9px;letter-spacing:.25em;margin-bottom:12px;text-transform:uppercase}
+.argus-edge-node strong{display:block;font-size:24px;line-height:1.1;letter-spacing:-0.02em;color:var(--paper)}
+.argus-edge-node p{margin:16px 0 0;color:#8f9a94;font-size:13px;line-height:1.6}
+
+.argus-edge-chip{position:absolute;z-index:3;left:24px;bottom:24px;padding:10px 14px;border-left:2px solid var(--thermal);background:rgba(4,6,7,.9);color:#aab5af;font-size:9px;letter-spacing:.2em;text-transform:uppercase;border-top:1px solid rgba(255,255,255,0.03);border-right:1px solid rgba(255,255,255,0.03);border-bottom:1px solid rgba(255,255,255,0.03)}
+
+/* 04 ARCHITECTURE */
+.argus-architecture{display:grid;grid-template-columns:1.35fr .65fr;min-height:590px}
+.argus-pipeline{position:relative;padding:34px 24px 44px;border-right:1px solid var(--line);overflow:hidden;background:#070a0b}.argus-pipeline-grid{position:absolute;inset:0;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:40px 40px}
+.argus-pipeline-title{position:relative;z-index:2;max-width:660px;color:#858f8a;font-size:10px;letter-spacing:.18em;text-transform:uppercase}
+.argus-flow{position:relative;z-index:2;max-width:760px;margin:38px auto 0}.argus-flow-step{position:relative;padding:19px 19px 18px;border:1px solid rgba(45,114,255,.28);background:rgba(9,13,15,.93)}.argus-flow-step+.argus-flow-step{margin-top:42px}.argus-flow-step+.argus-flow-step::before{content:"";position:absolute;left:50%;top:-43px;width:1px;height:42px;background:rgba(45,114,255,.24)}.argus-flow-step .n{display:block;color:var(--cyan);font-size:9px;letter-spacing:.2em}.argus-flow-step strong{display:block;margin-top:7px;font-size:17px;letter-spacing:.02em;text-transform:uppercase}.argus-flow-step p{margin:7px 0 0;color:#858e89;font-size:11px;line-height:1.45}
+.argus-flow-step::after{content:"";position:absolute;right:14px;top:14px;width:7px;height:7px;border:1px solid var(--thermal);border-radius:50%}
+.argus-architecture-copy{padding:74px 28px 64px;background:#0a0d0f}.argus-architecture-copy small{color:var(--cyan);font-size:9px;letter-spacing:.22em;text-transform:uppercase}.argus-architecture-copy h3{margin:20px 0 0;font-size:clamp(31px,4vw,53px);line-height:.92;text-transform:uppercase;letter-spacing:-.03em}.argus-architecture-copy p{margin:22px 0 0;color:#9da6a1;font-size:15px;line-height:1.55}
+.argus-arch-list{margin-top:38px;border-top:1px solid var(--line-strong);border-bottom:1px solid var(--line-strong)}.argus-arch-list div{display:flex;justify-content:space-between;gap:15px;padding:12px 0;border-bottom:1px solid var(--line);font-size:9px;letter-spacing:.14em;text-transform:uppercase}.argus-arch-list div:last-child{border-bottom:0}.argus-arch-list span:first-child{color:#66706b}.argus-arch-list span:last-child{text-align:right;color:#cfd7d2}
+
+/* 05 */
+.argus-missions{display:grid;grid-template-columns:repeat(3,1fr)}
+.argus-mission{min-height:275px;padding:30px 25px 36px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);position:relative}.argus-mission:nth-child(3n){border-right:0}.argus-mission:nth-last-child(-n+3){border-bottom:0}.argus-mission-k{color:var(--cyan);font-size:9px;letter-spacing:.18em;text-transform:uppercase}.argus-mission h3{margin:44px 0 0;font-size:25px;line-height:.95;text-transform:uppercase;letter-spacing:-.02em}.argus-mission p{margin:15px 0 0;color:#9aa39e;font-size:14px;line-height:1.55}.argus-mission::after{content:"";position:absolute;right:22px;bottom:20px;width:32px;height:1px;background:var(--thermal)}
+
+/* 06 */
+.argus-character{padding:82px 24px 94px;display:grid;grid-template-columns:.62fr 1.55fr;gap:48px;background:linear-gradient(180deg,#07090a,#0a0d0f)}.argus-character-label{color:#6e7773;font-size:10px;letter-spacing:.22em;text-transform:uppercase}.argus-character-copy{max-width:990px}.argus-character-copy p{margin:0;color:var(--paper);font-size:clamp(32px,4.5vw,63px);line-height:1.01;letter-spacing:-.03em}.argus-character-copy p+p{margin-top:24px;color:#a6afaa;font-size:17px;line-height:1.6;letter-spacing:0}
+
+/* 07 FORM */
+.argus-access{background:#080b0d}.argus-access-inner{display:grid;grid-template-columns:.72fr 1.28fr;gap:64px;padding:76px 24px 90px}.argus-access-intro small{display:block;color:var(--cyan);font-size:9px;letter-spacing:.22em;text-transform:uppercase}.argus-access-intro h2{margin:18px 0 0;max-width:590px;font-size:clamp(44px,6.8vw,82px);line-height:.86;text-transform:uppercase;letter-spacing:-.04em}.argus-access-intro p{max-width:470px;margin:23px 0 0;color:#9ba49f;font-size:15px;line-height:1.55}.argus-form-note{margin-top:30px;max-width:470px;padding-top:15px;border-top:1px solid var(--line);color:#626c67;font-size:9px;letter-spacing:.08em;line-height:1.55;text-transform:uppercase}
+.argus-form{border-top:1px solid var(--line-strong)}.argus-form-row{display:grid;grid-template-columns:1fr 1fr;gap:18px}.argus-field{padding:15px 0 16px;border-bottom:1px solid var(--line)}.argus-field label{display:block;margin-bottom:8px;color:#737d78;font-size:9px;letter-spacing:.18em;text-transform:uppercase}.argus-field input,.argus-field select,.argus-field textarea{width:100%;padding:3px 0;border:0;border-radius:0;outline:0;background:transparent;color:var(--paper);font-family:inherit;font-size:14px;line-height:1.45}.argus-field input::placeholder,.argus-field textarea::placeholder{color:#4e5753}.argus-field select{appearance:none}.argus-field select option{background:#111;color:#eee}.argus-field textarea{min-height:110px;resize:vertical}.argus-captcha{padding:19px 0;border-bottom:1px solid var(--line)}.argus-captcha-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;color:#737d78;font-size:9px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:12px}.argus-captcha-head span:last-child{color:#5f6864;cursor:pointer;user-select:none}.argus-captcha-head span:last-child:hover{color:var(--cyan)}.argus-captcha-question{background:#020405;border:1px solid #1c2833;padding:12px 14px;font-family:"Courier New",monospace;font-size:13px;letter-spacing:.12em;color:#fff;user-select:none;margin-bottom:10px}.argus-captcha input{width:100%;background:transparent;border:0;border-radius:0;outline:0;color:var(--paper);font-family:"Courier New",monospace;font-size:13px;letter-spacing:.12em;text-transform:uppercase;padding:3px 0}.argus-form-actions{display:flex;align-items:center;justify-content:space-between;gap:22px;padding-top:22px}.argus-privacy{max-width:470px;color:#646e69;font-size:9px;line-height:1.55}.argus-submit{border:1px solid var(--paper);background:transparent;color:var(--paper);padding:14px 18px;font-family:inherit;font-size:10px;letter-spacing:.17em;text-transform:uppercase;cursor:pointer;transition:.2s ease}.argus-submit:hover{border-color:var(--cyan);color:var(--cyan)}.argus-submit:disabled{opacity:.4;cursor:default}.argus-form-status{display:none;margin-top:15px;border:1px solid var(--cyan);color:var(--cyan);padding:12px 14px;font-size:10px;line-height:1.5;letter-spacing:.08em;text-transform:uppercase}.argus-form-status.visible{display:block}.argus-form-status.err{border-color:#b03a2e;color:#cd6155}
+
+/* FINAL CTA */
+.argus-cta{min-height:62vh;padding:84px 24px;display:flex;align-items:flex-end;justify-content:space-between;gap:34px;border-top:1px solid var(--line);background:radial-gradient(circle at 83% 26%,rgba(45,114,255,.08),transparent 20%),radial-gradient(circle at 72% 70%,rgba(210,141,90,.04),transparent 20%),#050607}.argus-cta-copy{max-width:900px}.argus-cta-label{color:var(--cyan);font-size:9px;letter-spacing:.22em;text-transform:uppercase}.argus-cta h2{margin:17px 0 0;font-size:clamp(50px,9vw,118px);line-height:.82;letter-spacing:-.05em;text-transform:uppercase}.argus-cta p{max-width:720px;margin:23px 0 0;color:#9ca59f;font-size:16px;line-height:1.5}.argus-cta-link{flex:none;border:1px solid var(--paper);padding:15px 18px;color:var(--paper);font-size:10px;letter-spacing:.17em;text-transform:uppercase;transition:.2s ease}.argus-cta-link:hover{border-color:var(--cyan);color:var(--cyan)}
+
+/* EXTERNAL FOOTER LINKS */
+.argus-footer{border-top:1px solid var(--line);background:#050607}
+.argus-footer-nav{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.argus-footer-topic{border-right:1px solid var(--line);min-height:145px;padding:22px 18px;transition:background .2s ease}
+.argus-footer-topic:last-child{border-right:0}
+.argus-footer-topic a{display:flex;flex-direction:column;justify-content:space-between;height:100%;text-decoration:none}
+.argus-footer-topic span{display:block;color:#c5ceca;font-size:10px;line-height:1.35;letter-spacing:.16em;text-transform:uppercase}
+.argus-footer-topic a::after{content:" ↗";display:block;margin-top:17px;color:var(--cyan);font-size:16px;transition:transform .2s ease}
+.argus-footer-topic:hover{background:rgba(255,255,255,.015)}
+.argus-footer-topic:hover a::after{transform:translate(3px,-3px)}
+
+.argus-footer-meta{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--line)}
+.argus-footer-meta>div{padding:18px 24px}
+.argus-footer-meta>div+div{border-left:1px solid var(--line)}
+.argus-footer-meta small{display:block;color:#5c6561;font-size:8px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:7px}
+.argus-footer-meta strong{display:block;color:#aeb7b2;font-size:10px;letter-spacing:.11em;line-height:1.45;font-weight:400}
+
+@media(max-width:980px){
+  .argus-hero{grid-template-columns:1fr}.argus-hero-media{border-left:0;border-top:1px solid var(--line);min-height:64vh}.argus-edge,.argus-architecture,.argus-access{grid-template-columns:1fr}.argus-access-inner{grid-template-columns:1fr;gap:44px}.argus-edge-copy,.argus-pipeline{border-right:0;border-bottom:1px solid var(--line)}.argus-edge-graphic{min-height:470px}.argus-architecture-copy{padding:48px 24px 60px}.argus-missions{grid-template-columns:repeat(2,1fr)}.argus-mission:nth-child(3n){border-right:1px solid var(--line)}.argus-mission:nth-child(2n){border-right:0}.argus-mission:nth-last-child(-n+3){border-bottom:1px solid var(--line)}.argus-mission:nth-last-child(-n+2){border-bottom:0}
+  .argus-footer-nav{grid-template-columns:1fr}
+  .argus-footer-topic{border-right:0;border-bottom:1px solid var(--line);min-height:90px}
+  .argus-footer-topic:last-child{border-bottom:0}
+}
+@media(max-width:720px){
+  .argus-hero-copy{padding:82px 16px 52px}.argus-title{font-size:clamp(68px,22vw,120px)}.argus-meta,.argus-role,.argus-character{grid-template-columns:1fr}.argus-role,.argus-character{gap:25px;padding:58px 16px 65px}.argus-section-head{grid-template-columns:1fr;gap:10px;padding:17px 16px}.argus-capabilities,.argus-missions{grid-template-columns:1fr}.argus-cap,.argus-cap:nth-child(2n),.argus-mission,.argus-mission:nth-child(2n){border-right:0;border-bottom:1px solid var(--line)}.argus-cap:last-child,.argus-mission:last-child{border-bottom:0}.argus-edge-copy,.argus-pipeline,.argus-architecture-copy{padding-left:16px;padding-right:16px}.argus-edge-copy{padding-top:55px;padding-bottom:58px}.argus-edge-copy h3{font-size:clamp(52px,16vw,86px)}.argus-edge-graphic{min-height:380px}.argus-media-frame{inset:18px 16px 52px}.argus-media-caption{left:16px;right:16px;bottom:16px}.argus-hero-description{font-size:13px}.argus-flow{margin-top:30px}.argus-flow-step+.argus-flow-step{margin-top:32px}.argus-flow-step+.argus-flow-step::before{top:-33px;height:32px}.argus-access-inner{padding:58px 16px 70px}.argus-form-row{grid-template-columns:1fr;gap:0}.argus-form-actions{align-items:flex-start;flex-direction:column}.argus-submit{width:100%}.argus-cta{min-height:65vh;padding:60px 16px;flex-direction:column;align-items:flex-start;justify-content:flex-end}
+  .argus-footer-meta{grid-template-columns:1fr}.argus-footer-meta>div+div{border-left:0;border-top:1px solid var(--line)}
+}
+</style>
+</head>
+<body>
+<div class="argus-page">
+
+  <header class="argus-hero">
+    <div class="argus-hero-copy">
+      <div class="argus-kicker">EDGE COMPUTE / MULTI-SPECTRAL SENSING / MISSION SYSTEMS</div>
+      <h1 class="argus-title">ARG<span class="accent">U</span>S</h1>
+      <p class="argus-dek">Multi-spectral perception engineered for persistent detection, identification and tracking in contested and degraded environments.</p>
+      <p class="argus-hero-description">ARGUS processes visible and short-wave infrared sensor feeds at the edge, extracting movement, spatial and spectral signatures in real time. Designed for integration with airborne, perimeter and fixed-site sensing architectures, ARGUS converts raw sensor data into machine-generated tracks and classification data without relying on facial recognition as the primary identification signal.</p>
+      <div class="argus-meta" aria-label="ARGUS system classification">
+        <div class="argus-meta-item"><span class="argus-meta-label">MISSION DOMAIN</span><span class="argus-meta-value">Persistent sensing &amp; perimeter security</span></div>
+        <div class="argus-meta-item"><span class="argus-meta-label">SENSOR INPUT</span><span class="argus-meta-value">Visible / SWIR</span></div>
+        <div class="argus-meta-item"><span class="argus-meta-label">PROCESSING</span><span class="argus-meta-value">Edge AI / Real-time inference</span></div>
+      </div>
+    </div>
+
+    <div class="argus-hero-media">
+      <div class="argus-media-frame" id="argus-media-frame">
+        <video id="argus-video" src="assets/video/ARGUS_HERO.mp4" poster="assets/video/ARGUS_HERO_POSTER.jpg" autoplay muted loop playsinline preload="metadata"></video>
+        <div class="argus-grid" aria-hidden="true"></div>
+        <div class="argus-crosshair" aria-hidden="true"></div>
+        <div class="argus-media-ui"><span><strong>ARGUS</strong> / SENSOR WINDOW</span><span>VISIBLE + SWIR / EDGE</span></div>
+        <div class="argus-media-corner"><small>VIDEO / PRODUCT SYSTEM</small><b>16:9 OPERATIONAL FILM</b></div>
+        <div class="argus-video-placeholder" id="argus-video-placeholder"><div class="box"><small>MEDIA SLOT / ARGUS SYSTEM FILM</small><strong>INSERT PRODUCT VIDEO / SENSOR FEED</strong><p>Awaiting video payload. Fallback interface engaged. Ensure operational video meets spectral and contextual standards.</p></div></div>
+      </div>
+      <div class="argus-media-caption"><span class="cyan">ARGUS / PRODUCT VIEW</span><span>MEDIA_01</span></div>
+    </div>
+  </header>
+
+  <section class="argus-section">
+    <div class="argus-section-head"><div class="argus-index">01 / OPERATIONAL ROLE</div><h2>PERCEPTION AT THE<br>POINT OF SENSING.</h2></div>
+    <div class="argus-role">
+      <div class="argus-role-label">OPERATIONAL ROLE</div>
+      <div class="argus-role-copy">
+        <p>ARGUS is built for environments where conventional observation becomes unreliable.</p>
+        <p>The system ingests continuous multi-spectral imagery and applies machine-vision models to detect, track and characterize subjects across complex scenes. Its edge architecture reduces dependence on remote processing while maintaining a continuous machine-generated picture of activity within the sensor's field of view.</p>
+        <p>ARGUS is designed to become a sensing component inside a larger mission architecture — not a standalone application.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="argus-section" id="core-capabilities">
+    <div class="argus-section-head"><div class="argus-index">02 / CORE CAPABILITIES</div><h2>DETECT.<br>IDENTIFY.<br>TRACK.</h2></div>
+    <div class="argus-capabilities">
+      <article class="argus-cap"><div class="argus-cap-no">01 — MULTI-SPECTRAL SENSING</div><h3>MULTI-SPECTRAL<br>SENSING</h3><p>ARGUS combines visible and SWIR imagery to extract useful scene information across darkness, glare, haze and other degraded visual conditions.</p></article>
+      <article class="argus-cap"><div class="argus-cap-no">02 — KINEMATIC IDENTIFICATION</div><h3>KINEMATIC<br>IDENTIFICATION</h3><p>ARGUS analyzes gait and body-motion characteristics including stride, cadence and proportional movement signatures to distinguish and maintain subject tracks without making facial appearance the primary signal.</p></article>
+      <article class="argus-cap"><div class="argus-cap-no">03 — EDGE TRACKING</div><h3>EDGE<br>TRACKING</h3><p>Detection, classification and position estimation occur close to the sensor. ARGUS produces persistent subject tracks and spatial outputs without requiring every frame to traverse a remote processing infrastructure.</p></article>
+      <article class="argus-cap"><div class="argus-cap-no">04 — SPECTRAL ANOMALY DETECTION</div><h3>SPECTRAL ANOMALY<br>DETECTION</h3><p>Multi-spectral analysis identifies thermal and spectral signatures that differ from expected subject or scene characteristics, providing an additional machine-generated input for downstream assessment.</p></article>
+    </div>
+  </section>
+
+  <section class="argus-section">
+    <div class="argus-section-head"><div class="argus-index">03 / EDGE AI</div><h2>COMPUTE WHERE<br>THE SENSOR IS.</h2></div>
+    <div class="argus-edge">
+      <div class="argus-edge-copy"><div class="argus-edge-kicker">EDGE AI</div><h3>COMPUTE<br>WHERE THE<br>SENSOR IS.</h3><p>ARGUS places machine vision at the edge of the sensing architecture.</p><p>Convolutional neural networks process incoming imagery locally to extract detections, movement signatures, classifications and position data in real time.</p><p>This architecture is intended for systems where latency, bandwidth and environmental conditions impose constraints on conventional centralized processing.</p><p>The result is a machine-generated sensing layer that can operate as part of a larger defense, security or critical-infrastructure architecture.</p></div>
+      <div class="argus-edge-graphic">
+        <div class="argus-grid"></div>
+        <div class="argus-edge-node">
+          <small>LOCAL INFERENCE</small>
+          <strong>MACHINE-GENERATED SENSING LAYER</strong>
+          <p>Detection / Movement / Classification / Position</p>
+        </div>
+        <div class="argus-edge-chip">EDGE / REAL-TIME INFERENCE</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="argus-section">
+    <div class="argus-section-head"><div class="argus-index">04 / SYSTEM ARCHITECTURE</div><h2>FROM SENSOR DATA<br>TO MACHINE-GENERATED TRACKS.</h2></div>
+    <div class="argus-architecture">
+      <div class="argus-pipeline"><div class="argus-pipeline-grid"></div><div class="argus-pipeline-title">SYSTEM FLOW / PRODUCT-LEVEL ARCHITECTURE</div><div class="argus-flow">
+        <div class="argus-flow-step"><span class="n">01 — SENSOR INPUT</span><strong>VISIBLE + SWIR SENSOR FEEDS</strong><p>Continuous optical and short-wave infrared imagery from compatible airborne, perimeter or fixed sensor platforms.</p></div>
+        <div class="argus-flow-step"><span class="n">02 — EDGE PROCESSING</span><strong>LOCAL FEATURE EXTRACTION</strong><p>Neural-network inference converts incoming frames into detections, spatial features and persistent subject tracks.</p></div>
+        <div class="argus-flow-step"><span class="n">03 — ANALYTICS</span><strong>KINEMATIC + SPECTRAL ANALYSIS</strong><p>Movement signatures and multi-spectral anomalies are evaluated as additional inputs to subject classification and scene understanding.</p></div>
+        <div class="argus-flow-step"><span class="n">04 — SYSTEM OUTPUT</span><strong>TRACK / POSITION / CLASSIFICATION</strong><p>Structured machine-generated outputs are made available for integration with downstream mission, security and command systems.</p></div>
+      </div></div>
+      <div class="argus-architecture-copy"><small>SYSTEM ARCHITECTURE</small><h3>FROM SENSOR DATA TO MACHINE-GENERATED TRACKS.</h3><p>ARGUS connects multi-spectral sensing, local inference and structured outputs as one perception layer inside a larger mission architecture.</p><div class="argus-arch-list"><div><span>INPUT</span><span>VISIBLE / SWIR</span></div><div><span>PROCESSING</span><span>EDGE AI</span></div><div><span>ANALYTICS</span><span>KINEMATIC / SPECTRAL</span></div><div><span>OUTPUT</span><span>TRACK / POSITION / CLASSIFICATION</span></div></div></div>
+    </div>
+  </section>
+
+  <section class="argus-section">
+    <div class="argus-section-head"><div class="argus-index">05 / MISSION APPLICATIONS</div><h2>ONE PERCEPTION ARCHITECTURE.<br>MULTIPLE OPERATING ENVIRONMENTS.</h2></div>
+    <div class="argus-missions">
+      <article class="argus-mission"><div class="argus-mission-k">CRITICAL INFRASTRUCTURE</div><h3>CRITICAL<br>INFRASTRUCTURE</h3><p>Persistent perimeter sensing for nuclear facilities, refineries, energy infrastructure and other high-consequence sites.</p></article>
+      <article class="argus-mission"><div class="argus-mission-k">MARITIME &amp; PORT SECURITY</div><h3>MARITIME &amp;<br>PORT SECURITY</h3><p>Automated detection and tracking across dense port environments, restricted areas, logistics yards and maritime facilities.</p></article>
+      <article class="argus-mission"><div class="argus-mission-k">AIRBORNE SURVEILLANCE</div><h3>AIRBORNE<br>SURVEILLANCE</h3><p>Edge-based multi-spectral perception for airborne platforms operating where communications bandwidth, latency or visibility constrain conventional processing.</p></article>
+      <article class="argus-mission"><div class="argus-mission-k">SEARCH &amp; RESCUE</div><h3>SEARCH &amp;<br>RESCUE</h3><p>Machine-assisted detection and tracking in darkness, smoke, obscured terrain and other low-visibility environments.</p></article>
+      <article class="argus-mission"><div class="argus-mission-k">BORDER &amp; CUSTOMS</div><h3>BORDER &amp;<br>CUSTOMS</h3><p>Persistent observation of high-density movement corridors and restricted areas using machine-generated detection and classification.</p></article>
+      <article class="argus-mission"><div class="argus-mission-k">DEFENSE &amp; SECURITY INTEGRATION</div><h3>DEFENSE &amp;<br>SECURITY INTEGRATION</h3><p>A perception subsystem designed for integration into larger defense and security architectures requiring persistent machine-generated sensing.</p></article>
+    </div>
+  </section>
+
+  <section class="argus-section">
+    <div class="argus-section-head"><div class="argus-index">06 / PRODUCT CHARACTER</div><h2>A PERCEPTION SYSTEM<br>BUILT FOR THE MISSION.</h2></div>
+    <div class="argus-character">
+      <div class="argus-character-label">PRODUCT CHARACTER</div>
+      <div class="argus-character-copy">
+        <p>ARGUS is not positioned as a conventional surveillance application.</p>
+        <p>It is a machine-vision capability designed around the sensor, the edge compute environment and the mission architecture around it.</p>
+        <p>The system transforms continuous multi-spectral imagery into structured information: detections, persistent tracks, movement signatures, spatial position and classification data.</p>
+        <p>For system integrators and defense contractors, ARGUS provides a perception layer that can be incorporated into larger platforms and mission systems without requiring the entire sensing architecture to be redesigned around centralized processing.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="argus-section argus-access" id="program-access">
+    <div class="argus-section-head"><div class="argus-index">07 / PROGRAM ACCESS</div><h2>DISCUSS THE<br>REQUIREMENT.</h2></div>
+    <div class="argus-access-inner">
+      <div class="argus-access-intro"><small>PROGRAM INTAKE / ARGUS</small><h2>DISCUSS THE<br>REQUIREMENT.</h2><p>ARGUS is available for evaluation by qualified defense contractors, system integrators, security organizations and critical-infrastructure operators.</p><p>Tell us about the sensing environment, platform, integration requirement and program stage. Our team will determine the appropriate technical and programmatic path.</p><div class="argus-form-note">DO NOT SUBMIT CLASSIFIED INFORMATION, TARGET-SPECIFIC DATA OR SENSITIVE OPERATIONAL PROCEDURES.</div></div>
+
+      <form class="argus-form" id="argus-form" method="post" action="#" novalidate>
+        <div class="argus-form-row">
+          <div class="argus-field"><label for="name">NAME / TITLE</label><input id="name" name="name" type="text" placeholder="FULL NAME / ROLE" autocomplete="name" required></div>
+          <div class="argus-field"><label for="organization">ORGANIZATION</label><input id="organization" name="organization" type="text" placeholder="COMPANY / AGENCY / INTEGRATOR" autocomplete="organization" required></div>
+        </div>
+        <div class="argus-form-row">
+          <div class="argus-field"><label for="email">OFFICIAL EMAIL</label><input id="email" name="email" type="email" placeholder="name@organization.com" autocomplete="email" required></div>
+          <div class="argus-field"><label for="country">COUNTRY / REGION</label><input id="country" name="country" type="text" placeholder="COUNTRY / OPERATING REGION" autocomplete="country-name" required></div>
+        </div>
+        <div class="argus-form-row">
+          <div class="argus-field"><label for="program-type">PROGRAM TYPE</label><select id="program-type" name="program_type" required><option value="" selected disabled>SELECT PROGRAM TYPE</option><option>Defense / National Security</option><option>Critical Infrastructure</option><option>Airborne Sensing</option><option>Maritime Security</option><option>Border / Customs</option><option>Search &amp; Rescue</option><option>System Integration</option><option>Other</option></select></div>
+          <div class="argus-field"><label for="program-stage">PROGRAM STAGE</label><select id="program-stage" name="program_stage" required><option value="" selected disabled>SELECT PROGRAM STAGE</option><option>Capability Evaluation</option><option>Technical Demonstration</option><option>Pilot Program</option><option>Procurement</option><option>System Integration</option><option>Other</option></select></div>
+        </div>
+        <div class="argus-form-row">
+          <div class="argus-field"><label for="platform">PLATFORM / ENVIRONMENT</label><select id="platform" name="platform" required><option value="" selected disabled>SELECT PLATFORM / ENVIRONMENT</option><option>Airborne</option><option>Fixed Perimeter</option><option>Mobile Platform</option><option>Maritime</option><option>Industrial Site</option><option>Other</option></select></div>
+          <div class="argus-field"><label for="contact">PREFERRED CONTACT</label><select id="contact" name="contact_path" required><option value="" selected disabled>SELECT CONTACT PATH</option><option>Official Email</option><option>Program Call</option><option>Technical Briefing</option></select></div>
+        </div>
+        <div class="argus-field"><label for="requirement">REQUIREMENT</label><textarea id="requirement" name="requirement" placeholder="DESCRIBE THE OPERATIONAL SENSING REQUIREMENT AT A PRODUCT LEVEL. DO NOT SUBMIT CLASSIFIED INFORMATION, TARGET-SPECIFIC DATA OR SENSITIVE OPERATIONAL PROCEDURES." required></textarea></div>
+        <div class="argus-captcha" id="argus-captcha">
+          <div class="argus-captcha-head">
+            <span>TACTICAL SECURITY VERIFICATION // MIL-STD CHALLENGE</span>
+            <span id="argus-captcha-refresh" role="button" tabindex="0">[ REGENERATE HASH ]</span>
+          </div>
+          <div class="argus-captcha-question" id="argus-captcha-question">LOADING HASH CHALLENGE...</div>
+          <input id="argus-captcha-input" name="captcha" type="text" placeholder="ENTER ANSWER" autocomplete="off" required>
+        </div>
+        <div class="argus-form-actions"><div class="argus-privacy">By submitting, you confirm the information provided is suitable for product-level program intake and contains no classified material, target-specific data or sensitive operational procedures.</div><button class="argus-submit" id="argus-submit" type="submit">REQUEST PROGRAM CONTACT ↗</button></div>
+        <div class="argus-form-status" id="argus-form-status" role="status" aria-live="polite"></div>
+      </form>
+    </div>
+  </section>
+
+  <section class="argus-cta">
+    <div class="argus-cta-copy"><div class="argus-cta-label">ARANRUTH INDUSTRIES / PROGRAM ARGUS</div><h2>SEE WHAT THE<br>SENSOR SEES.</h2><p>ARGUS brings multi-spectral perception and edge AI into the mission environment — providing persistent machine-generated detection, tracking and classification where conventional observation is constrained.</p></div>
+    <a class="argus-cta-link" href="#program-access">REQUEST PROGRAM CONTACT ↗</a>
+  </section>
+
+  <footer class="argus-footer" aria-label="ARGUS footer information">
+    <div class="argus-footer-nav">
+      <div class="argus-footer-topic">
+        <a href="technology.html">
+          <span>TECHNOLOGY / MULTI-SPECTRAL &amp; EDGE INFERENCE</span>
+        </a>
+      </div>
+      <div class="argus-footer-topic">
+        <a href="architecture.html">
+          <span>SYSTEM ARCHITECTURE &amp; PROCESSING PIPELINE</span>
+        </a>
+      </div>
+      <div class="argus-footer-topic">
+        <a href="integration.html">
+          <span>PLATFORM INTEGRATION &amp; MISSION PROFILES</span>
+        </a>
+      </div>
+    </div>
+    <div class="argus-footer-meta">
+      <div><small>PROGRAM</small><strong>ARGUS / EDGE-COMPUTED MULTI-SPECTRAL VISION ENGINE</strong></div>
+      <div><small>CAPABILITY</small><strong>DETECTION / TRACKING / CLASSIFICATION / EDGE AI</strong></div>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  const form=document.getElementById('argus-form');
+  const status=document.getElementById('argus-form-status');
+  if(form){
+    const q=document.getElementById('argus-captcha-question');
+    const refresh=document.getElementById('argus-captcha-refresh');
+    const input=document.getElementById('argus-captcha-input');
+    let answer='';
+
+    function generate(){
+      const challenges=[
+        {q:'SOLVE: 14 * 6 - 8 = ?',a:'76'},
+        {q:'SOLVE: 32 + 45 - 12 = ?',a:'65'},
+        {q:'HEX DECRYPT: 0x2A + 0x10 = ? (DECIMAL)',a:'58'},
+        {q:'STANAG PROTOCOL CHECK: ENTER SUM OF 4 + 5 + 8 =',a:'17'},
+        {q:'SOLVE: 64 / 4 + 19 = ?',a:'35'},
+        {q:'CRYPTOGRAPHIC HASH CHECK: 9 * 9 - 13 =',a:'68'}
+      ];
+      const selected=challenges[Math.floor(Math.random()*challenges.length)];
+      q.textContent=selected.q;
+      answer=selected.a;
+      input.value='';
+    }
+
+    generate();
+    if(refresh){
+      refresh.addEventListener('click',generate);
+      refresh.addEventListener('keydown',function(e){
+        if(e.key==='Enter'||e.key===' '){e.preventDefault();generate();}
+      });
+    }
+
+    form.addEventListener('submit',function(e){
+      e.preventDefault();
+      status.classList.remove('visible','err');
+
+      const name=document.getElementById('name').value;
+      const email=document.getElementById('email').value;
+      const userCaptcha=input.value.trim();
+
+      if(!name||!email){
+        status.textContent='ERROR: ALL INTAKE FIELDS REQUIRED. VERIFY FORM.';
+        status.classList.add('visible','err');
+        return;
+      }
+      if(userCaptcha!==answer){
+        status.textContent='SECURITY ERROR: TACTICAL CAPTCHA VERIFICATION FAILED. RE-ENTER HASH.';
+        status.classList.add('visible','err');
+        generate();
+        return;
+      }
+
+      status.textContent='SECURE HANDSHAKE VERIFIED. INQUIRY TRANSMITTED TO ARANRUTH INDUSTRIES COMMAND.';
+      status.classList.add('visible');
+      form.reset();
+      generate();
+    });
+  }
+
+  const video=document.getElementById('argus-video');
+  const placeholder=document.getElementById('argus-video-placeholder');
+  
+  if(video && placeholder){
+    // Si el video tiene metadata y logra arrancar, ocultamos el placeholder falso visual.
+    // El atributo poster ya cubre el frame 0 del video nativamente.
+    video.addEventListener('loadeddata', () => {
+      placeholder.classList.add('hidden');
+    });
+  }
+})();
+</script>
+</body>
+</html>

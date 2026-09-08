@@ -1,0 +1,1981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WRAITH — ARANRUTH INDUSTRIES</title>
+
+<style>
+/* =========================================================
+   WRAITH PRODUCT PAGE
+   Standalone module — styles are intentionally prefixed wraith-
+   so it can be integrated into the Aranruth Industries parent.
+   ========================================================= */
+
+:root{
+  --w-bg:#050505;
+  --w-panel:#0b0b0b;
+  --w-panel2:#101010;
+  --w-paper:#ece8df;
+  --w-text:#f2efe8;
+  --w-muted:#9d988e;
+  --w-dim:#66625b;
+  --w-line:rgba(236,232,223,.14);
+  --w-line-strong:rgba(236,232,223,.26);
+  --w-amber:#c4a35a;
+  --w-amber-dim:rgba(196,163,90,.18);
+  --w-rust:#8e3f29;
+}
+
+.wraith-page,
+.wraith-page *{box-sizing:border-box}
+
+.wraith-page{
+  min-height:100vh;
+  background:var(--w-bg);
+  color:var(--w-text);
+  font-family:Arial Narrow, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  overflow:hidden;
+}
+
+.wraith-page a{
+  color:inherit;
+  text-decoration:none;
+}
+
+/* ---------- top system bar ---------- */
+
+.wraith-system{
+  position:relative;
+  z-index:4;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:18px;
+  padding:13px 22px;
+  border-bottom:1px solid var(--w-line);
+  background:rgba(5,5,5,.96);
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  font-size:10px;
+  color:#aaa59b;
+}
+
+.wraith-system-left,
+.wraith-system-right{
+  display:flex;
+  align-items:center;
+  gap:16px;
+}
+
+.wraith-signal{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:var(--w-amber);
+  box-shadow:0 0 0 3px rgba(196,163,90,.08);
+}
+
+/* ---------- hero ---------- */
+
+.wraith-hero{
+  position:relative;
+  min-height:calc(100vh - 45px);
+  display:grid;
+  grid-template-columns:minmax(0,1.05fr) minmax(300px,.72fr);
+  border-bottom:1px solid var(--w-line);
+  background:
+    radial-gradient(circle at 71% 48%, rgba(196,163,90,.10), transparent 22%),
+    linear-gradient(90deg, #050505 0%, #080808 58%, #0d0d0d 100%);
+}
+
+.wraith-hero-copy{
+  padding:clamp(80px,10vw,150px) 7vw 72px 22px;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  position:relative;
+  z-index:2;
+}
+
+.wraith-kicker{
+  color:var(--w-amber);
+  font-size:10px;
+  letter-spacing:.28em;
+  text-transform:uppercase;
+  margin-bottom:18px;
+}
+
+.wraith-title{
+  margin:0;
+  font-size:clamp(70px,13vw,165px);
+  line-height:.78;
+  letter-spacing:-.04em;
+  text-transform:uppercase;
+  font-weight:700;
+}
+
+.wraith-title .wraith-accent{
+  color:var(--w-amber);
+}
+
+.wraith-dek{
+  max-width:650px;
+  margin-top:32px;
+  color:#ccc7bd;
+  font-size:clamp(18px,2vw,25px);
+  line-height:1.28;
+  letter-spacing:-.01em;
+}
+
+.wraith-meta{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(100px,1fr));
+  max-width:650px;
+  margin-top:46px;
+  border-top:1px solid var(--w-line);
+  border-bottom:1px solid var(--w-line);
+}
+
+.wraith-meta-item{
+  padding:14px 12px 13px 0;
+  border-right:1px solid var(--w-line);
+}
+
+.wraith-meta-item:last-child{
+  border-right:0;
+  padding-left:12px;
+}
+
+.wraith-meta-label{
+  display:block;
+  color:var(--w-dim);
+  font-size:9px;
+  letter-spacing:.2em;
+  margin-bottom:6px;
+}
+
+.wraith-meta-value{
+  color:#e9e4da;
+  font-size:12px;
+  line-height:1.3;
+}
+
+/* ---------- hero visual / video slot ---------- */
+
+.wraith-hero-visual{
+  position:relative;
+  min-height:620px;
+  border-left:1px solid var(--w-line);
+  overflow:hidden;
+  background:#090909;
+}
+
+.wraith-video-slot{
+  position:absolute;
+  inset:22px;
+  border:1px solid var(--w-line-strong);
+  background:
+    linear-gradient(rgba(196,163,90,.025),rgba(196,163,90,.025)),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 23px,
+      rgba(236,232,223,.025) 24px
+    );
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+
+.wraith-video-slot::before{
+  content:"";
+  position:absolute;
+  inset:12%;
+  border:1px solid rgba(196,163,90,.16);
+  border-radius:50%;
+  box-shadow:
+    0 0 0 55px rgba(196,163,90,.03),
+    0 0 0 110px rgba(196,163,90,.02);
+}
+
+.wraith-video-slot::after{
+  content:"";
+  position:absolute;
+  left:8%;
+  right:8%;
+  top:50%;
+  height:1px;
+  background:rgba(196,163,90,.18);
+  box-shadow:0 -90px 0 rgba(236,232,223,.03), 0 90px 0 rgba(236,232,223,.03);
+}
+
+video.wraith-video-slot{
+  object-fit:cover;
+  background:#050505;
+}
+
+.wraith-video-placeholder{
+  position:relative;
+  z-index:2;
+  width:min(440px,78%);
+  padding:20px;
+  border-left:2px solid var(--w-amber);
+  background:rgba(5,5,5,.77);
+}
+
+.wraith-video-placeholder small{
+  display:block;
+  color:var(--w-amber);
+  font-size:9px;
+  letter-spacing:.24em;
+  margin-bottom:9px;
+}
+
+.wraith-video-placeholder strong{
+  display:block;
+  color:#e7e2d8;
+  font-size:12px;
+  letter-spacing:.14em;
+  font-weight:600;
+}
+
+.wraith-video-placeholder p{
+  margin-top:9px;
+  color:#817d75;
+  font-size:11px;
+  line-height:1.45;
+}
+
+.wraith-video-caption{
+  position:absolute;
+  left:22px;
+  right:22px;
+  bottom:18px;
+  z-index:3;
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  color:#737067;
+  font-size:9px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+}
+
+/* ---------- section labels ---------- */
+
+.wraith-section{
+  border-bottom:1px solid var(--w-line);
+}
+
+.wraith-section-head{
+  display:grid;
+  grid-template-columns:120px 1fr;
+  gap:30px;
+  padding:20px 22px;
+  border-bottom:1px solid var(--w-line);
+}
+
+.wraith-index{
+  color:var(--w-amber);
+  font-size:10px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+}
+
+.wraith-section-head h2{
+  margin:0;
+  font-size:clamp(28px,5vw,58px);
+  line-height:.94;
+  font-weight:600;
+  letter-spacing:-.025em;
+}
+
+/* ---------- manifesto ---------- */
+
+.wraith-manifesto{
+  display:grid;
+  grid-template-columns:1fr 1.55fr;
+  gap:40px;
+  padding:80px 22px 90px;
+}
+
+.wraith-manifesto-label{
+  color:#7c776f;
+  font-size:10px;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+}
+
+.wraith-manifesto-copy{
+  max-width:900px;
+}
+
+.wraith-manifesto-copy p{
+  margin:0;
+  font-size:clamp(29px,4.8vw,64px);
+  line-height:1.05;
+  letter-spacing:-.025em;
+  color:var(--w-paper);
+}
+
+/* ---------- capabilities ---------- */
+
+.wraith-capabilities{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+}
+
+.wraith-capability{
+  min-height:270px;
+  padding:32px 30px 38px 22px;
+  border-right:1px solid var(--w-line);
+  border-bottom:1px solid var(--w-line);
+  position:relative;
+  overflow:hidden;
+}
+
+.wraith-capability:nth-child(2n){
+  border-right:0;
+}
+
+.wraith-capability:nth-last-child(-n+2){
+  border-bottom:0;
+}
+
+.wraith-capability-no{
+  color:var(--w-amber);
+  font-size:10px;
+  letter-spacing:.18em;
+}
+
+.wraith-capability h3{
+  margin-top:44px;
+  font-size:clamp(25px,3vw,42px);
+  line-height:.95;
+  letter-spacing:-.025em;
+  font-weight:600;
+}
+
+.wraith-capability p{
+  max-width:520px;
+  margin-top:18px;
+  color:#aaa59b;
+  font-size:15px;
+  line-height:1.5;
+}
+
+.wraith-capability::after{
+  content:"";
+  position:absolute;
+  right:22px;
+  bottom:20px;
+  width:42px;
+  height:1px;
+  background:rgba(196,163,90,.38);
+}
+
+/* ---------- spectrum / signal section ---------- */
+
+.wraith-spectrum{
+  padding:68px 22px 82px;
+  background:
+    linear-gradient(180deg,#080808 0%,#0d0d0d 100%);
+}
+
+.wraith-spectrum-grid{
+  display:grid;
+  grid-template-columns:minmax(0,1.1fr) minmax(300px,.75fr);
+  gap:50px;
+  align-items:start;
+}
+
+.wraith-spectrum-copy h3{
+  margin:0;
+  font-size:clamp(34px,6vw,78px);
+  line-height:.88;
+  letter-spacing:-.035em;
+}
+
+.wraith-spectrum-copy p{
+  max-width:710px;
+  margin-top:28px;
+  color:#b0aba1;
+  font-size:17px;
+  line-height:1.52;
+}
+
+.wraith-signal-panel{
+  border-top:1px solid var(--w-line-strong);
+  border-bottom:1px solid var(--w-line-strong);
+}
+
+.wraith-signal-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:16px;
+  padding:13px 0;
+  border-bottom:1px solid var(--w-line);
+}
+
+.wraith-signal-row:last-child{
+  border-bottom:0;
+}
+
+.wraith-signal-key{
+  color:#77736b;
+  font-size:9px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+}
+
+.wraith-signal-value{
+  color:#e8e2d7;
+  font-size:11px;
+  letter-spacing:.1em;
+  text-align:right;
+}
+
+/* ---------- architecture ---------- */
+
+.wraith-architecture{
+  display:grid;
+  grid-template-columns:1.3fr .7fr;
+  min-height:520px;
+}
+
+.wraith-architecture-diagram{
+  position:relative;
+  border-right:1px solid var(--w-line);
+  background:#090909;
+  overflow:hidden;
+  padding:34px 22px;
+}
+
+.wraith-diagram-grid{
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(rgba(236,232,223,.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(236,232,223,.03) 1px,transparent 1px);
+  background-size:40px 40px;
+}
+
+.wraith-flow{
+  position:relative;
+  z-index:2;
+  max-width:760px;
+  margin:30px auto 0;
+}
+
+.wraith-flow-node{
+  border:1px solid rgba(196,163,90,.35);
+  background:rgba(12,12,12,.88);
+  padding:17px 18px;
+  position:relative;
+}
+
+.wraith-flow-node + .wraith-flow-node{
+  margin-top:42px;
+}
+
+.wraith-flow-node + .wraith-flow-node::before{
+  content:"";
+  position:absolute;
+  left:50%;
+  top:-43px;
+  width:1px;
+  height:42px;
+  background:rgba(196,163,90,.28);
+}
+
+.wraith-flow-node span{
+  display:block;
+  color:var(--w-amber);
+  font-size:9px;
+  letter-spacing:.2em;
+  margin-bottom:8px;
+}
+
+.wraith-flow-node strong{
+  display:block;
+  font-size:17px;
+  letter-spacing:.02em;
+  font-weight:600;
+}
+
+.wraith-flow-node p{
+  margin-top:6px;
+  color:#858077;
+  font-size:11px;
+  line-height:1.4;
+}
+
+.wraith-architecture-copy{
+  padding:48px 28px;
+}
+
+.wraith-architecture-copy small{
+  color:var(--w-amber);
+  font-size:9px;
+  letter-spacing:.2em;
+}
+
+.wraith-architecture-copy h3{
+  margin-top:26px;
+  font-size:clamp(30px,4vw,48px);
+  line-height:.92;
+  font-weight:600;
+}
+
+.wraith-architecture-copy p{
+  margin-top:20px;
+  color:#aaa59b;
+  font-size:15px;
+  line-height:1.5;
+}
+
+.wraith-note{
+  margin-top:40px;
+  padding-top:15px;
+  border-top:1px solid var(--w-line);
+  color:#6f6b64;
+  font-size:10px;
+  line-height:1.5;
+}
+
+/* ---------- employment / use cases ---------- */
+
+.wraith-employment{
+  display:grid;
+  grid-template-columns:1fr;
+}
+
+.wraith-employment-item{
+  display:grid;
+  grid-template-columns:110px 1fr 90px;
+  gap:22px;
+  padding:24px 22px;
+  border-bottom:1px solid var(--w-line);
+  align-items:start;
+}
+
+.wraith-employment-item:last-child{
+  border-bottom:0;
+}
+
+.wraith-employment-id{
+  color:var(--w-amber);
+  font-size:10px;
+  letter-spacing:.18em;
+}
+
+.wraith-employment-item h3{
+  font-size:22px;
+  font-weight:600;
+  margin:0;
+}
+
+.wraith-employment-item p{
+  margin-top:7px;
+  max-width:790px;
+  color:#99948b;
+  font-size:14px;
+  line-height:1.48;
+}
+
+.wraith-employment-tag{
+  justify-self:end;
+  color:#747067;
+  font-size:9px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  text-align:right;
+}
+
+/* ---------- CTA ---------- */
+
+.wraith-cta{
+  min-height:62vh;
+  padding:80px 22px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:30px;
+  background:
+    radial-gradient(circle at 85% 30%,rgba(196,163,90,.08),transparent 24%),
+    #050505;
+}
+
+.wraith-cta-copy{
+  max-width:850px;
+}
+
+.wraith-cta-label{
+  color:var(--w-amber);
+  font-size:10px;
+  letter-spacing:.24em;
+  text-transform:uppercase;
+}
+
+.wraith-cta h2{
+  margin-top:17px;
+  font-size:clamp(45px,9vw,112px);
+  line-height:.84;
+  letter-spacing:-.04em;
+  font-weight:700;
+  text-transform:uppercase;
+}
+
+.wraith-cta p{
+  max-width:620px;
+  margin-top:23px;
+  color:#aaa59b;
+  font-size:16px;
+  line-height:1.45;
+}
+
+.wraith-cta-link{
+  flex:none;
+  display:inline-flex;
+  align-items:center;
+  gap:13px;
+  border:1px solid var(--w-paper);
+  padding:14px 17px;
+  color:var(--w-paper);
+  font-size:10px;
+  letter-spacing:.17em;
+  text-transform:uppercase;
+  transition:.2s ease;
+}
+
+.wraith-cta-link:hover{
+  border-color:var(--w-amber);
+  color:var(--w-amber);
+}
+
+.wraith-arrow{
+  font-size:17px;
+  line-height:1;
+}
+
+/* ---------- footer strip ---------- */
+
+.wraith-footer{
+  border-top:1px solid var(--w-line);
+  display:flex;
+  justify-content:space-between;
+  gap:20px;
+  padding:16px 22px 22px;
+  color:#5e5a54;
+  font-size:9px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+}
+
+
+/* ---------- WRAITH REQUEST ACCESS ---------- */
+
+.wraith-request{
+  border-bottom:1px solid var(--w-line);
+  background:#080808;
+}
+
+.wraith-request-inner{
+  display:grid;
+  grid-template-columns:minmax(280px,.8fr) minmax(0,1.2fr);
+  gap:60px;
+  padding:78px 22px 86px;
+}
+
+.wraith-request-intro small{
+  display:block;
+  color:var(--w-amber);
+  font-size:9px;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+}
+
+.wraith-request-intro h2{
+  margin-top:18px;
+  max-width:620px;
+  font-size:clamp(38px,6vw,76px);
+  line-height:.88;
+  letter-spacing:-.035em;
+  text-transform:uppercase;
+  font-weight:600;
+}
+
+.wraith-request-intro p{
+  max-width:440px;
+  margin-top:22px;
+  color:#99948b;
+  font-size:15px;
+  line-height:1.5;
+}
+
+.wraith-request-note{
+  margin-top:34px;
+  padding-top:15px;
+  border-top:1px solid var(--w-line);
+  max-width:440px;
+  color:#626057;
+  font-size:9px;
+  line-height:1.55;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+
+.wraith-form{
+  border-top:1px solid var(--w-line-strong);
+}
+
+.wraith-form-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+}
+
+.wraith-field{
+  padding:16px 0 17px;
+  border-bottom:1px solid var(--w-line);
+}
+
+.wraith-field label{
+  display:block;
+  margin-bottom:8px;
+  color:#77736b;
+  font-size:9px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+}
+
+.wraith-field input,
+.wraith-field select,
+.wraith-field textarea{
+  width:100%;
+  border:0;
+  outline:0;
+  background:transparent;
+  color:var(--w-paper);
+  font-family:inherit;
+  font-size:14px;
+  line-height:1.4;
+  border-radius:0;
+  padding:3px 0;
+}
+
+.wraith-field input::placeholder,
+.wraith-field textarea::placeholder{
+  color:#4f4c47;
+}
+
+.wraith-field select{
+  appearance:none;
+  cursor:pointer;
+}
+
+.wraith-field select option{
+  background:#111;
+  color:#eee;
+}
+
+.wraith-field textarea{
+  min-height:105px;
+  resize:vertical;
+}
+
+.wraith-form-actions{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:20px;
+  padding-top:22px;
+}
+
+.wraith-form-privacy{
+  max-width:430px;
+  color:#5f5b55;
+  font-size:9px;
+  line-height:1.5;
+}
+
+.wraith-submit{
+  flex:none;
+  border:1px solid var(--w-paper);
+  background:transparent;
+  color:var(--w-paper);
+  padding:13px 17px;
+  font-family:inherit;
+  font-size:10px;
+  letter-spacing:.17em;
+  text-transform:uppercase;
+  cursor:pointer;
+  transition:.2s ease;
+}
+
+.wraith-submit:hover{
+  color:var(--w-amber);
+  border-color:var(--w-amber);
+}
+
+/* ---------- tactical captcha ---------- */
+
+.wraith-captcha{
+  padding:18px 0 20px;
+  border-bottom:1px solid var(--w-line);
+}
+
+.wraith-captcha-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  flex-wrap:wrap;
+  gap:8px;
+  color:#77736b;
+  font-size:9px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  margin-bottom:12px;
+}
+
+.wraith-captcha-head span:last-child{
+  color:#6d6d6d;
+  cursor:pointer;
+  user-select:none;
+}
+
+.wraith-captcha-head span:last-child:hover{
+  color:var(--w-amber);
+}
+
+.wraith-captcha-question{
+  background:#050505;
+  border:1px solid #2e2b26;
+  padding:12px 14px;
+  font-family:"Courier New", monospace;
+  font-size:13px;
+  letter-spacing:.12em;
+  color:#fff;
+  user-select:none;
+  margin-bottom:10px;
+}
+
+.wraith-captcha input{
+  width:100%;
+  border:0;
+  outline:0;
+  background:transparent;
+  color:var(--w-paper);
+  font-family:"Courier New", monospace;
+  font-size:13px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  border-radius:0;
+  padding:3px 0;
+}
+
+.wraith-form-status{
+  display:none;
+  margin-top:15px;
+  border:1px solid var(--w-amber);
+  color:var(--w-amber);
+  padding:12px 14px;
+  font-size:10px;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+}
+
+.wraith-form-status.visible{
+  display:block;
+}
+
+.wraith-form-status.err{
+  border-color:#b03a2e;
+  color:#cd6155;
+}
+
+/* ---------- expanded footer ---------- */
+
+.wraith-footer-nav{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  border-top:1px solid var(--w-line);
+  border-bottom:1px solid var(--w-line);
+}
+
+.wraith-footer-col{
+  min-height:210px;
+  padding:20px 18px 25px;
+  border-right:1px solid var(--w-line);
+}
+
+.wraith-footer-col:last-child{
+  border-right:0;
+}
+
+.wraith-footer-col h3{
+  margin:0 0 20px;
+  color:#77736b;
+  font-size:9px;
+  font-weight:400;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+}
+
+.wraith-footer-col a{
+  display:block;
+  padding:4px 0;
+  color:#c3beb4;
+  font-size:13px;
+  line-height:1.45;
+}
+
+.wraith-footer-col a:hover{
+  color:var(--w-amber);
+}
+
+.wraith-footer-meta{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  border-bottom:1px solid var(--w-line);
+}
+
+.wraith-footer-meta > div{
+  padding:18px 22px;
+}
+
+.wraith-footer-meta > div + div{
+  border-left:1px solid var(--w-line);
+}
+
+.wraith-footer-meta span{
+  display:block;
+  color:#59564f;
+  font-size:8px;
+  letter-spacing:.18em;
+  margin-bottom:7px;
+}
+
+.wraith-footer-meta strong{
+  display:block;
+  color:#aaa59b;
+  font-size:10px;
+  letter-spacing:.1em;
+  font-weight:400;
+  line-height:1.4;
+}
+
+@media (max-width:900px){
+  .wraith-request-inner{
+    grid-template-columns:1fr;
+    gap:40px;
+  }
+
+  .wraith-footer-nav{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .wraith-footer-col:nth-child(2n){
+    border-right:0;
+  }
+
+  .wraith-footer-col{
+    border-bottom:1px solid var(--w-line);
+  }
+}
+
+
+.wraith-footer-col p{
+  margin-top:0;
+  color:#77736b;
+  font-size:10px;
+  line-height:1.55;
+  max-width:260px;
+}
+
+@media (max-width:720px){
+  .wraith-form-row{
+    grid-template-columns:1fr;
+    gap:0;
+  }
+
+  .wraith-form-actions{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .wraith-submit{
+    width:100%;
+  }
+
+  .wraith-footer-nav{
+    grid-template-columns:1fr;
+  }
+
+  .wraith-footer-col,
+  .wraith-footer-col:nth-child(2n){
+    border-right:0;
+    min-height:auto;
+  }
+
+  .wraith-footer-meta{
+    grid-template-columns:1fr;
+  }
+
+  .wraith-footer-meta > div + div{
+    border-left:0;
+    border-top:1px solid var(--w-line);
+  }
+}
+
+
+/* ---------- WRAITH FOOTER / INTERNAL INFORMATION PANELS ---------- */
+.wraith-footer{
+  display:block;
+  width:100%;
+  border-top:1px solid var(--w-line);
+  background:#050505;
+}
+.wraith-footer-topic{border-right:1px solid var(--w-line)}
+.wraith-footer-topic:last-child{border-right:0}
+.wraith-footer-topic button{
+  width:100%;
+  min-height:105px;
+  border:0;
+  background:transparent;
+  color:#c9c4ba;
+  padding:22px 18px;
+  text-align:left;
+  font:inherit;
+  font-size:10px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  cursor:pointer;
+  transition:.2s ease;
+}
+.wraith-footer-topic button::after{content:' ↗';color:var(--w-amber);opacity:.65}
+.wraith-footer-topic button:hover{background:#0b0b0b;color:var(--w-paper)}
+
+.wraith-panel{
+  position:fixed;
+  inset:0;
+  z-index:100;
+  display:none;
+  background:#050505;
+  color:var(--w-text);
+  overflow:auto;
+}
+.wraith-panel.is-open{display:block}
+.wraith-panel.is-open .wraith-panel-inner{animation:wraithPanelIn .28s ease both}
+@keyframes wraithPanelIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.wraith-panel-inner{min-height:100%;padding:0 22px 70px}
+.wraith-panel-top{
+  position:sticky;
+  top:0;
+  z-index:3;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:20px;
+  padding:16px 0;
+  background:rgba(5,5,5,.96);
+  border-bottom:1px solid var(--w-line);
+}
+.wraith-panel-id{color:var(--w-amber);font-size:9px;letter-spacing:.22em;text-transform:uppercase}
+.wraith-panel-close{
+  border:1px solid var(--w-line-strong);background:none;color:var(--w-paper);
+  padding:9px 12px;font:inherit;font-size:9px;letter-spacing:.16em;text-transform:uppercase;cursor:pointer
+}
+.wraith-panel-close:hover{border-color:var(--w-amber);color:var(--w-amber)}
+.wraith-panel-header{padding:75px 0 52px;border-bottom:1px solid var(--w-line)}
+.wraith-panel-header h2{margin:0;max-width:1050px;font-size:clamp(48px,9vw,118px);line-height:.84;letter-spacing:-.04em;text-transform:uppercase;font-weight:600}
+.wraith-panel-header p{max-width:820px;margin-top:28px;color:#aaa59b;font-size:17px;line-height:1.5}
+.wraith-panel-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border-bottom:1px solid var(--w-line)}
+.wraith-panel-block{padding:34px 24px 38px 0;border-right:1px solid var(--w-line);border-bottom:1px solid var(--w-line)}
+.wraith-panel-block:nth-child(2n){padding-left:24px;border-right:0}
+.wraith-panel-block:nth-last-child(-n+2){border-bottom:0}
+.wraith-panel-block .k{color:var(--w-amber);font-size:9px;letter-spacing:.2em;text-transform:uppercase}
+.wraith-panel-block h3{margin:18px 0 12px;font-size:24px;line-height:1;font-weight:600}
+.wraith-panel-block p{color:#99948b;font-size:14px;line-height:1.55;max-width:700px}
+.wraith-panel-specs{margin-top:38px;border-top:1px solid var(--w-line-strong);border-bottom:1px solid var(--w-line-strong)}
+.wraith-panel-spec{display:grid;grid-template-columns:220px 1fr;padding:14px 0;border-bottom:1px solid var(--w-line)}
+.wraith-panel-spec:last-child{border-bottom:0}
+.wraith-panel-spec span:first-child{color:#706c65;font-size:9px;letter-spacing:.18em;text-transform:uppercase}
+.wraith-panel-spec span:last-child{color:#d4cec3;font-size:12px;line-height:1.4}
+.wraith-panel-bottom{padding-top:28px;color:#66625b;font-size:9px;letter-spacing:.12em;text-transform:uppercase}
+
+@media(max-width:720px){
+  .wraith-footer{grid-template-columns:1fr}
+  .wraith-footer-topic{border-right:0;border-bottom:1px solid var(--w-line)}
+  .wraith-footer-topic:last-child{border-bottom:0}
+  .wraith-panel-inner{padding:0 16px 55px}
+  .wraith-panel-header{padding:55px 0 38px}
+  .wraith-panel-grid{grid-template-columns:1fr}
+  .wraith-panel-block,.wraith-panel-block:nth-child(2n){padding:26px 0 30px;border-right:0;border-bottom:1px solid var(--w-line)}
+  .wraith-panel-block:last-child{border-bottom:0}
+  .wraith-panel-spec{grid-template-columns:1fr;gap:7px}
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 900px){
+  .wraith-hero{
+    grid-template-columns:1fr;
+  }
+
+  .wraith-hero-visual{
+    min-height:58vh;
+    border-left:0;
+    border-top:1px solid var(--w-line);
+  }
+
+  .wraith-manifesto,
+  .wraith-spectrum-grid,
+  .wraith-architecture{
+    grid-template-columns:1fr;
+  }
+
+  .wraith-architecture-diagram{
+    min-height:470px;
+    border-right:0;
+    border-bottom:1px solid var(--w-line);
+  }
+
+  .wraith-architecture-copy{
+    padding:42px 22px 55px;
+  }
+}
+
+@media (max-width:720px){
+  .wraith-system{
+    padding:11px 16px;
+  }
+
+  .wraith-system-right span:last-child{
+    display:none;
+  }
+
+  .wraith-hero-copy{
+    padding:90px 16px 55px;
+  }
+
+  .wraith-title{
+    font-size:clamp(62px,21vw,110px);
+  }
+
+  .wraith-meta{
+    grid-template-columns:1fr;
+  }
+
+  .wraith-meta-item,
+  .wraith-meta-item:last-child{
+    border-right:0;
+    border-bottom:1px solid var(--w-line);
+    padding:12px 0;
+  }
+
+  .wraith-meta-item:last-child{
+    border-bottom:0;
+  }
+
+  .wraith-section-head{
+    grid-template-columns:1fr;
+    gap:12px;
+    padding:17px 16px;
+  }
+
+  .wraith-manifesto,
+  .wraith-spectrum,
+  .wraith-cta{
+    padding-left:16px;
+    padding-right:16px;
+  }
+
+  .wraith-manifesto{
+    gap:24px;
+    padding-top:55px;
+    padding-bottom:65px;
+  }
+
+  .wraith-capabilities{
+    grid-template-columns:1fr;
+  }
+
+  .wraith-capability,
+  .wraith-capability:nth-child(2n){
+    min-height:auto;
+    border-right:0;
+    border-bottom:1px solid var(--w-line);
+    padding:27px 16px 35px;
+  }
+
+  .wraith-capability:last-child{
+    border-bottom:0;
+  }
+
+  .wraith-employment-item{
+    grid-template-columns:1fr;
+    gap:10px;
+    padding:22px 16px;
+  }
+
+  .wraith-employment-tag{
+    justify-self:start;
+    text-align:left;
+  }
+
+  .wraith-cta{
+    min-height:66vh;
+    flex-direction:column;
+    align-items:flex-start;
+    justify-content:flex-end;
+    padding-top:60px;
+    padding-bottom:60px;
+  }
+
+  .wraith-footer{
+    padding-left:16px;
+    padding-right:16px;
+    flex-direction:column;
+    gap:8px;
+  }
+}
+
+/* WRAITH technical footer — exactly five topics */
+.wraith-footer-nav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));width:100%;border-top:1px solid var(--w-line);border-bottom:1px solid var(--w-line)}
+.wraith-footer-topic{border-right:1px solid var(--w-line);min-height:150px}
+.wraith-footer-topic:last-child{border-right:0}
+.wraith-footer-topic button{width:100%;height:100%;min-height:150px;padding:24px 18px;background:transparent;border:0;color:#c9c4ba;text-align:left;font-family:inherit;font-size:11px;line-height:1.25;letter-spacing:.16em;text-transform:uppercase;cursor:pointer}
+.wraith-footer-topic button::after{content:' ↗';color:var(--w-amber);opacity:.75}
+.wraith-footer-topic button:hover{color:var(--w-amber);background:rgba(196,163,90,.025)}
+@media(max-width:900px){.wraith-footer-nav{grid-template-columns:repeat(2,1fr)}.wraith-footer-topic:nth-child(2n){border-right:0}.wraith-footer-topic{border-bottom:1px solid var(--w-line)}.wraith-footer-topic:last-child{grid-column:1/-1;border-bottom:0}}
+@media(max-width:720px){.wraith-footer-nav{grid-template-columns:1fr}.wraith-footer-topic,.wraith-footer-topic:nth-child(2n){border-right:0}.wraith-footer-topic:last-child{grid-column:auto}.wraith-footer-topic button{min-height:82px;padding:20px 16px}}
+
+</style>
+</head>
+
+<body>
+
+<div class="wraith-page">
+
+  <!-- =====================================================
+       SYSTEM IDENTIFICATION
+       ===================================================== -->
+  <div class="wraith-system">
+    <div class="wraith-system-left">
+      <span class="wraith-signal" aria-hidden="true"></span>
+      <span>ARANRUTH INDUSTRIES</span>
+      <span>PROGRAM / WRAITH</span>
+    </div>
+    <div class="wraith-system-right">
+      <span>SPECTRUM CONTROL</span>
+      <span>RESTRICTED ACCESS</span>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       HERO
+       Recommended position for the product video:
+       right side, immediately adjacent to the opening value prop.
+       This keeps the first viewport visual and technical at once.
+       ===================================================== -->
+  <header class="wraith-hero">
+
+    <div class="wraith-hero-copy">
+      <div class="wraith-kicker">AUTONOMOUS / SOFTWARE-DEFINED / SPECTRUM</div>
+
+      <h1 class="wraith-title">
+        W<span class="wraith-accent">R</span>AITH
+      </h1>
+
+      <p class="wraith-dek">
+        Autonomous spectrum management and coherent deception for critical airspace.
+        Signal purity, electronic resilience, and sensory control where contested volume
+        is not an abstraction.
+      </p>
+
+      <div class="wraith-meta" aria-label="System classification">
+        <div class="wraith-meta-item">
+          <span class="wraith-meta-label">DOMAIN</span>
+          <span class="wraith-meta-value">Electromagnetic environment</span>
+        </div>
+        <div class="wraith-meta-item">
+          <span class="wraith-meta-label">ARCHITECTURE</span>
+          <span class="wraith-meta-value">Software-defined / autonomous</span>
+        </div>
+        <div class="wraith-meta-item">
+          <span class="wraith-meta-label">ROLE</span>
+          <span class="wraith-meta-value">Management / resilience / deception</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="wraith-hero-visual">
+      <!-- Replace this entire slot with the product video element.
+           Suggested:
+           <video autoplay muted loop playsinline preload="metadata">
+             <source src="media/wraith.mp4" type="video/mp4">
+           </video>
+      -->
+      <video class="wraith-video-slot" id="wraith-video" autoplay muted loop playsinline preload="metadata" aria-label="WRAITH product system film">
+        <source src="media/wraith.mp4" type="video/mp4">
+      </video>
+
+      <div class="wraith-video-caption">
+        <span>WRAITH / PRODUCT VIEW</span>
+        <span>MEDIA_01</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- =====================================================
+       MANIFESTO
+       ===================================================== -->
+  <section class="wraith-section">
+    <div class="wraith-section-head">
+      <div class="wraith-index">01 / POSITION</div>
+      <h2>THE SPECTRUM IS<br>PART OF THE AIRSPACE.</h2>
+    </div>
+
+    <div class="wraith-manifesto">
+      <div class="wraith-manifesto-label">OPERATIONAL PREMISE</div>
+
+      <div class="wraith-manifesto-copy">
+        <p>
+          Airspace is not only what a sensor can see. It is the electromagnetic
+          environment in which sensors, communications, navigation and autonomous
+          systems operate.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================
+       CAPABILITIES
+       ===================================================== -->
+  <section class="wraith-section" id="wraith-capabilities">
+    <div class="wraith-section-head">
+      <div class="wraith-index">02 / CAPABILITIES</div>
+      <h2>CONTROL THE<br>CONTESTED LAYER.</h2>
+    </div>
+
+    <div class="wraith-capabilities">
+
+      <article class="wraith-capability">
+        <div class="wraith-capability-no">01</div>
+        <h3>SPECTRUM<br>MANAGEMENT</h3>
+        <p>
+          Software-defined control of the electromagnetic environment around a
+          critical operating area, built for signal purity and electronic resilience.
+        </p>
+      </article>
+
+      <article class="wraith-capability">
+        <div class="wraith-capability-no">02</div>
+        <h3>COHERENT<br>DECEPTION</h3>
+        <p>
+          Generates controlled synthetic signal environments intended to shape
+          what an adversarial sensing system can infer from contested spectrum.
+        </p>
+      </article>
+
+      <article class="wraith-capability">
+        <div class="wraith-capability-no">03</div>
+        <h3>LOW-LATENCY<br>PROCESSING</h3>
+        <p>
+          Real-time digital signal processing built around low-latency response,
+          enabling the platform to react inside the operating tempo of the spectrum.
+        </p>
+      </article>
+
+      <article class="wraith-capability">
+        <div class="wraith-capability-no">04</div>
+        <h3>DEFENSIVE<br>RESILIENCE</h3>
+        <p>
+          Designed for environments where communications, sensing and critical nodes
+          must remain resilient under localized electronic interference and pressure.
+        </p>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- =====================================================
+       DEEP-TECH SIGNAL
+       ===================================================== -->
+  <section class="wraith-section" id="wraith-deep-tech">
+    <div class="wraith-section-head">
+      <div class="wraith-index">03 / DEEP-TECH</div>
+      <h2>BUILT CLOSE<br>TO THE SIGNAL.</h2>
+    </div>
+
+    <div class="wraith-spectrum">
+      <div class="wraith-spectrum-grid">
+
+        <div class="wraith-spectrum-copy">
+          <h3>DIGITAL<br>RADIO<br>FREQUENCY<br>MEMORY.</h3>
+
+          <p>
+            WRAITH is driven by a low-latency Digital Radio Frequency Memory
+            architecture executing real-time Fast Fourier Transform processing
+            on specialized hardware-level FPGAs.
+          </p>
+
+          <p>
+            The point is not software layered on top of hardware. The signal path
+            itself is part of the system design.
+          </p>
+        </div>
+
+        <div class="wraith-signal-panel" aria-label="WRAITH technical architecture summary">
+          <div class="wraith-signal-row">
+            <span class="wraith-signal-key">PROCESSING</span>
+            <span class="wraith-signal-value">REAL-TIME FFT</span>
+          </div>
+
+          <div class="wraith-signal-row">
+            <span class="wraith-signal-key">MEMORY</span>
+            <span class="wraith-signal-value">DIGITAL RF MEMORY</span>
+          </div>
+
+          <div class="wraith-signal-row">
+            <span class="wraith-signal-key">HARDWARE</span>
+            <span class="wraith-signal-value">SPECIALIZED FPGAs</span>
+          </div>
+
+          <div class="wraith-signal-row">
+            <span class="wraith-signal-key">SYSTEM MODEL</span>
+            <span class="wraith-signal-value">SOFTWARE-DEFINED</span>
+          </div>
+
+          <div class="wraith-signal-row">
+            <span class="wraith-signal-key">CONTROL</span>
+            <span class="wraith-signal-value">AUTONOMOUS</span>
+          </div>
+
+          <div class="wraith-signal-row">
+            <span class="wraith-signal-key">DESIGN PRIORITY</span>
+            <span class="wraith-signal-value">LOW-LATENCY RESPONSE</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================
+       ARCHITECTURE
+       ===================================================== -->
+  <section class="wraith-section">
+    <div class="wraith-section-head">
+      <div class="wraith-index">04 / ARCHITECTURE</div>
+      <h2>FROM SIGNAL<br>TO CONTROL.</h2>
+    </div>
+
+    <div class="wraith-architecture">
+
+      <div class="wraith-architecture-diagram">
+        <div class="wraith-diagram-grid"></div>
+
+        <div class="wraith-flow">
+
+          <div class="wraith-flow-node">
+            <span>INPUT LAYER</span>
+            <strong>ELECTROMAGNETIC ENVIRONMENT</strong>
+            <p>Contested, noisy, localized, dynamic.</p>
+          </div>
+
+          <div class="wraith-flow-node">
+            <span>PROCESSING LAYER</span>
+            <strong>LOW-LATENCY DIGITAL SIGNAL PROCESSING</strong>
+            <p>Real-time analysis and transformation inside the signal path.</p>
+          </div>
+
+          <div class="wraith-flow-node">
+            <span>HARDWARE LAYER</span>
+            <strong>RF MEMORY / FPGA COMPUTE</strong>
+            <p>Specialized hardware-level execution for responsive operation.</p>
+          </div>
+
+          <div class="wraith-flow-node">
+            <span>EFFECT LAYER</span>
+            <strong>MANAGED OR SYNTHETIC SPECTRUM</strong>
+            <p>Resilience, controlled deception, and sensory control.</p>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="wraith-architecture-copy">
+        <small>SYSTEM PRINCIPLE</small>
+
+        <h3>
+          THE SOFTWARE
+          DOES NOT FLOAT
+          ABOVE THE RADIO.
+        </h3>
+
+        <p>
+          WRAITH treats compute, RF memory, signal processing and operational
+          control as one system. That architecture is what enables the platform
+          to operate where timing and signal integrity matter.
+        </p>
+
+        <div class="wraith-note">
+          TECHNICAL DETAIL SHOWN HERE IS LIMITED TO PUBLIC PRODUCT-LEVEL
+          CHARACTERIZATION. NO DEPLOYMENT RECIPE OR TACTICAL PROCEDURE.
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- =====================================================
+       DUAL-USE EMPLOYMENT
+       ===================================================== -->
+  <section class="wraith-section" id="wraith-employment">
+    <div class="wraith-section-head">
+      <div class="wraith-index">05 / EMPLOYMENT</div>
+      <h2>THE SAME<br>ARCHITECTURE.<br>DIFFERENT MISSIONS.</h2>
+    </div>
+
+    <div class="wraith-employment">
+
+      <article class="wraith-employment-item">
+        <div class="wraith-employment-id">EMP / 01</div>
+        <div>
+          <h3>CIVIL AVIATION RESILIENCE</h3>
+          <p>
+            Stress-testing commercial airport radar networks against localized
+            atmospheric interference in controlled resilience and evaluation environments.
+          </p>
+        </div>
+        <div class="wraith-employment-tag">DUAL-USE</div>
+      </article>
+
+      <article class="wraith-employment-item">
+        <div class="wraith-employment-id">EMP / 02</div>
+        <div>
+          <h3>EMERGENCY BAND PROTECTION</h3>
+          <p>
+            Securing search-and-rescue communication channels during natural
+            disasters and other degraded communications conditions.
+          </p>
+        </div>
+        <div class="wraith-employment-tag">DUAL-USE</div>
+      </article>
+
+      <article class="wraith-employment-item">
+        <div class="wraith-employment-id">EMP / 03</div>
+        <div>
+          <h3>ADVANCED DEFENSIVE TRAINING</h3>
+          <p>
+            Generating synthetic, non-kinetic training environments for
+            national security forces without relying on live adversarial conditions.
+          </p>
+        </div>
+        <div class="wraith-employment-tag">DEFENSIVE</div>
+      </article>
+
+      <article class="wraith-employment-item">
+        <div class="wraith-employment-id">EMP / 04</div>
+        <div>
+          <h3>CRITICAL INFRASTRUCTURE SHIELDING</h3>
+          <p>
+            Masking automated power-grid nodes from malicious electronic scanning
+            as part of a layered electronic-security posture.
+          </p>
+        </div>
+        <div class="wraith-employment-tag">DUAL-USE</div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- =====================================================
+       MILITARY POSITIONING
+       ===================================================== -->
+  <section class="wraith-section">
+    <div class="wraith-section-head">
+      <div class="wraith-index">06 / MILITARY</div>
+      <h2>WHEN THE<br>ENVIRONMENT<br>IS CONTESTED.</h2>
+    </div>
+
+    <div class="wraith-manifesto">
+      <div class="wraith-manifesto-label">DEFENSIVE SYSTEM ROLE</div>
+
+      <div class="wraith-manifesto-copy">
+        <p>
+          WRAITH is built for forces that cannot assume a clean spectrum.
+          It provides an autonomous, software-defined layer for managing
+          electromagnetic pressure around critical airspace and infrastructure.
+        </p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- =====================================================
+       PRODUCT-SPECIFIC REQUEST ACCESS
+       WRAITH fields intentionally differ from other systems.
+       ===================================================== -->
+  <section class="wraith-request" id="request-access">
+    <div class="wraith-section-head">
+      <div class="wraith-index">07 / ACCESS</div>
+      <h2>REQUEST<br>WRAITH ACCESS.</h2>
+    </div>
+
+    <div class="wraith-request-inner">
+
+      <div class="wraith-request-intro">
+        <small>PROGRAM INTAKE / WRAITH</small>
+        <h2>THE REQUEST<br>STARTS WITH<br>THE MISSION.</h2>
+
+        <p>
+          WRAITH engagements are evaluated around the operating environment,
+          spectrum problem and intended mission role. This request is specific
+          to WRAITH and is not shared with the intake forms for other Aranruth systems.
+        </p>
+
+        <div class="wraith-request-note">
+          NO CLASSIFIED INFORMATION. Do not submit classified material,
+          sensitive operational procedures, target data or deployment instructions
+          through this form.
+        </div>
+      </div>
+
+      <form class="wraith-form" action="#" method="post">
+
+        <div class="wraith-form-row">
+          <div class="wraith-field">
+            <label for="wraith-name">Name / Title</label>
+            <input id="wraith-name" name="name" type="text" placeholder="FULL NAME / ROLE" autocomplete="name" required>
+          </div>
+
+          <div class="wraith-field">
+            <label for="wraith-org">Organization</label>
+            <input id="wraith-org" name="organization" type="text" placeholder="ORGANIZATION / AGENCY" autocomplete="organization" required>
+          </div>
+        </div>
+
+        <div class="wraith-form-row">
+          <div class="wraith-field">
+            <label for="wraith-email">Official Email</label>
+            <input id="wraith-email" name="email" type="email" placeholder="NAME@ORGANIZATION.ORG" autocomplete="email" required>
+          </div>
+
+          <div class="wraith-field">
+            <label for="wraith-country">Country / Region</label>
+            <input id="wraith-country" name="country" type="text" placeholder="COUNTRY / REGION" autocomplete="country-name" required>
+          </div>
+        </div>
+
+        <div class="wraith-form-row">
+          <div class="wraith-field">
+            <label for="wraith-domain">Primary Requirement</label>
+            <select id="wraith-domain" name="requirement" required>
+              <option value="" selected disabled>SELECT REQUIREMENT</option>
+              <option value="aviation-resilience">Civil Aviation Resilience</option>
+              <option value="emergency-band-protection">Emergency Band Protection</option>
+              <option value="defensive-training">Advanced Defensive Training</option>
+              <option value="critical-infrastructure">Critical Infrastructure Shielding</option>
+              <option value="defense-program">Defense / National Security Program</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="wraith-field">
+            <label for="wraith-program">Program Stage</label>
+            <select id="wraith-program" name="program_stage" required>
+              <option value="" selected disabled>SELECT STAGE</option>
+              <option value="evaluation">Initial Evaluation</option>
+              <option value="pilot">Pilot / Demonstration</option>
+              <option value="procurement">Procurement</option>
+              <option value="integration">System Integration</option>
+              <option value="training">Training / Exercise</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="wraith-field">
+          <label for="wraith-message">Requirement Brief</label>
+          <textarea id="wraith-message" name="message" placeholder="DESCRIBE THE OPERATIONAL PROBLEM AT PRODUCT LEVEL. DO NOT INCLUDE CLASSIFIED INFORMATION." required></textarea>
+        </div>
+
+        <div class="wraith-field">
+          <label for="wraith-channel">Preferred Contact Path</label>
+          <select id="wraith-channel" name="contact_path" required>
+            <option value="" selected disabled>SELECT CONTACT PATH</option>
+            <option value="official-email">Official Email</option>
+            <option value="program-call">Program Call</option>
+            <option value="technical-briefing">Technical Briefing</option>
+          </select>
+        </div>
+
+        <div class="wraith-captcha" id="wraith-captcha">
+          <div class="wraith-captcha-head">
+            <span>TACTICAL SECURITY VERIFICATION // MIL-STD CHALLENGE</span>
+            <span id="wraith-captcha-refresh" role="button" tabindex="0">[ REGENERATE HASH ]</span>
+          </div>
+          <div class="wraith-captcha-question" id="wraith-captcha-question">LOADING HASH CHALLENGE...</div>
+          <input id="wraith-captcha-input" name="captcha" type="text" placeholder="ENTER ANSWER" autocomplete="off" required>
+        </div>
+
+        <div class="wraith-form-actions">
+          <div class="wraith-form-privacy">
+            By submitting, you confirm that the information provided is non-classified
+            and suitable for product-level program intake. Submission does not create
+            authorization, procurement status, or access clearance.
+          </div>
+
+          <button class="wraith-submit" type="submit">
+            Submit WRAITH Request ↗
+          </button>
+        </div>
+
+        <div class="wraith-form-status" id="wraith-form-status" role="status" aria-live="polite"></div>
+
+      </form>
+    </div>
+  </section>
+
+  <!-- =====================================================
+       CTA
+       ===================================================== -->
+  <section class="wraith-cta" id="wraith-access">
+
+    <div class="wraith-cta-copy">
+      <div class="wraith-cta-label">ARANRUTH INDUSTRIES / PROGRAM WRAITH</div>
+
+      <h2>REQUEST<br>ACCESS.</h2>
+
+      <p>
+        WRAITH is not positioned as a general-purpose communications product.
+        It is a defense-oriented spectrum system for environments where electronic
+        resilience and control are mission requirements.
+      </p>
+    </div>
+
+    <a class="wraith-cta-link" href="mailto:programs@aranruthindustries.com">
+      PROGRAM ACCESS
+      <span class="wraith-arrow">↗</span>
+    </a>
+
+  </section>
+
+
+  <!-- =====================================================
+       INTERNAL PRODUCT PAGES
+       These are in-page destinations. No home navigation and no external product links.
+       ===================================================== -->
+  <section class="wraith-panel" id="wraith-panel-about" aria-hidden="true">
+    <div class="wraith-panel-inner">
+      <div class="wraith-panel-top"><span class="wraith-panel-id">WRAITH / 01 / SPECTRUM MANAGEMENT</span><button class="wraith-panel-close" type="button">Close ×</button></div>
+      <div class="wraith-panel-header"><h2>SPECTRUM<br>MANAGEMENT.</h2><p>WRAITH treats the electromagnetic environment as an operational layer requiring deliberate control, resilience and software-defined response.</p></div>
+      <div class="wraith-panel-grid">
+        <article class="wraith-panel-block"><span class="k">FUNCTION</span><h3>MANAGE THE ELECTROMAGNETIC ENVIRONMENT</h3><p>The platform is designed to manage spectrum conditions around critical airspace and spectrum-dependent infrastructure. Its role is centered on preserving usable signal conditions and maintaining controlled system behavior when the environment is degraded, contested or subject to interference.</p></article>
+        <article class="wraith-panel-block"><span class="k">SIGNAL PURITY</span><h3>PROTECT THE OPERATING LAYER</h3><p>Signal purity is treated as a system requirement rather than a communications convenience. WRAITH is positioned for environments where sensing, communications and other electromagnetic functions must remain resilient under localized electronic pressure.</p></article>
+        <article class="wraith-panel-block"><span class="k">CONTROL MODEL</span><h3>SOFTWARE-DEFINED</h3><p>The system is defined around software-controlled spectrum behavior rather than a fixed, single-purpose radio workflow. This allows the same architectural foundation to support resilience evaluation, controlled synthetic environments and defensive electromagnetic requirements.</p></article>
+        <article class="wraith-panel-block"><span class="k">OPERATING ASSUMPTION</span><h3>THE SPECTRUM MAY BE CONTESTED</h3><p>WRAITH begins from the assumption that interference, malicious electronic scanning and degraded communications can become part of the operating environment. The product exists to make that layer controllable instead of incidental.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="wraith-panel" id="wraith-panel-what" aria-hidden="true">
+    <div class="wraith-panel-inner">
+      <div class="wraith-panel-top"><span class="wraith-panel-id">WRAITH / 02 / COHERENT DECEPTION</span><button class="wraith-panel-close" type="button">Close ×</button></div>
+      <div class="wraith-panel-header"><h2>COHERENT<br>DECEPTION.</h2><p>WRAITH generates controlled synthetic signal conditions intended to shape what a sensing system can infer from a contested electromagnetic environment.</p></div>
+      <div class="wraith-panel-grid">
+        <article class="wraith-panel-block"><span class="k">CORE EFFECT</span><h3>SYNTHETIC SIGNAL CONDITIONS</h3><p>The deception function is based on generating controlled synthetic conditions within the electromagnetic environment. The product-level objective is not generic communications; it is controlled manipulation of the signal environment relevant to sensing and electronic resilience.</p></article>
+        <article class="wraith-panel-block"><span class="k">COHERENCE</span><h3>RESPONSE REMAINS COUPLED TO THE SIGNAL</h3><p>WRAITH is designed around a low-latency signal path so the system can process and respond without separating the operational problem from the underlying electromagnetic behavior.</p></article>
+        <article class="wraith-panel-block"><span class="k">DEFENSIVE USE</span><h3>NON-KINETIC EFFECT SPACE</h3><p>The stated defensive role includes synthetic, non-kinetic training environments and resilience applications where electromagnetic conditions must be evaluated or controlled without introducing a live adversarial engagement.</p></article>
+        <article class="wraith-panel-block"><span class="k">BOUNDARY</span><h3>CONTROLLED, NOT GENERIC</h3><p>Coherent deception is presented as a defined system function inside WRAITH's spectrum-management architecture. Public product information deliberately stops short of target-specific parameters and tactical employment procedures.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="wraith-panel" id="wraith-panel-why" aria-hidden="true">
+    <div class="wraith-panel-inner">
+      <div class="wraith-panel-top"><span class="wraith-panel-id">WRAITH / 03 / DRFM ARCHITECTURE</span><button class="wraith-panel-close" type="button">Close ×</button></div>
+      <div class="wraith-panel-header"><h2>DRFM<br>ARCHITECTURE.</h2><p>Digital Radio Frequency Memory is the disclosed hardware-level foundation for WRAITH's low-latency treatment of the electromagnetic signal path.</p></div>
+      <div class="wraith-panel-grid">
+        <article class="wraith-panel-block"><span class="k">RF MEMORY</span><h3>DIGITAL RADIO FREQUENCY MEMORY</h3><p>DRFM provides the architecture for digitally retaining and processing radio-frequency signal information as part of WRAITH's coherent signal-management function. It is the principal memory technology identified for the product.</p></article>
+        <article class="wraith-panel-block"><span class="k">LATENCY</span><h3>PROCESSING CLOSE TO THE SIGNAL</h3><p>WRAITH is explicitly designed around low-latency operation. The architecture keeps signal processing and system response tightly coupled to the electromagnetic environment rather than treating the radio as a remote input to ordinary application software.</p></article>
+        <article class="wraith-panel-block"><span class="k">SYSTEM MODEL</span><h3>HARDWARE + SOFTWARE AS ONE PATH</h3><p>RF memory, specialized computation and software-defined control are presented as a unified system architecture. This is central to the product's ability to manage spectrum conditions and generate controlled synthetic signal behavior.</p></article>
+        <article class="wraith-panel-block"><span class="k">DISCLOSURE</span><h3>PUBLIC PRODUCT CHARACTERIZATION</h3><p>The public interface identifies DRFM as the core memory architecture without exposing target-specific parameters, implementation details or tactical recipes.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="wraith-panel" id="wraith-panel-technology" aria-hidden="true">
+    <div class="wraith-panel-inner">
+      <div class="wraith-panel-top"><span class="wraith-panel-id">WRAITH / 04 / FFT + FPGA PROCESSING</span><button class="wraith-panel-close" type="button">Close ×</button></div>
+      <div class="wraith-panel-header"><h2>FFT + FPGA<br>PROCESSING.</h2><p>The processing layer combines real-time Fast Fourier Transform algorithms with specialized hardware-level FPGA execution to support the platform's low-latency signal path.</p></div>
+      <div class="wraith-panel-specs">
+        <div class="wraith-panel-spec"><span>TRANSFORM</span><span>Real-time Fast Fourier Transform (FFT) processing for spectral-domain signal analysis and processing.</span></div>
+        <div class="wraith-panel-spec"><span>COMPUTE</span><span>Specialized hardware-level Field-Programmable Gate Array (FPGA) execution.</span></div>
+        <div class="wraith-panel-spec"><span>LATENCY MODEL</span><span>Low-latency processing is a primary architecture requirement rather than a secondary optimization.</span></div>
+        <div class="wraith-panel-spec"><span>CONTROL</span><span>Software-defined control coordinates the processing layer with spectrum-management and synthetic-signal functions.</span></div>
+        <div class="wraith-panel-spec"><span>SIGNAL PATH</span><span>RF memory, transform processing and hardware compute are coupled within the product architecture.</span></div>
+        <div class="wraith-panel-spec"><span>PRODUCT ROLE</span><span>Enables responsive management of the electromagnetic environment and controlled coherent signal effects at product level.</span></div>
+      </div>
+      <div class="wraith-panel-bottom">Technical characterization reflects the disclosed product concept. No tactical implementation recipe is provided.</div>
+    </div>
+  </section>
+
+  <section class="wraith-panel" id="wraith-panel-access" aria-hidden="true">
+    <div class="wraith-panel-inner">
+      <div class="wraith-panel-top"><span class="wraith-panel-id">WRAITH / 05 / OPERATIONAL EMPLOYMENT</span><button class="wraith-panel-close" type="button">Close ×</button></div>
+      <div class="wraith-panel-header"><h2>OPERATIONAL<br>EMPLOYMENT.</h2><p>WRAITH is designed for environments where electromagnetic resilience is a mission requirement. The disclosed applications span aviation, emergency communications, defensive training and critical infrastructure.</p></div>
+      <div class="wraith-panel-grid">
+        <article class="wraith-panel-block"><span class="k">AVIATION</span><h3>CIVIL AVIATION RESILIENCE</h3><p>Supports stress-testing of commercial airport radar networks against localized atmospheric interference. The purpose is controlled resilience evaluation of a spectrum-dependent sensing environment.</p></article>
+        <article class="wraith-panel-block"><span class="k">EMERGENCY</span><h3>BAND PROTECTION</h3><p>Supports protection of search-and-rescue communication channels during natural disasters, where degraded or unstable electromagnetic conditions can become a direct operational constraint.</p></article>
+        <article class="wraith-panel-block"><span class="k">TRAINING</span><h3>NON-KINETIC SYNTHETIC ENVIRONMENTS</h3><p>Generates controlled synthetic environments for advanced defensive training and national-security preparation without requiring a live adversarial electromagnetic condition.</p></article>
+        <article class="wraith-panel-block"><span class="k">INFRASTRUCTURE</span><h3>CRITICAL NODE SHIELDING</h3><p>Supports masking of automated power-grid nodes from malicious electronic scanning as part of a layered critical-infrastructure protection architecture.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <footer class="wraith-footer" aria-label="WRAITH technical information">
+    <div class="wraith-footer-nav">
+      <div class="wraith-footer-topic"><button type="button" data-wraith-panel="about" aria-controls="wraith-panel-about">SPECTRUM MANAGEMENT</button></div>
+      <div class="wraith-footer-topic"><button type="button" data-wraith-panel="what" aria-controls="wraith-panel-what">COHERENT DECEPTION</button></div>
+      <div class="wraith-footer-topic"><button type="button" data-wraith-panel="why" aria-controls="wraith-panel-why">DRFM ARCHITECTURE</button></div>
+      <div class="wraith-footer-topic"><button type="button" data-wraith-panel="technology" aria-controls="wraith-panel-technology">FFT + FPGA PROCESSING</button></div>
+      <div class="wraith-footer-topic"><button type="button" data-wraith-panel="access" aria-controls="wraith-panel-access">OPERATIONAL EMPLOYMENT</button></div>
+    </div>
+  </footer>
+
+</div>
+
+
+<script>
+(function(){
+  // ===== Tactical captcha (WRAITH) =====
+  const wq = document.getElementById('wraith-captcha-question');
+  const wrefresh = document.getElementById('wraith-captcha-refresh');
+  const winput = document.getElementById('wraith-captcha-input');
+  const wform = document.querySelector('.wraith-form');
+  const wstatus = document.getElementById('wraith-form-status');
+
+  if (wq && wform) {
+    let answer = '';
+
+    function generate() {
+      const challenges = [
+        { q: 'SOLVE: 14 * 6 - 8 = ?', a: '76' },
+        { q: 'SOLVE: 32 + 45 - 12 = ?', a: '65' },
+        { q: 'HEX DECRYPT: 0x2A + 0x10 = ? (DECIMAL)', a: '58' },
+        { q: 'STANAG PROTOCOL CHECK: ENTER SUM OF 4 + 5 + 8 =', a: '17' },
+        { q: 'SOLVE: 64 / 4 + 19 = ?', a: '35' },
+        { q: 'CRYPTOGRAPHIC HASH CHECK: 9 * 9 - 13 =', a: '68' }
+      ];
+      const selected = challenges[Math.floor(Math.random() * challenges.length)];
+      wq.textContent = selected.q;
+      answer = selected.a;
+      winput.value = '';
+    }
+
+    generate();
+    if (wrefresh) {
+      wrefresh.addEventListener('click', generate);
+      wrefresh.addEventListener('keydown', function(e){
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); generate(); }
+      });
+    }
+
+    wform.addEventListener('submit', function (e) {
+      e.preventDefault();
+      wstatus.classList.remove('visible', 'err');
+
+      const name = document.getElementById('wraith-name').value;
+      const email = document.getElementById('wraith-email').value;
+      const userCaptcha = winput.value.trim();
+
+      if (!name || !email) {
+        wstatus.textContent = 'ERROR: ALL INTAKE FIELDS REQUIRED. VERIFY FORM.';
+        wstatus.classList.add('visible', 'err');
+        return;
+      }
+      if (userCaptcha !== answer) {
+        wstatus.textContent = 'SECURITY ERROR: TACTICAL CAPTCHA VERIFICATION FAILED. RE-ENTER HASH.';
+        wstatus.classList.add('visible', 'err');
+        generate();
+        return;
+      }
+
+      wstatus.textContent = 'SECURE HANDSHAKE VERIFIED. WRAITH INQUIRY TRANSMITTED TO ARANRUTH INDUSTRIES COMMAND.';
+      wstatus.classList.add('visible');
+      wform.reset();
+      generate();
+    });
+  }
+})();
+
+(function(){
+  const panels = Object.fromEntries(
+    [...document.querySelectorAll('.wraith-panel')].map(panel => [
+      panel.id.replace('wraith-panel-',''), panel
+    ])
+  );
+
+  const buttons = document.querySelectorAll('[data-wraith-panel]');
+
+  function openPanel(key){
+    const panel = panels[key];
+    if(!panel) return;
+
+    document.querySelectorAll('.wraith-panel.is-open').forEach(p => {
+      p.classList.remove('is-open');
+      p.setAttribute('aria-hidden','true');
+    });
+
+    panel.classList.add('is-open');
+    panel.setAttribute('aria-hidden','false');
+    document.body.style.overflow='hidden';
+
+    // Internal URL state only. No external page and no home navigation.
+    history.replaceState({wraithPanel:key}, '', '#wraith-' + key);
+
+    requestAnimationFrame(() => {
+      const close=panel.querySelector('.wraith-panel-close');
+      if(close) close.focus();
+    });
+  }
+
+  function closePanels(){
+    document.querySelectorAll('.wraith-panel.is-open').forEach(panel => {
+      panel.classList.remove('is-open');
+      panel.setAttribute('aria-hidden','true');
+    });
+    document.body.style.overflow='';
+    if(location.hash.startsWith('#wraith-')) history.replaceState({},'',location.pathname+location.search);
+  }
+
+  buttons.forEach(button => {
+    button.addEventListener('click', () => openPanel(button.dataset.wraithPanel));
+  });
+
+  document.querySelectorAll('.wraith-panel-close').forEach(button => {
+    button.addEventListener('click', closePanels);
+  });
+
+  document.querySelectorAll('.wraith-panel').forEach(panel => {
+    panel.addEventListener('click', event => {
+      if(event.target === panel) closePanels();
+    });
+  });
+
+  document.addEventListener('keydown', event => {
+    if(event.key === 'Escape') closePanels();
+  });
+
+  const initial = location.hash.replace('#wraith-','');
+  if(initial && panels[initial]) openPanel(initial);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ARGUS Technology — Multi-Spectral &amp; Edge Inference — Aranruth Industries</title>
+  <meta name="description" content="ARGUS technical dossier: visible and SWIR multi-spectral sensing, convolutional neural network inference at the edge, kinematic identification without facial recognition as the primary signal." />
+  <link rel="canonical" href="https://aranruthindustries.com/technology.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="ARGUS Technology — Multi-Spectral &amp; Edge Inference" />
+  <meta property="og:description" content="Multi-spectral perception engineered for persistent detection, identification and tracking in contested and degraded environments." />
+  <meta property="og:url" content="https://aranruthindustries.com/technology.html" />
+  <meta property="og:image" content="https://aranruthindustries.com/assets/img/og-image.jpg" />
+  <link rel="icon" type="image/png" sizes="128x128" href="assets/favicon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png" />
+  <link rel="stylesheet" href="assets/css/aranruth.css" />
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+  <nav class="topbar" aria-label="Primary">
+    <a class="wordmark" href="index.html">ARANRUTH INDUSTRIES</a>
+    <div class="toplinks">
+      <a href="about.html">Company</a>
+      <a href="systems.html">Systems</a>
+      <a href="newsroom.html">Newsroom</a>
+      <a href="access.html">Access</a>
+    </div>
+  </nav>
+  <button class="burger" type="button" aria-label="Open menu" aria-expanded="false" id="menuBtn"><span></span><span></span><span></span></button>
+  <div class="menu-overlay" id="menuOverlay" aria-hidden="true">
+    <div class="menu-col">
+      <a class="m-link" href="systems.html" style="transition-delay:0.05s"><small>Deployed hardware</small>Systems</a>
+      <a class="m-link" href="about.html" style="transition-delay:0.1s"><small>Mission &amp; principles</small>Company</a>
+      <a class="m-link" href="newsroom.html" style="transition-delay:0.15s"><small>Field reports</small>Newsroom</a>
+      <a class="m-link" href="leadership.html" style="transition-delay:0.2s"><small>Command structure</small>Leadership</a>
+      <a class="m-link" href="careers.html" style="transition-delay:0.25s"><small>Join the build</small>Careers</a>
+      <a class="m-link" href="veteran-careers.html" style="transition-delay:0.3s"><small>Prior service</small>Veteran Careers</a>
+      <a class="m-link" href="access.html" style="transition-delay:0.35s"><small>Program intake</small>Access</a>
+    </div>
+    <div class="menu-foot">
+      <a href="mailto:defense@aranruth.com">defense@aranruth.com</a>
+      <a href="mailto:ventas@aranruth.com">ventas@aranruth.com</a>
+      <a href="mailto:careers@aranruth.com">careers@aranruth.com</a>
+      <span>aranruthindustries.com</span>
+    </div>
+  </div>
+
+  <header class="page-head">
+    <div class="wrap">
+      <div class="crumb">ARGUS // TECHNOLOGY / MULTI-SPECTRAL &amp; EDGE INFERENCE</div>
+      <h1>See through<br />the degraded.</h1>
+      <p class="lede">ARGUS combines visible and short-wave infrared imagery with convolutional neural networks running at the sensor. The technical dossier below covers the sensing physics, the inference architecture, and the kinematic identification model that keeps ARGUS working when faces, labels and networks are unavailable.</p>
+    </div>
+  </header>
+
+  <section class="sec">
+    <div class="wrap">
+      <figure class="field" style="max-width:760px">
+        <img src="assets/img/argus-technology.jpg" alt="Small unmanned aircraft system positioned on gravel during counter-UAS field training" loading="lazy" />
+        <figcaption><span>SUAS EMPLOYMENT SERIAL // COUNTER-DRONE TRAINING RANGE</span><span>SENSOR REFERENCE</span></figcaption>
+      </figure>
+      <div class="prose" style="margin-top:36px;max-width:72ch">
+        <span class="k-label">01 // Sensing</span>
+        <h2 class="sec">Two bands,<br />one picture.</h2>
+        <p>Visible-band sensors give ARGUS spatial resolution and texture; short-wave infrared gives it penetration of darkness, glare, haze and partial obscuration. SWIR reflects off materials and skin rather than emitting thermal signatures, which means subjects remain observable in conditions where visible cameras wash out and long-wave thermal cannot resolve fine structure. Fusing the two bands at the detection level — not the display level — produces one machine-generated picture of activity that stays stable across lighting transitions, sun angle and atmospheric degradation.</p>
+        <p>Both feeds are processed continuously. ARGUS does not switch modes between day and night operation; the perception layer treats both bands as simultaneous inputs, so a track established in visible persists through a glare event, a shadow crossing or dusk onset without a handoff. This is the difference between a camera that records and a perception system that maintains custody.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec alt">
+    <div class="wrap">
+      <span class="k-label">02 // Edge inference</span>
+      <h2 class="sec">Compute where<br />the sensor is.</h2>
+      <p class="prose" style="max-width:72ch;margin-top:22px">ARGUS places machine vision at the edge of the sensing architecture. Convolutional neural networks process incoming imagery locally to extract detections, movement signatures, classifications and position data in real time — no frame traverses a remote processing infrastructure before it becomes a detection.</p>
+      <table class="spec">
+        <caption>INFERENCE ARCHITECTURE // TECHNICAL PARAMETERS</caption>
+        <thead>
+          <tr><th>LAYER</th><th>IMPLEMENTATION</th><th>FUNCTION</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>SENSOR INPUT</td><td>Visible / SWIR dual-band</td><td>Continuous optical and short-wave infrared imagery from compatible airborne, perimeter or fixed sensor platforms.</td></tr>
+          <tr><td>LOCAL INFERENCE</td><td>CNN ON EDGE COMPUTE</td><td>Frame-level detection, spatial feature extraction and subject characterization close to the sensor.</td></tr>
+          <tr><td>KINEMATIC MODEL</td><td>MOTION-SIGNATURE ANALYSIS</td><td>Gait, stride, cadence and proportional body-movement signatures used to distinguish and maintain subject tracks.</td></tr>
+          <tr><td>TRACK MANAGEMENT</td><td>PERSISTENT TRACK LOGIC</td><td>Continuous position estimation and track continuity across occlusion, band transition and scene complexity.</td></tr>
+          <tr><td>OUTPUT</td><td>STRUCTURED DATA</td><td>Track / position / classification records made available for downstream mission, security and command systems.</td></tr>
+        </tbody>
+      </table>
+      <p class="spec-note">ARCHITECTURE IS INTENDED FOR SYSTEMS WHERE LATENCY, BANDWIDTH AND ENVIRONMENTAL CONDITIONS IMPOSE CONSTRAINTS ON CENTRALIZED PROCESSING.</p>
+      <div class="prose" style="max-width:72ch;margin-top:34px">
+        <p>The consequence of edge placement is operational, not academic. A perimeter system that depends on a remote inference cluster fails when the link fails — precisely the degraded-communications condition under which sensing matters most. ARGUS inference runs onboard the sensing node: detections, tracks and classifications continue uninterrupted when backhaul is contested, jammed or simply absent, and structured outputs sync to the larger architecture when connectivity returns.</p>
+        <p>Model optimization targets constrained hardware: quantized inference, frame-skip logic under load, and deterministic worst-case latency rather than average-case benchmarks. A perception layer inside a mission architecture must be predictable at its limits, not merely capable at its best.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="wrap grid-2">
+      <div>
+        <span class="k-label">03 // Identification</span>
+        <h2 class="sec">Kinematics over<br />faces.</h2>
+      </div>
+      <div class="prose">
+        <p>ARGUS does not rely on facial recognition as the primary identification signal. Faces are small, angle-dependent, degraded by distance and lighting — and they turn biometric identity into the tracking key. ARGUS instead analyzes gait and body-motion characteristics: stride length, cadence, posture and proportional movement signatures that remain measurable at ranges where a face is a handful of pixels.</p>
+        <p>The kinematic model distinguishes and maintains subject tracks through occlusion and re-acquisition. When a subject passes behind cover and re-emerges, motion signature — not last position alone — re-associates the track. This is how custody survives complex scenes: crowds, vegetation, structures, and the deliberate movement tactics of people who know they are being observed.</p>
+        <p>Spectral anomalies are evaluated as additional inputs to subject classification and scene understanding: material signatures, thermal contrast behavior in SWIR, and multi-band reflectance differences that separate a human subject from a decoy, an animal or a vehicle occupant. The output is a machine-generated classification with confidence data — structured information a downstream operator or fires cell can adjudicate.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec alt">
+    <div class="wrap">
+      <span class="k-label">04 // Degraded environments</span>
+      <h2 class="sec">What "degraded"<br />means here.</h2>
+      <div class="grid-2" style="margin-top:34px">
+        <div class="card">
+          <div class="card-k">VISUAL DEGRADATION</div>
+          <h3>Darkness, glare, haze</h3>
+          <p>SWIR band penetration maintains detection through conditions that wash out visible-only sensors: night onset, headlight glare, low sun angle, atmospheric haze and partial smoke. Dual-band input means the perception layer degrades gracefully instead of failing at a threshold.</p>
+        </div>
+        <div class="card">
+          <div class="card-k">NETWORK DEGRADATION</div>
+          <h3>Contested backhaul</h3>
+          <p>Edge inference continues when communications are jammed, saturated or severed. Local detection and track continuity persist; structured outputs sync to the mission architecture on link restoration. The sensing picture does not blink out with the network.</p>
+        </div>
+        <div class="card">
+          <div class="card-k">SCENE DEGRADATION</div>
+          <h3>Occlusion &amp; complexity</h3>
+          <p>Track management logic maintains subject custody through occlusion events, crowd crossing and re-acquisition. Kinematic signatures re-associate tracks where position-only logic would drop them — the difference between losing a subject and holding one.</p>
+        </div>
+        <div class="card">
+          <div class="card-k">ADVERSARIAL DEGRADATION</div>
+          <h3>Deliberate evasion</h3>
+          <p>Subjects who know they are observed change pace, route and formation. Motion-signature analysis is built against exactly this behavior — the model was trained on contested-range recordings, not clean datasets, and is re-trained through basin serials where operators actively try to defeat it.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec tight">
+    <div class="wrap">
+      <span class="k-label">05 // Continue</span>
+      <div class="linkrow">
+        <a class="btn-line" href="argus.html">ARGUS system page</a>
+        <a class="btn-line" href="architecture.html">System architecture</a>
+        <a class="btn-line" href="integration.html">Platform integration</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site">
+    <div class="block open">
+      <button class="block-h" type="button" aria-expanded="true" aria-controls="links-house"><span>COMPANY</span><span class="sign" aria-hidden="true">—</span></button>
+      <div class="links" id="links-house">
+        <a href="about.html"><span class="sub">Mission &amp; principles</span>About Aranruth Industries</a>
+        <a href="systems.html"><span class="sub">Full technical dossier</span>Systems</a>
+        <a href="newsroom.html"><span class="sub">Field reports &amp; releases</span>Newsroom</a>
+        <a href="leadership.html"><span class="sub">Command structure</span>Leadership</a>
+        <a href="access.html"><span class="sub">Program intake &amp; channels</span>Access</a>
+      </div>
+    </div>
+    <div class="block open">
+      <button class="block-h" type="button" aria-expanded="true" aria-controls="links-argus"><span>ARGUS TECHNICAL</span><span class="sign" aria-hidden="true">—</span></button>
+      <div class="links" id="links-argus">
+        <a href="argus.html"><span class="sub">System page</span>ARGUS</a>
+        <a href="technology.html"><span class="sub">Multi-spectral &amp; edge inference</span>Technology</a>
+        <a href="architecture.html"><span class="sub">Processing pipeline</span>Architecture</a>
+        <a href="integration.html"><span class="sub">Mission profiles</span>Integration</a>
+      </div>
+    </div>
+    <div class="block">
+      <button class="block-h" type="button" aria-expanded="false" aria-controls="links-contact"><span>CONTACT</span><span class="sign" aria-hidden="true">+</span></button>
+      <div class="links" id="links-contact">
+        <a href="access.html"><span class="sub">Start program intake</span>Request access</a>
+        <a href="mailto:defense@aranruth.com"><span class="sub">Defense programs</span>defense@aranruth.com</a>
+        <a href="mailto:ventas@aranruth.com"><span class="sub">Sales</span>ventas@aranruth.com</a>
+        <a href="mailto:careers@aranruth.com"><span class="sub">Careers</span>careers@aranruth.com</a>
+      </div>
+    </div>
+    <div class="legal"><span>© 2026 ARANRUTH INDUSTRIES</span><span>RESTRICTED ACCESS</span></div>
+  </footer>
+
+  <script src="assets/js/ui.js"></script>
+</body>
+</html>

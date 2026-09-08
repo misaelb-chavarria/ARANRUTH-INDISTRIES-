@@ -1,0 +1,1427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aranruth Industries — Autonomous Defense Infrastructure</title>
+  <meta name="description" content="Aranruth Industries designs, builds, and deploys autonomous defense infrastructure for sovereign borders and contested environments — sensing, denial, and electromagnetic systems operating at the speed of threat." />
+  <meta name="keywords" content="defense technology, autonomous systems, counter-UAS, electronic warfare, border security, acoustic denial, radar, perimeter detection, Aranruth Industries" />
+  <meta name="author" content="Aranruth Industries" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://aranruthindustries.com/" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Aranruth Industries" />
+  <meta property="og:title" content="Aranruth Industries — Autonomous Defense Infrastructure" />
+  <meta property="og:description" content="Autonomous defense infrastructure for sovereign borders and contested environments. Sensing, denial, and electromagnetic systems operating at the speed of threat." />
+  <meta property="og:url" content="https://aranruthindustries.com/" />
+  <meta property="og:image" content="https://aranruthindustries.com/assets/img/og-image.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale" content="en_US" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Aranruth Industries — Autonomous Defense Infrastructure" />
+  <meta name="twitter:description" content="Autonomous defense infrastructure for sovereign borders and contested environments. Operating at the speed of threat." />
+  <meta name="twitter:image" content="https://aranruthindustries.com/assets/img/og-image.jpg" />
+
+  <link rel="icon" type="image/png" sizes="128x128" href="assets/favicon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png" />
+
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <link rel="stylesheet" href="assets/css/aranruth.css" />
+  <style>
+    /* ===== Page-specific styles ===== */
+    .boot-bar {
+      position: fixed;
+      top: 0; left: 0;
+      z-index: 90;
+      height: 2px; width: 0;
+      background: var(--amber);
+      pointer-events: none;
+      animation: bootline 1.2s cubic-bezier(0.22, 0.8, 0.28, 1) forwards;
+    }
+    @keyframes bootline {
+      0% { width: 0; opacity: 1; }
+      75% { width: 100%; opacity: 1; }
+      100% { width: 100%; opacity: 0; }
+    }
+
+    /* Hero */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-end;
+      padding: 0 22px 80px;
+      overflow: hidden;
+      background: #101010;
+    }
+    .hero video {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+    .veil {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(to top, rgba(5, 5, 5, 0.82), rgba(5, 5, 5, 0.2) 48%, rgba(5, 5, 5, 0.35));
+    }
+    .hero-copy {
+      position: relative;
+      z-index: 2;
+      max-width: 900px;
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .hero-copy.hidden-text { opacity: 0; pointer-events: none; transform: translateY(-12px); }
+    h1 {
+      font-size: clamp(38px, 8vw, 84px);
+      line-height: 0.9;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .dek {
+      margin-top: 16px;
+      max-width: 520px;
+      color: #d0cbc1;
+      font-size: 16px;
+      line-height: 1.45;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .dek.on { opacity: 1; }
+
+    /* Manifesto */
+    .manifesto-section {
+      background: #050505;
+      padding: 90px 22px;
+      border-top: 1px solid var(--line);
+    }
+    .manifesto-container { max-width: 900px; margin: 0 auto; }
+    .manifesto-text {
+      font-size: clamp(24px, 4vw, 40px);
+      line-height: 1.35;
+      color: var(--paper);
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      min-height: 3.5em;
+    }
+
+    /* House film */
+    .film {
+      position: relative;
+      min-height: 72vh;
+      background: #101010;
+      border-top: 1px solid var(--line);
+      overflow: hidden;
+    }
+    .film video {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+    .film .film-tag {
+      position: absolute;
+      left: 18px; bottom: 18px;
+      z-index: 2;
+      font-size: 10.5px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #9a958b;
+      background: rgba(5, 5, 5, 0.55);
+      padding: 6px 10px;
+    }
+
+    /* Product tiles */
+    .tile {
+      position: relative;
+      display: block;
+      min-height: 58vh;
+      background: #121212;
+      border-top: 1px solid var(--line);
+      overflow: hidden;
+    }
+    .tile img {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      opacity: 0.86;
+      transition: opacity 0.35s ease, transform 0.6s ease;
+    }
+    .tile:hover img { opacity: 1; transform: scale(1.02); }
+    .tile::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(5,5,5,0.85), rgba(5,5,5,0.15) 55%, rgba(5,5,5,0.35));
+    }
+    .tile-copy {
+      position: absolute;
+      left: 18px; right: 18px; bottom: 22px;
+      z-index: 2;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .tile h2 {
+      font-size: clamp(28px, 6vw, 42px);
+      letter-spacing: 0.02em;
+      font-weight: 600;
+    }
+    .tile p { margin-top: 6px; color: #c9c4ba; font-size: 16px; font-weight: 400; }
+    .go {
+      width: 28px; height: 28px;
+      flex: none;
+      align-self: center;
+      color: #ece8df;
+      opacity: 0.9;
+    }
+    .go svg { width: 22px; height: 22px; display: block; }
+    .tile:hover .go { color: var(--amber); }
+
+    /* 3D Operational Environment */
+    .spatial { padding: 56px 22px 28px; border-top: 1px solid var(--line); }
+    .spatial-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+    .spatial h3 {
+      font-size: clamp(28px, 5vw, 42px);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .spatial .lede {
+      color: #b7b2a8;
+      max-width: 520px;
+      font-size: 16px;
+      line-height: 1.45;
+    }
+    .view-btn {
+      border: 1px solid var(--paper);
+      padding: 12px 16px;
+      letter-spacing: 0.16em;
+      font-size: 11px;
+      text-transform: uppercase;
+      background: none;
+      color: inherit;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .view-btn:hover { border-color: var(--amber); color: var(--amber); }
+    .spatial-stage {
+      position: relative;
+      height: min(78vh, 720px);
+      background: #0b0b0b;
+      border: 1px solid var(--line);
+      overflow: hidden;
+    }
+    .spatial-stage canvas { display: block; width: 100%; height: 100%; }
+    .plaque {
+      position: absolute;
+      top: 18px; right: 18px;
+      width: min(260px, 72vw);
+      background: #ece8df;
+      color: #111;
+      padding: 18px 18px 16px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+      z-index: 5;
+    }
+    .plaque .k {
+      letter-spacing: 0.2em;
+      font-size: 10px;
+      color: #6a655c;
+      margin-bottom: 8px;
+    }
+    .plaque h4 { font-size: 22px; margin-bottom: 10px; }
+    .plaque hr { border: 0; border-top: 1px solid #111; margin: 0 0 12px; opacity: 0.35; }
+    .plaque dl { display: grid; gap: 8px; }
+    .plaque dt { letter-spacing: 0.14em; font-size: 10px; color: #6a655c; }
+    .plaque dd { font-size: 13px; line-height: 1.35; }
+    .range-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 12px 0 48px;
+      color: #8a8680;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+    }
+
+    /* Fielded evidence */
+    .evidence-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 26px;
+    }
+    .evidence-head p {
+      max-width: 520px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.5;
+    }
+    .field-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+    @media (max-width: 1000px) { .field-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 560px) { .field-grid { grid-template-columns: 1fr; } }
+
+    /* Proving ground (mapa iframe) */
+    .range-wrap {
+      position: relative;
+      border: 1px solid var(--line);
+      background: #f5f5f0;
+      overflow: hidden;
+      height: min(86vh, 820px);
+    }
+    .range-wrap iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      border: 0;
+      display: block;
+    }
+    .range-stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0;
+      border: 1px solid var(--line);
+      border-top: 0;
+    }
+    .range-stats > div {
+      padding: 18px 20px;
+      border-right: 1px solid var(--line);
+    }
+    .range-stats > div:last-child { border-right: 0; }
+    .range-stats .n {
+      font-size: clamp(26px, 3.4vw, 38px);
+      font-weight: 700;
+      color: var(--paper);
+      line-height: 1;
+    }
+    .range-stats .t {
+      margin-top: 6px;
+      font-size: 10.5px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--dim);
+    }
+    @media (max-width: 900px) {
+      .range-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .range-stats > div:nth-child(2) { border-right: 0; }
+      .range-stats > div:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+    }
+    @media (max-width: 560px) {
+      .range-stats { grid-template-columns: minmax(0, 1fr); }
+      .range-stats > div { border-right: 0; border-bottom: 1px solid var(--line); }
+      .range-stats > div:last-child { border-bottom: 0; }
+    }
+
+    /* Testimonial */
+    .testimonial {
+      border-top: 1px solid var(--line);
+      background: var(--bg-2);
+      padding: 72px 22px;
+    }
+    .testimonial blockquote {
+      max-width: 980px;
+      margin: 0 auto;
+      font-size: clamp(20px, 3.2vw, 30px);
+      line-height: 1.4;
+      color: var(--paper);
+      font-weight: 500;
+      letter-spacing: -0.005em;
+    }
+    .testimonial blockquote::before {
+      content: "“";
+      display: block;
+      font-size: 64px;
+      line-height: 0.5;
+      color: var(--amber);
+      margin-bottom: 22px;
+    }
+    .testimonial cite {
+      display: block;
+      margin-top: 26px;
+      font-size: 13px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--dim);
+      font-style: normal;
+    }
+    .testimonial cite strong { color: var(--text); font-weight: 600; display: block; margin-bottom: 4px; }
+
+    /* About preview */
+    .about-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 40px; }
+    @media (max-width: 860px) { .about-grid { grid-template-columns: 1fr; } }
+    .about-grid .principles { list-style: none; display: grid; gap: 16px; }
+    .about-grid .principles li {
+      border: 1px solid var(--line);
+      padding: 18px;
+    }
+    .about-grid .principles li b {
+      display: block;
+      letter-spacing: 0.14em;
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 8px;
+    }
+    .about-grid .principles li span { color: var(--muted); font-size: 14.5px; line-height: 1.55; }
+
+    /* News */
+    .news-wrap {
+      background: var(--paper);
+      color: #111;
+      padding: 56px 22px 72px;
+    }
+    .news-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+    .news-head h3 {
+      font-size: clamp(36px, 7vw, 52px);
+      font-weight: 600;
+      line-height: 0.95;
+      color: #111;
+    }
+    .all {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid #111;
+      padding-bottom: 2px;
+      font-size: 15px;
+      color: #111;
+    }
+    .all .go { color: #111; }
+    .news-list { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; }
+    @media (max-width: 800px) { .news-list { grid-template-columns: 1fr; } }
+    .feature { display: block; color: #111; }
+    .feature-photo { position: relative; aspect-ratio: 16/10; background: #d7d2c8; margin-bottom: 20px; overflow: hidden; }
+    .feature-photo img { width: 100%; height: 100%; object-fit: cover; }
+    .feature time { display: block; font-size: 14px; color: #4a4a4a; margin-bottom: 10px; }
+    .feature h4 {
+      font-size: clamp(22px, 4.4vw, 32px);
+      line-height: 1.05;
+      font-weight: 600;
+      max-width: 20ch;
+      color: #111;
+    }
+    .feature .dek2 {
+      margin: 16px 0 22px;
+      font-size: 16.5px;
+      line-height: 1.4;
+      color: #333;
+      max-width: 40ch;
+    }
+    .more {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid #111;
+      padding-bottom: 2px;
+      font-size: 15px;
+    }
+    .more .go { color: #111; }
+
+    /* Access form */
+    .access { padding: 84px 22px 72px; border-top: 1px solid var(--line); }
+    .access-grid { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 44px; }
+    @media (max-width: 860px) { .access-grid { grid-template-columns: 1fr; } }
+    .access .mission-note {
+      border-left: 2px solid var(--amber);
+      padding-left: 18px;
+      color: var(--muted);
+      font-size: 14.5px;
+      line-height: 1.6;
+    }
+    .access .emails { margin-top: 26px; display: grid; gap: 10px; }
+    .access .emails a {
+      font-size: 14px;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 6px;
+      display: inline-block;
+      max-width: 340px;
+    }
+    .access .emails a:hover { color: var(--amber); border-color: var(--amber); }
+    .access .emails a small {
+      display: block;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--faint);
+      margin-bottom: 2px;
+    }
+    .access-form { display: grid; gap: 14px; }
+    .access-form .frow { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media (max-width: 640px) { .access-form .frow { grid-template-columns: 1fr; } }
+    .access-form label {
+      display: block;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin-bottom: 6px;
+    }
+    .access-form input, .access-form select, .access-form textarea {
+      width: 100%;
+      background: #0b0b0b;
+      border: 1px solid var(--line-strong);
+      color: var(--text);
+      padding: 12px 12px;
+      font-family: inherit;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+    .access-form input:focus, .access-form select:focus, .access-form textarea:focus { border-color: var(--amber); }
+    .access-form textarea { min-height: 110px; resize: vertical; }
+    .captcha-box {
+      border: 1px solid var(--line-strong);
+      background: #0b0b0b;
+      padding: 14px;
+    }
+    .captcha-box .cb-k {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .captcha-box .cb-k span:last-child { color: #737373; cursor: pointer; }
+    .captcha-box .cb-k span:last-child:hover { color: var(--amber); }
+    .captcha-box .cb-q {
+      background: #000;
+      border: 1px solid #333;
+      padding: 12px 14px;
+      font-family: "Courier New", monospace;
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      color: #fff;
+      user-select: none;
+      margin-bottom: 10px;
+    }
+    .captcha-box input {
+      font-family: "Courier New", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+    .form-status {
+      display: none;
+      border: 1px solid var(--amber);
+      color: var(--amber);
+      padding: 12px 14px;
+      font-size: 12.5px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .form-status.show { display: block; }
+    .form-status.err { border-color: #b03a2e; color: #cd6155; }
+    .submit-btn {
+      justify-self: start;
+      background: var(--amber);
+      border: 1px solid var(--amber);
+      color: #111;
+      font-weight: 700;
+      padding: 14px 24px;
+      letter-spacing: 0.18em;
+      font-size: 11px;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .submit-btn:hover { background: #d4b56c; border-color: #d4b56c; }
+    .privacy-note {
+      font-size: 11.5px;
+      color: var(--faint);
+      line-height: 1.55;
+      max-width: 56ch;
+    }
+  </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+  <div class="boot-bar"></div>
+
+  <!-- ===== NAV ===== -->
+  <nav class="topbar" aria-label="Primary">
+    <a class="wordmark" href="index.html">ARANRUTH INDUSTRIES</a>
+    <div class="toplinks">
+      <a href="about.html">Company</a>
+      <a href="systems.html">Systems</a>
+      <a href="newsroom.html">Newsroom</a>
+      <a href="access.html">Access</a>
+    </div>
+  </nav>
+
+  <!-- ===== HAMBURGER + MENU OVERLAY ===== -->
+  <button class="burger" type="button" aria-label="Open menu" aria-expanded="false" id="menuBtn">
+    <span></span><span></span><span></span>
+  </button>
+
+  <div class="menu-overlay" id="menuOverlay" aria-hidden="true">
+    <div class="menu-col">
+      <a class="m-link" href="systems.html" style="transition-delay:0.05s"><small>Deployed hardware</small>Systems</a>
+      <a class="m-link" href="about.html" style="transition-delay:0.1s"><small>Mission &amp; principles</small>Company</a>
+      <a class="m-link" href="newsroom.html" style="transition-delay:0.15s"><small>Field reports</small>Newsroom</a>
+      <a class="m-link" href="leadership.html" style="transition-delay:0.2s"><small>Command structure</small>Leadership</a>
+      <a class="m-link" href="careers.html" style="transition-delay:0.25s"><small>Join the build</small>Careers</a>
+      <a class="m-link" href="veteran-careers.html" style="transition-delay:0.3s"><small>Prior service</small>Veteran Careers</a>
+      <a class="m-link" href="access.html" style="transition-delay:0.35s"><small>Program intake</small>Access</a>
+    </div>
+    <div class="menu-foot">
+      <a href="mailto:defense@aranruth.com">defense@aranruth.com</a>
+      <a href="mailto:ventas@aranruth.com">ventas@aranruth.com</a>
+      <a href="mailto:careers@aranruth.com">careers@aranruth.com</a>
+      <span>aranruthindustries.com</span>
+    </div>
+  </div>
+
+  <!-- ===== HERO ===== -->
+  <header class="hero">
+    <video src="assets/video/hero.mp4" poster="assets/img/hero-poster.jpg" autoplay muted loop playsinline preload="metadata"></video>
+    <div class="veil"></div>
+    <div class="hero-copy">
+      <h1><span id="line1"></span><br /><span id="line2"></span></h1>
+      <p class="dek" id="dek">Hardware and software for government and military command.</p>
+    </div>
+  </header>
+
+  <!-- ===== MANIFESTO ===== -->
+  <section class="manifesto-section">
+    <div class="manifesto-container">
+      <p id="manifesto-text" class="manifesto-text" data-text="Modern command demands absolute dominion over contested volume and silent spectrums. Aranruth Industries builds autonomous defense infrastructure that denies the adversary's advantage—unseen, unyielding, and operating at the speed of threat.">
+        <!-- Text decodes dynamically on scroll -->
+      </p>
+    </div>
+  </section>
+
+  <!-- ===== HOUSE FILM ===== -->
+  <section class="film" id="house-film" aria-label="Aranruth field film">
+    <video src="assets/video/house.mp4" poster="assets/img/house-poster.jpg" autoplay muted loop playsinline preload="metadata"></video>
+    <span class="film-tag">FIELD SYSTEMS / MOBILE COMMAND / OPERATIONAL CUT</span>
+  </section>
+
+  <!-- ===== SYSTEMS TILES ===== -->
+  <section id="systems" aria-label="Our Systems">
+    <a class="tile" href="https://selixor.cloud" target="_blank" rel="noreferrer">
+      <img src="assets/img/tile-selixor.jpg" alt="Phased-array radar system on vehicle platform — SELIXOR node line" loading="lazy" />
+      <div class="tile-copy">
+        <div>
+          <h2>SELIXOR</h2>
+          <p>Occupancy of a volume, without a camera.</p>
+        </div>
+        <span class="go" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M9 7h8v8"/></svg>
+        </span>
+      </div>
+    </a>
+    <a class="tile" href="wraith.html">
+      <img src="assets/img/tile-wraith.jpg" alt="Soldier operating a UAS protection system in the field — WRAITH spectrum operations" loading="lazy" />
+      <div class="tile-copy">
+        <div>
+          <h2>WRAITH</h2>
+          <p>The electromagnetic air, usable or contested.</p>
+        </div>
+        <span class="go" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M9 7h8v8"/></svg>
+        </span>
+      </div>
+    </a>
+    <a class="tile" href="argus.html">
+      <img src="assets/img/tile-argus.jpg" alt="Quadcopter tracked against open sky — ARGUS perimeter classification" loading="lazy" />
+      <div class="tile-copy">
+        <div>
+          <h2>ARGUS</h2>
+          <p>Classifies what moves. The face is not required.</p>
+        </div>
+        <span class="go" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M9 7h8v8"/></svg>
+        </span>
+      </div>
+    </a>
+    <a class="tile" href="bashee.html">
+      <img src="assets/img/tile-banshee.jpg" alt="Operator and multirotor during field deployment — BANSHEE acoustic denial" loading="lazy" />
+      <div class="tile-copy">
+        <div>
+          <h2>BANSHEE</h2>
+          <p>Passive acoustic denial. Swarms that emit no radio.</p>
+        </div>
+        <span class="go" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M9 7h8v8"/></svg>
+        </span>
+      </div>
+    </a>
+  </section>
+
+  <!-- ===== 3D OPERATIONAL ENVIRONMENT ===== -->
+  <section class="spatial" id="house-space" aria-label="Operational Environment Model">
+    <div class="spatial-top">
+      <div>
+        <h3>Operational Environment</h3>
+        <p class="lede">A proving ground at 1:400. Place it on the floor. Walk the volume — air, node line, spectrum pad, perimeter, acoustic bowl. Not an office. Not a campus.</p>
+      </div>
+      <button class="view-btn" id="view-space" type="button">View in space</button>
+    </div>
+
+    <div class="spatial-stage" id="range-stage">
+      <aside class="plaque" id="plaque" aria-live="polite">
+        <div class="k">OPERATIONAL ENVIRONMENT · 1:400</div>
+        <h4 id="plaque-title">House Environment</h4>
+        <hr />
+        <dl id="plaque-body">
+          <div>
+            <dt>SITE</dt>
+            <dd>Anonymous dry terrain. No address.</dd>
+          </div>
+          <div>
+            <dt>EMPLOYMENT</dt>
+            <dd>Select a zone on the model.</dd>
+          </div>
+        </dl>
+      </aside>
+    </div>
+
+    <div class="range-meta">
+      <span>SCALE 1:400 · TABLE MODEL</span>
+      <span>CAMERA STAYS ON DEVICE</span>
+    </div>
+  </section>
+
+  <!-- ===== FIELDED EVIDENCE ===== -->
+  <section class="sec alt" id="fielded" aria-labelledby="fielded-h">
+    <div class="wrap">
+      <div class="evidence-head">
+        <div>
+          <span class="k-label">Deployed / Trained / Verified</span>
+          <h2 class="sec" id="fielded-h">Fielded with real operators.</h2>
+        </div>
+        <p>Our systems are exercised alongside active formations — border units, air-defense regiments, and NATO counter-UAS cells — before they ever reach a customer's perimeter. Training partnerships, not stock photography.</p>
+      </div>
+      <div class="field-grid">
+        <figure class="field">
+          <img src="assets/img/field-bumble.jpg" alt="Sandhills UAS field configuration" loading="lazy" />
+          <figcaption><span>UAS FIELD CONFIG</span><span>EXERCISE</span></figcaption>
+        </figure>
+        <figure class="field">
+          <img src="assets/img/field-laad.jpg" alt="Air-defense cell during counter-UAS range" loading="lazy" />
+          <figcaption><span>C-UAS RANGE</span><span>AIR DEFENSE</span></figcaption>
+        </figure>
+        <figure class="field">
+          <img src="assets/img/field-jad.jpg" alt="Soldiers inspecting counter-drone equipment on the range" loading="lazy" />
+          <figcaption><span>RANGE INSPECTION</span><span>JOINT TRAINING</span></figcaption>
+        </figure>
+        <figure class="field">
+          <img src="assets/img/field-flytrapcr.jpg" alt="Crews servicing a counter-drone system in the field" loading="lazy" />
+          <figcaption><span>SYSTEM SERVICE</span><span>CAVALRY UNIT</span></figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PROVING GROUND (MAPA) ===== -->
+  <section class="sec" id="proving-ground" aria-labelledby="pg-h">
+    <div class="wrap">
+      <span class="k-label">Mapimí Basin / The Volume</span>
+      <h2 class="sec" id="pg-h">The proving ground.</h2>
+      <p class="prose" style="margin-bottom:26px">A closed 4,020-hectare basin in the Mapimí desert, engineered as a full-scale electromagnetic and acoustic test volume. Every system that leaves our floor is validated here first — under live spectrum, real dust, and no schedule relief. Explore the interactive technical model: 125 objects, RF-shielded workshop, anechoic chamber, 125 m line-of-sight tower pair, and the full instrumented perimeter.</p>
+      <div class="range-wrap">
+        <iframe src="mapa.html" title="The Volume — interactive technical model of the Mapimí Basin proving ground" loading="lazy" allow="fullscreen"></iframe>
+      </div>
+      <div class="range-stats">
+        <div><span class="n">$200M+</span><span class="t">Capital Investment</span></div>
+        <div><span class="n">4,020 ha</span><span class="t">Manufacturing Footprint</span></div>
+        <div><span class="n">100+</span><span class="t">New Jobs by 2030</span></div>
+        <div><span class="n">$800M+</span><span class="t">Annual Economic Output</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TESTIMONIAL ===== -->
+  <section class="testimonial" aria-label="Field testimonial">
+    <blockquote>
+      In modern conflict zones, situational awareness isn't a tactical advantage—it's a matter of survival. Aranruth Industries didn't just deliver a contract; they deployed actionable precision when legacy systems failed. Their technology has become a vital layer in our border security matrix.
+      <cite>
+        <strong>Colonel Tariq Al-Mansoori</strong>
+        Special Operations &amp; Border Security Command<br />
+        Joint Task Force, Middle East &amp; North Africa Region
+      </cite>
+    </blockquote>
+  </section>
+
+  <!-- ===== ABOUT ===== -->
+  <section class="sec" id="about" aria-labelledby="about-h">
+    <div class="wrap about-grid">
+      <div>
+        <span class="k-label">About Aranruth Industries</span>
+        <h2 class="sec" id="about-h">Founded for the threats that arrived early.</h2>
+        <div class="prose">
+          <p>Aranruth Industries was founded to solve the most critical national security challenges of the 21st century. We design, build, and deploy next-generation defense technology to protect sovereign borders, safeguard citizens, and guarantee geopolitical stability.</p>
+          <p>We don't build software platforms to optimize algorithms; we build mission-critical technology for a safer world. By empowering governments with unmatched situational awareness and hardware integration, we turn advanced engineering into the ultimate tool for deterrence and peace.</p>
+          <p>We are a company of engineers, builders, and technologists. Founded by a new generation of innovators, Aranruth Industries bridges the gap between rapid technological breakthroughs and legacy defense infrastructure. Our youth is our competitive edge: we move faster, adapt to modern threats in real-time, and reject the slow bureaucracy of traditional procurement. We deliver hard, precise technology for environments where failure is not an option.</p>
+          <p style="margin-top:1.4em"><a class="btn-line" href="about.html">Full company dossier
+            <span class="go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M9 7h8v8"/></svg></span>
+          </a></p>
+        </div>
+      </div>
+      <ul class="principles">
+        <li>
+          <b>Uncompromising Engineering</b>
+          <span>We build tools for high-stakes environments. Every system we deploy is precise, resilient, and engineered to provide an unfair advantage to those tasked with keeping the peace.</span>
+        </li>
+        <li>
+          <b>National Security as a Foundation for Well-being</b>
+          <span>True societal progress is only possible when safety is guaranteed. By securing borders and critical infrastructure, we protect the stability that allows communities to thrive.</span>
+        </li>
+        <li>
+          <b>Future-Proofing Sovereignty</b>
+          <span>The threats of tomorrow cannot be fought with the tech of yesterday. We equip governments with autonomous capabilities to outpace modern adversaries.</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===== IMPACT ===== -->
+  <section class="sec alt" id="impact" aria-labelledby="impact-h">
+    <div class="wrap">
+      <span class="k-label">Beyond the defense frontier</span>
+      <h2 class="sec" id="impact-h">Security with a longer horizon.</h2>
+      <div class="grid-2" style="margin-top:22px">
+        <div class="card">
+          <div class="card-k">Program 01</div>
+          <h3>Preserving the natural world</h3>
+          <p>Security is meaningless without a planet to inherit. We directly fund and partner with independent biologists, researchers, and non-profits dedicated to wildlife conservation, reforestation, and ecological preservation.</p>
+        </div>
+        <div class="card">
+          <div class="card-k">Program 02</div>
+          <h3>Cultivating the next generation of engineers</h3>
+          <p>We believe that mastery of mathematics, engineering, and technology is the single greatest lever for a nation's development. We actively invest in underserved communities, providing internet access, hardware, and advanced coding education to children. We are building the tools of today while inspiring the minds that will build tomorrow.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== NEWS ===== -->
+  <section class="news-wrap" id="news" aria-labelledby="news-heading">
+    <div class="news-head">
+      <h3 id="news-heading">News &amp;<br />Insights</h3>
+      <a class="all" href="newsroom.html">
+        All Articles
+        <span class="go" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M9 7h8v8"/></svg>
+        </span>
+      </a>
+    </div>
+    <div class="news-list">
+      <a class="feature" href="newsroom.html">
+        <div class="feature-photo">
+          <img src="assets/img/news-01.jpg" alt="Operator launching a quadcopter during a counter-drone exercise" loading="lazy" />
+        </div>
+        <time datetime="2026-07-18">18/07/2026</time>
+        <h4>Counter-UAS cells complete joint certification at The Volume</h4>
+        <p class="dek2">Combined air-defense and border units closed a three-week certification cycle on the basin's live range — full-spectrum detection through passive denial, with zero aid from optically-searched systems.</p>
+        <span class="more">
+          Read More
+          <span class="go" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M9 7h8v8"/></svg>
+          </span>
+        </span>
+      </a>
+      <a class="feature" href="newsroom.html">
+        <div class="feature-photo">
+          <img src="assets/img/news-02.jpg" alt="Instructor briefs troops before a UAS training evolution" loading="lazy" />
+        </div>
+        <time datetime="2026-05-30">30/05/2026</time>
+        <h4>Guard formations train WRAITH spectrum discipline in the field</h4>
+        <p class="dek2">Instructors embedded with a National Guard counter-UAS company ran contested-spectrum evolutions — teaching crews to hold the electromagnetic air while the adversary hunts for a single emitting asset.</p>
+        <span class="more">
+          Read More
+          <span class="go" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M9 7h8v8"/></svg>
+          </span>
+        </span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ===== ACCESS / CONTACT FORM ===== -->
+  <section class="access" id="access-form" aria-labelledby="access-h">
+    <div class="wrap access-grid">
+      <div>
+        <span class="k-label">Program intake</span>
+        <h2 class="sec" id="access-h">Request<br />access.</h2>
+        <p class="mission-note">Aranruth briefs government, defense, and law-enforcement programs directly. Tell us the operational problem — not the product name. If a legacy system is failing at your perimeter, start there. No classified material through this channel, ever.</p>
+        <div class="emails">
+          <a href="mailto:defense@aranruth.com"><small>Defense programs</small>defense@aranruth.com</a>
+          <a href="mailto:ventas@aranruth.com"><small>Sales / Latin America</small>ventas@aranruth.com</a>
+          <a href="mailto:careers@aranruth.com"><small>Careers</small>careers@aranruth.com</a>
+        </div>
+      </div>
+      <form class="access-form" id="accessForm" action="#" method="post" novalidate>
+        <div class="frow">
+          <div>
+            <label for="af-name">Name / Title</label>
+            <input id="af-name" name="name" type="text" placeholder="FULL NAME / ROLE" autocomplete="name" required />
+          </div>
+          <div>
+            <label for="af-org">Organization</label>
+            <input id="af-org" name="organization" type="text" placeholder="ORGANIZATION / AGENCY" autocomplete="organization" required />
+          </div>
+        </div>
+        <div class="frow">
+          <div>
+            <label for="af-email">Official Email</label>
+            <input id="af-email" name="email" type="email" placeholder="NAME@ORGANIZATION.ORG" autocomplete="email" required />
+          </div>
+          <div>
+            <label for="af-country">Country / Region</label>
+            <input id="af-country" name="country" type="text" placeholder="COUNTRY / REGION" autocomplete="country-name" required />
+          </div>
+        </div>
+        <div class="frow">
+          <div>
+            <label for="af-domain">Program Domain</label>
+            <select id="af-domain" name="domain" required>
+              <option value="" selected disabled>SELECT DOMAIN</option>
+              <option value="border">Border &amp; Perimeter Security</option>
+              <option value="counter-uas">Counter-UAS / Drone Denial</option>
+              <option value="spectrum">Electromagnetic Spectrum Operations</option>
+              <option value="infrastructure">Critical Infrastructure Protection</option>
+              <option value="national-security">Defense / National Security Program</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div>
+            <label for="af-stage">Program Stage</label>
+            <select id="af-stage" name="stage" required>
+              <option value="" selected disabled>SELECT STAGE</option>
+              <option value="evaluation">Initial Evaluation</option>
+              <option value="pilot">Pilot / Demonstration</option>
+              <option value="procurement">Procurement</option>
+              <option value="integration">System Integration</option>
+              <option value="training">Training / Exercise</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label for="af-message">Operational Problem</label>
+          <textarea id="af-message" name="message" placeholder="DESCRIBE THE OPERATIONAL PROBLEM AT PROGRAM LEVEL. DO NOT INCLUDE CLASSIFIED INFORMATION." required></textarea>
+        </div>
+        <div class="captcha-box">
+          <div class="cb-k">
+            <span>TACTICAL SECURITY VERIFICATION // MIL-STD CHALLENGE</span>
+            <span id="captchaRefresh">[ REGENERATE HASH ]</span>
+          </div>
+          <div class="cb-q" id="captchaQuestion">LOADING HASH CHALLENGE...</div>
+          <input id="af-captcha" name="captcha" type="text" placeholder="ENTER ANSWER" autocomplete="off" required />
+        </div>
+        <div class="form-status" id="formStatus" role="status"></div>
+        <button class="submit-btn" type="submit">Submit Access Request ↗</button>
+        <p class="privacy-note">By submitting, you confirm the information provided is non-classified and suitable for program-level intake. Submission does not create authorization, procurement status, or access clearance.</p>
+      </form>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="site" id="contact">
+    <div class="block open">
+      <button class="block-h" type="button" aria-expanded="true" aria-controls="links-house">
+        <span>COMPANY</span>
+        <span class="sign" aria-hidden="true">—</span>
+      </button>
+      <div class="links" id="links-house">
+        <a href="about.html"><span class="sub">Mission &amp; principles</span>About Aranruth Industries</a>
+        <a href="systems.html"><span class="sub">Full technical dossier</span>Systems</a>
+        <a href="newsroom.html"><span class="sub">Field reports &amp; releases</span>Newsroom</a>
+        <a href="leadership.html"><span class="sub">Command structure</span>Leadership</a>
+        <a href="access.html"><span class="sub">Program intake &amp; channels</span>Access</a>
+      </div>
+    </div>
+
+    <div class="block open">
+      <button class="block-h" type="button" aria-expanded="true" aria-controls="links-careers">
+        <span>WORK WITH US</span>
+        <span class="sign" aria-hidden="true">—</span>
+      </button>
+      <div class="links" id="links-careers">
+        <a href="careers.html"><span class="sub">Open technical positions</span>Careers</a>
+        <a href="veteran-careers.html"><span class="sub">Prior-service pipeline</span>Veteran Careers</a>
+      </div>
+    </div>
+
+    <div class="block">
+      <button class="block-h" type="button" aria-expanded="false" aria-controls="links-contact">
+        <span>CONTACT</span>
+        <span class="sign" aria-hidden="true">+</span>
+      </button>
+      <div class="links" id="links-contact">
+        <a href="access.html"><span class="sub">Start program intake</span>Request access</a>
+        <a href="mailto:defense@aranruth.com"><span class="sub">Defense programs</span>defense@aranruth.com</a>
+        <a href="mailto:ventas@aranruth.com"><span class="sub">Sales</span>ventas@aranruth.com</a>
+        <a href="mailto:careers@aranruth.com"><span class="sub">Careers</span>careers@aranruth.com</a>
+      </div>
+    </div>
+
+    <div class="legal">
+      <span>© 2026 ARANRUTH INDUSTRIES</span>
+      <span>RESTRICTED ACCESS</span>
+    </div>
+  </footer>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.1/examples/jsm/"
+      }
+    }
+  </script>
+
+  <script>
+    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+    // Military tactical character decoding effect
+    async function decodeText(el, text, speed = 20) {
+      el.textContent = "";
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*<>-+/\\';
+      let iterations = 0;
+      const length = text.length;
+
+      return new Promise(resolve => {
+        const interval = setInterval(() => {
+          el.textContent = text.split('').map((char, index) => {
+            if (char === ' ') return ' ';
+            if (index < iterations) return text[index];
+            return chars[Math.floor(Math.random() * chars.length)];
+          }).join('');
+
+          iterations += 1/1.5;
+          if (iterations >= length) {
+            clearInterval(interval);
+            el.textContent = text;
+            resolve();
+          }
+        }, speed);
+      });
+    }
+
+    let heroTimer = null;
+    let manifestoTriggered = false;
+
+    // Run Hero Text Typing & Auto-hide Animation
+    async function runHeroAnimation() {
+      const line1 = document.getElementById("line1");
+      const line2 = document.getElementById("line2");
+      const dek = document.getElementById("dek");
+      const heroCopy = document.querySelector(".hero-copy");
+
+      heroCopy.classList.remove("hidden-text");
+      dek.classList.remove("on");
+
+      const p1 = decodeText(line1, "ATTACHED TO THE", 25);
+      const p2 = decodeText(line2, "MISSION", 25);
+
+      await Promise.all([p1, p2]);
+      dek.classList.add("on");
+
+      // Hide hero text after 4 seconds to reveal background/video
+      clearTimeout(heroTimer);
+      heroTimer = setTimeout(() => {
+        heroCopy.classList.add("hidden-text");
+      }, 4000);
+    }
+
+    // Initialize UI observers and event listeners
+    (async function initUI() {
+      await sleep(300);
+      await runHeroAnimation();
+
+      // Re-trigger hero animation when scrolling back to top hero section
+      const heroObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            runHeroAnimation();
+          } else {
+            clearTimeout(heroTimer);
+          }
+        });
+      }, { threshold: 0.6 });
+
+      heroObserver.observe(document.querySelector(".hero"));
+
+      // Footer Accordion Toggles
+      document.querySelectorAll(".block-h").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const block = btn.parentElement;
+          const isOpen = block.classList.toggle("open");
+          btn.setAttribute("aria-expanded", isOpen);
+          btn.querySelector(".sign").textContent = isOpen ? "—" : "+";
+        });
+      });
+
+      // Manifesto Section Tactical Decode Trigger
+      const manifestoEl = document.getElementById("manifesto-text");
+      const manifestoText = manifestoEl.getAttribute("data-text");
+
+      const manifestoObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && !manifestoTriggered) {
+            manifestoTriggered = true;
+            decodeText(manifestoEl, manifestoText, 15);
+          }
+        });
+      }, { threshold: 0.1 });
+
+      manifestoObserver.observe(manifestoEl);
+    })();
+
+    // ===== Hamburger menu =====
+    (function initMenu() {
+      const btn = document.getElementById("menuBtn");
+      const overlay = document.getElementById("menuOverlay");
+      if (!btn || !overlay) return;
+
+      function setMenu(open) {
+        document.body.classList.toggle("menu-open", open);
+        btn.setAttribute("aria-expanded", open);
+        overlay.setAttribute("aria-hidden", !open);
+      }
+
+      btn.addEventListener("click", () => setMenu(!document.body.classList.contains("menu-open")));
+      overlay.addEventListener("click", (e) => { if (e.target === overlay) setMenu(false); });
+      document.addEventListener("keydown", (e) => { if (e.key === "Escape") setMenu(false); });
+    })();
+
+    // ===== Tactical captcha (mother page) =====
+    (function initCaptcha() {
+      const q = document.getElementById("captchaQuestion");
+      const refresh = document.getElementById("captchaRefresh");
+      const input = document.getElementById("af-captcha");
+      const form = document.getElementById("accessForm");
+      const status = document.getElementById("formStatus");
+      if (!q || !form) return;
+
+      let answer = "";
+
+      function generate() {
+        const challenges = [
+          { q: "SOLVE: 14 * 6 - 8 = ?", a: "76" },
+          { q: "SOLVE: 32 + 45 - 12 = ?", a: "65" },
+          { q: "HEX DECRYPT: 0x2A + 0x10 = ? (DECIMAL)", a: "58" },
+          { q: "STANAG PROTOCOL CHECK: ENTER SUM OF 4 + 5 + 8 =", a: "17" },
+          { q: "SOLVE: 64 / 4 + 19 = ?", a: "35" },
+          { q: "CRYPTOGRAPHIC HASH CHECK: 9 * 9 - 13 =", a: "68" }
+        ];
+        const selected = challenges[Math.floor(Math.random() * challenges.length)];
+        q.textContent = selected.q;
+        answer = selected.a;
+        input.value = "";
+      }
+
+      generate();
+      if (refresh) refresh.addEventListener("click", generate);
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        status.classList.remove("show", "err");
+
+        const email = document.getElementById("af-email").value;
+        const name = document.getElementById("af-name").value;
+        const userCaptcha = input.value.trim();
+
+        if (!name || !email) {
+          status.textContent = "ERROR: ALL INTAKE FIELDS REQUIRED. VERIFY FORM.";
+          status.classList.add("show", "err");
+          return;
+        }
+        if (userCaptcha !== answer) {
+          status.textContent = "SECURITY ERROR: TACTICAL CAPTCHA VERIFICATION FAILED. RE-ENTER HASH.";
+          status.classList.add("show", "err");
+          generate();
+          return;
+        }
+
+        status.textContent = "SECURE HANDSHAKE VERIFIED. INQUIRY TRANSMITTED TO ARANRUTH INDUSTRIES COMMAND.";
+        status.classList.add("show");
+        form.reset();
+        generate();
+      });
+    })();
+
+    // 3D Operational Environment Model (ES module — loaded separately below)
+  </script>
+
+  <script type="module">
+    import * as THREE from "three";
+    import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+    (function buildOperationalEnvironment() {
+      const stage = document.getElementById("range-stage");
+      const plaqueTitle = document.getElementById("plaque-title");
+      const plaqueBody = document.getElementById("plaque-body");
+      const viewBtn = document.getElementById("view-space");
+
+      if (!stage) return;
+
+      const zonesData = {
+        range: {
+          title: "House Environment",
+          rows: [
+            ["SITE", "Anonymous dry terrain. No address."],
+            ["SCALE", "1:400 table model."],
+            ["DOES NOT", "Show a campus or a street."]
+          ]
+        },
+        selixor: {
+          title: "SELIXOR",
+          rows: [
+            ["ZONE", "Node line."],
+            ["FUNCTION", "Occupancy of a volume."],
+            ["DOES NOT", "Produce an image."]
+          ]
+        },
+        wraith: {
+          title: "WRAITH",
+          rows: [
+            ["ZONE", "Spectrum pad."],
+            ["FUNCTION", "The electromagnetic air, usable or contested."],
+            ["DOES NOT", "Leave the pad as a recipe."]
+          ]
+        },
+        argus: {
+          title: "ARGUS",
+          rows: [
+            ["ZONE", "Perimeter."],
+            ["FUNCTION", "Classifies what moves."],
+            ["DOES NOT", "Require a face."]
+          ]
+        },
+        banshee: {
+          title: "BANSHEE",
+          rows: [
+            ["ZONE", "Acoustic bowl."],
+            ["FUNCTION", "Denial in RF-silent air."],
+            ["DOES NOT", "Need a radio return."]
+          ]
+        },
+        command: {
+          title: "Command hut",
+          rows: [
+            ["ZONE", "Interfaces already running."],
+            ["FUNCTION", "The four systems hang here."],
+            ["DOES NOT", "Replace the chain of command."]
+          ]
+        }
+      };
+
+      function setPlaque(key) {
+        const zone = zonesData[key] || zonesData.range;
+        plaqueTitle.textContent = zone.title;
+        plaqueBody.innerHTML = zone.rows
+          .map(([dt, dd]) => `<div><dt>${dt}</dt><dd>${dd}</dd></div>`)
+          .join("");
+      }
+
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x0b0b0b);
+      scene.fog = new THREE.Fog(0x0b0b0b, 14, 28);
+
+      const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 80);
+      camera.position.set(9.5, 7.2, 9.8);
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.shadowMap.enabled = true;
+      renderer.xr.enabled = true;
+      stage.appendChild(renderer.domElement);
+
+      const controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.target.set(0, 0.2, 0);
+      controls.maxPolarAngle = Math.PI / 2.15;
+      controls.minDistance = 6;
+      controls.maxDistance = 18;
+
+      scene.add(new THREE.HemisphereLight(0xddd6c8, 0x1a1814, 0.85));
+      const sun = new THREE.DirectionalLight(0xf0e6d2, 0.7);
+      sun.position.set(8, 14, 6);
+      sun.castShadow = true;
+      scene.add(sun);
+
+      const materials = {
+        dirt: new THREE.MeshStandardMaterial({ color: 0x3a342c, roughness: 0.96, metalness: 0 }),
+        berm: new THREE.MeshStandardMaterial({ color: 0x2e2923, roughness: 0.98, metalness: 0 }),
+        strip: new THREE.MeshStandardMaterial({ color: 0x5c574e, roughness: 0.85, metalness: 0 }),
+        steel: new THREE.MeshStandardMaterial({ color: 0x1c1c1c, roughness: 0.55, metalness: 0.2 }),
+        hut: new THREE.MeshStandardMaterial({ color: 0x8a8478, roughness: 0.8, metalness: 0.05 }),
+        mark: new THREE.MeshStandardMaterial({ color: 0xc4b8a4, roughness: 0.6, metalness: 0 }),
+        wraith: new THREE.MeshStandardMaterial({ color: 0xc4a35a, transparent: true, opacity: 0.16, roughness: 0.4, depthWrite: false }),
+        bowl: new THREE.MeshStandardMaterial({ color: 0x8aa0a8, transparent: true, opacity: 0.14, roughness: 0.35, depthWrite: false })
+      };
+
+      const pickables = [];
+
+      function tagMesh(mesh, key) {
+        mesh.userData.zone = key;
+        pickables.push(mesh);
+        return mesh;
+      }
+
+      const ground = new THREE.Mesh(new THREE.BoxGeometry(14, 0.12, 9.2), materials.dirt);
+      ground.receiveShadow = true;
+      scene.add(ground);
+
+      const bermsConfig = [
+        [-5.8, 0.28, -3.2, 2.2, 0.55, 1.4],
+        [5.4, 0.22, 3.4, 2.4, 0.44, 1.6],
+        [4.8, 0.18, -3.6, 1.8, 0.36, 1.1]
+      ];
+
+      bermsConfig.forEach((b) => {
+        const berm = new THREE.Mesh(new THREE.BoxGeometry(b[3], b[4], b[5]), materials.berm);
+        berm.position.set(b[0], b[1], b[2]);
+        berm.castShadow = true;
+        scene.add(berm);
+      });
+
+      const runway = new THREE.Mesh(new THREE.BoxGeometry(8.4, 0.03, 0.42), materials.strip);
+      runway.position.set(0.4, 0.08, -2.55);
+      scene.add(runway);
+
+      for (let i = -3.6; i <= 3.6; i += 0.7) {
+        const dash = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.02, 0.05), materials.mark);
+        dash.position.set(i, 0.1, -2.55);
+        scene.add(dash);
+      }
+
+      for (let i = 0; i < 5; i++) {
+        const mast = tagMesh(new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.045, 0.85, 8), materials.steel), "selixor");
+        mast.position.set(-5.1 + i * 0.42, 0.48, 0.15);
+        mast.castShadow = true;
+        scene.add(mast);
+      }
+      const nodePad = tagMesh(new THREE.Mesh(new THREE.BoxGeometry(2.3, 0.04, 0.7), materials.strip), "selixor");
+      nodePad.position.set(-4.25, 0.08, 0.15);
+      scene.add(nodePad);
+
+      const pad = tagMesh(new THREE.Mesh(new THREE.CylinderGeometry(0.95, 0.95, 0.05, 32), materials.strip), "wraith");
+      pad.position.set(3.3, 0.09, 0.35);
+      scene.add(pad);
+      const lobe = tagMesh(new THREE.Mesh(new THREE.SphereGeometry(1.15, 24, 16, 0, Math.PI * 2, 0, Math.PI / 2), materials.wraith), "wraith");
+      lobe.position.set(3.3, 0.12, 0.35);
+      scene.add(lobe);
+
+      const fencesConfig = [
+        [1.2, 0.28, 2.55, 3.2, 0.42, 0.05],
+        [2.8, 0.28, 1.6, 0.05, 0.42, 2.0]
+      ];
+      fencesConfig.forEach((f) => {
+        const fence = tagMesh(new THREE.Mesh(new THREE.BoxGeometry(f[3], f[4], f[5]), materials.steel), "argus");
+        fence.position.set(f[0], f[1], f[2]);
+        scene.add(fence);
+      });
+
+      const bowl = tagMesh(new THREE.Mesh(new THREE.CylinderGeometry(1.35, 1.55, 0.22, 32), materials.berm), "banshee");
+      bowl.position.set(-2.1, 0.02, 2.6);
+      scene.add(bowl);
+      const cap = tagMesh(new THREE.Mesh(new THREE.SphereGeometry(1.4, 24, 16, 0, Math.PI * 2, 0, Math.PI / 2), materials.bowl), "banshee");
+      cap.position.set(-2.1, 0.12, 2.6);
+      scene.add(cap);
+
+      const hut = tagMesh(new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.32, 0.48), materials.hut), "command");
+      hut.position.set(5.2, 0.28, 1.15);
+      hut.castShadow = true;
+      scene.add(hut);
+
+      const raycaster = new THREE.Raycaster();
+      const pointer = new THREE.Vector2();
+
+      function handleInteraction(event) {
+        const rect = renderer.domElement.getBoundingClientRect();
+        const clientX = (event.clientX !== undefined) ? event.clientX : event.touches[0].clientX;
+        const clientY = (event.clientY !== undefined) ? event.clientY : event.touches[0].clientY;
+
+        pointer.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+        pointer.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+
+        raycaster.setFromCamera(pointer, camera);
+        const hit = raycaster.intersectObjects(pickables, false)[0];
+
+        if (hit) {
+          setPlaque(hit.object.userData.zone);
+        }
+      }
+
+      renderer.domElement.addEventListener("pointerdown", handleInteraction);
+
+      function resizeCanvas() {
+        const width = stage.clientWidth;
+        const height = stage.clientHeight;
+        camera.aspect = width / Math.max(height, 1);
+        camera.updateProjectionMatrix();
+        renderer.setSize(width, height, false);
+      }
+
+      resizeCanvas();
+      window.addEventListener("resize", resizeCanvas);
+
+      renderer.setAnimationLoop(() => {
+        controls.update();
+        renderer.render(scene, camera);
+      });
+
+      async function triggerARView() {
+        if (navigator.xr && await navigator.xr.isSessionSupported("immersive-ar")) {
+          const sessionInit = {
+            requiredFeatures: ["hit-test"],
+            optionalFeatures: ["dom-overlay"],
+            domOverlay: { root: stage }
+          };
+
+          const session = await navigator.xr.requestSession("immersive-ar", sessionInit);
+          await renderer.xr.setSession(session);
+          viewBtn.textContent = "Range in space";
+          return;
+        }
+
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 0.6;
+        camera.position.set(8.2, 5.4, 8.6);
+        viewBtn.textContent = "Orbiting the table";
+      }
+
+      viewBtn.addEventListener("click", () => {
+        triggerARView().catch((error) => {
+          console.error("Error initializing AR:", error);
+          viewBtn.textContent = "View in space";
+        });
+      });
+
+    })();
+  </script>
+</body>
+</html>

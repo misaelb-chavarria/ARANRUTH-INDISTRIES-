@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ARGUS Architecture — System Architecture &amp; Processing Pipeline — Aranruth Industries</title>
+  <meta name="description" content="ARGUS system architecture: the four-stage processing pipeline from visible and SWIR sensor input through edge neural-network inference to structured track, position and classification outputs." />
+  <link rel="canonical" href="https://aranruthindustries.com/architecture.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="ARGUS Architecture — System Architecture &amp; Processing Pipeline" />
+  <meta property="og:description" content="From sensor data to machine-generated tracks: the ARGUS processing pipeline, stage by stage." />
+  <meta property="og:url" content="https://aranruthindustries.com/architecture.html" />
+  <meta property="og:image" content="https://aranruthindustries.com/assets/img/og-image.jpg" />
+  <link rel="icon" type="image/png" sizes="128x128" href="assets/favicon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png" />
+  <link rel="stylesheet" href="assets/css/aranruth.css" />
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+  <nav class="topbar" aria-label="Primary">
+    <a class="wordmark" href="index.html">ARANRUTH INDUSTRIES</a>
+    <div class="toplinks">
+      <a href="about.html">Company</a>
+      <a href="systems.html">Systems</a>
+      <a href="newsroom.html">Newsroom</a>
+      <a href="access.html">Access</a>
+    </div>
+  </nav>
+  <button class="burger" type="button" aria-label="Open menu" aria-expanded="false" id="menuBtn"><span></span><span></span><span></span></button>
+  <div class="menu-overlay" id="menuOverlay" aria-hidden="true">
+    <div class="menu-col">
+      <a class="m-link" href="systems.html" style="transition-delay:0.05s"><small>Deployed hardware</small>Systems</a>
+      <a class="m-link" href="about.html" style="transition-delay:0.1s"><small>Mission &amp; principles</small>Company</a>
+      <a class="m-link" href="newsroom.html" style="transition-delay:0.15s"><small>Field reports</small>Newsroom</a>
+      <a class="m-link" href="leadership.html" style="transition-delay:0.2s"><small>Command structure</small>Leadership</a>
+      <a class="m-link" href="careers.html" style="transition-delay:0.25s"><small>Join the build</small>Careers</a>
+      <a class="m-link" href="veteran-careers.html" style="transition-delay:0.3s"><small>Prior service</small>Veteran Careers</a>
+      <a class="m-link" href="access.html" style="transition-delay:0.35s"><small>Program intake</small>Access</a>
+    </div>
+    <div class="menu-foot">
+      <a href="mailto:defense@aranruth.com">defense@aranruth.com</a>
+      <a href="mailto:ventas@aranruth.com">ventas@aranruth.com</a>
+      <a href="mailto:careers@aranruth.com">careers@aranruth.com</a>
+      <span>aranruthindustries.com</span>
+    </div>
+  </div>
+
+  <header class="page-head">
+    <div class="wrap">
+      <div class="crumb">ARGUS // SYSTEM ARCHITECTURE &amp; PROCESSING PIPELINE</div>
+      <h1>Sensor data to<br />machine tracks.</h1>
+      <p class="lede">ARGUS connects multi-spectral sensing, local inference and structured outputs as one perception layer inside a larger mission architecture. This dossier documents the four-stage pipeline stage by stage: what enters each stage, what is computed, and what the next system downstream receives.</p>
+    </div>
+  </header>
+
+  <section class="sec">
+    <div class="wrap">
+      <figure class="field" style="max-width:760px">
+        <img src="assets/img/argus-architecture.jpg" alt="Two soldiers in tactical gear using tree cover during an electronic warfare field exercise" loading="lazy" />
+        <figcaption><span>CONTESTED ENVIRONMENT SERIAL // SPECTRUM FIELD EXERCISE</span><span>ARCHITECTURE REFERENCE</span></figcaption>
+      </figure>
+      <div class="prose" style="margin-top:36px;max-width:72ch">
+        <span class="k-label">01 // Pipeline overview</span>
+        <h2 class="sec">Four stages.<br />No cloud leg.</h2>
+        <p>The pipeline runs from sensor to structured output in four stages: sensor input, edge processing, analytics, and system output. Every stage executes close to the sensor. There is no remote inference hop, no cloud round-trip, no dependency on a processing infrastructure that a jammer or a cut fiber can sever. The architecture is deliberately shaped so that the most contested conditions — degraded bandwidth, contested spectrum, isolated nodes — degrade performance gracefully instead of collapsing the sensing picture.</p>
+        <p>Each stage hands the next a defined artifact. Sensor input delivers synchronized dual-band frames. Edge processing delivers detections and spatial features. Analytics delivers kinematic and spectral evaluation. Output delivers track, position and classification records in a structured form a mission system can consume. The interfaces between stages are the architecture — everything else is implementation.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec alt">
+    <div class="wrap">
+      <span class="k-label">02 // The four stages</span>
+      <h2 class="sec">Stage by<br />stage.</h2>
+      <div class="grid-2" style="margin-top:34px">
+        <div class="card">
+          <div class="card-k">STAGE 01 // SENSOR INPUT</div>
+          <h3>Visible + SWIR sensor feeds</h3>
+          <p>Continuous optical and short-wave infrared imagery from compatible airborne, perimeter or fixed sensor platforms. Frames are synchronized at capture so both bands describe the same instant of the scene — the fusion model consumes a coherent stereo-temporal input, not two staggered views. Input conditioning handles exposure equalization, band registration and dead-pixel masking before inference sees a frame.</p>
+        </div>
+        <div class="card">
+          <div class="card-k">STAGE 02 // EDGE PROCESSING</div>
+          <h3>Local feature extraction</h3>
+          <p>Neural-network inference converts incoming frames into detections, spatial features and persistent subject tracks. Quantized CNN models run on the sensing node's compute module with deterministic worst-case latency budgets; frame-skip logic sheds load before it sheds tracks. No frame leaves the node to become a detection — every detection is born at the sensor.</p>
+        </div>
+        <div class="card">
+          <div class="card-k">STAGE 03 // ANALYTICS</div>
+          <h3>Kinematic + spectral analysis</h3>
+          <p>Movement signatures and multi-spectral anomalies are evaluated as additional inputs to subject classification and scene understanding. Gait, stride and cadence models distinguish subjects and re-associate tracks through occlusion; spectral reflectance behavior separates human subjects from decoys, animals and vehicles. Classification carries confidence data — the downstream operator adjudicates, the machine does not decide alone.</p>
+        </div>
+        <div class="card">
+          <div class="card-k">STAGE 04 // SYSTEM OUTPUT</div>
+          <h3>Track / position / classification</h3>
+          <p>Structured machine-generated outputs are made available for integration with downstream mission, security and command systems. Outputs are synchronized records — not video streams requiring a human to watch. A fires cell, a command dashboard or a BMS receives data it can act on: persistent tracks with position history, classification and confidence, timestamped and geo-referenced.</p>
+        </div>
+      </div>
+      <table class="spec" style="margin-top:44px">
+        <caption>STAGE INTERFACES // INPUT / PROCESSING / ANALYTICS / OUTPUT</caption>
+        <thead>
+          <tr><th>STAGE</th><th>CONSUMES</th><th>PRODUCES</th><th>RUNS</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>SENSOR INPUT</td><td>Scene radiance (visible + SWIR)</td><td>Synchronized, conditioned dual-band frames</td><td>Sensor platform</td></tr>
+          <tr><td>EDGE PROCESSING</td><td>Dual-band frames</td><td>Detections, spatial features, track seeds</td><td>Sensing-node compute</td></tr>
+          <tr><td>ANALYTICS</td><td>Detections + track history</td><td>Kinematic signatures, spectral classifications, confidence</td><td>Sensing-node compute</td></tr>
+          <tr><td>SYSTEM OUTPUT</td><td>Analytics records</td><td>Track / position / classification, geo-referenced, timestamped</td><td>Sensing node \u2192 mission system</td></tr>
+        </tbody>
+      </table>
+      <p class="spec-note">OUTPUT SYNCS TO THE MISSION ARCHITECTURE WHEN CONNECTIVITY EXISTS. THE PIPELINE DOES NOT REQUIRE IT TO.</p>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="wrap grid-2">
+      <div>
+        <span class="k-label">03 // Integration philosophy</span>
+        <h2 class="sec">A layer, not<br />a silo.</h2>
+      </div>
+      <div class="prose">
+        <p>ARGUS is a perception subsystem designed for integration into larger defense and security architectures requiring persistent machine-generated sensing. It is not a walled application. The output stage publishes structured records that downstream systems consume through their own integration paths — command dashboards, BMS interfaces, ATAK networks, C2 layers — without requiring the host architecture to be redesigned around ARGUS.</p>
+        <p>The same discipline applies upward: ARGUS does not demand ownership of the sensor suite. Compatible airborne, perimeter and fixed-site platforms feed the input stage; ARGUS adds the perception layer that turns their imagery into tracks. For system integrators and defense contractors, this means ARGUS can be incorporated into existing platforms and mission systems without requiring the entire sensing architecture to be redesigned around centralized processing.</p>
+        <p>Failure behavior is specified as carefully as nominal behavior. A node that loses backhaul keeps producing tracks locally; a node that loses a sensor band continues on the surviving band with reduced classification confidence, clearly flagged in the output records; a node that cannot maintain track integrity degrades to detection-only output rather than emitting low-confidence tracks that a downstream fires decision might act on. The architecture refuses to fail loudly, and refuses to fail silently.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec alt">
+    <div class="wrap grid-2">
+      <div>
+        <span class="k-label">04 // Validation</span>
+        <h2 class="sec">Proven at<br />the basin.</h2>
+      </div>
+      <div class="prose">
+        <p>Architecture claims are validated at the Aranruth proving ground — the Volume — under live spectrum with real operators attempting to defeat the system. Pipeline behavior is tested against adversarial movement, deliberate occlusion, band-specific blinding attempts and contested backhaul. Every certification cycle produces failure reports that feed directly into the next build review: the pipeline documented here is the pipeline that survived the basin, not the one that looked correct on paper.</p>
+        <p>Integration partners can witness serials at the basin under controlled conditions — see the access page for program intake. Technical demonstration programs include pipeline instrumentation: stage-level timing, detection counts, track-continuity metrics and degradation-event logs, so integrators can verify the architecture's behavior against their own requirements rather than take a datasheet's word for it.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec tight">
+    <div class="wrap">
+      <span class="k-label">05 // Continue</span>
+      <div class="linkrow">
+        <a class="btn-line" href="argus.html">ARGUS system page</a>
+        <a class="btn-line" href="technology.html">Multi-spectral &amp; edge inference</a>
+        <a class="btn-line" href="integration.html">Platform integration</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site">
+    <div class="block open">
+      <button class="block-h" type="button" aria-expanded="true" aria-controls="links-house"><span>COMPANY</span><span class="sign" aria-hidden="true">—</span></button>
+      <div class="links" id="links-house">
+        <a href="about.html"><span class="sub">Mission &amp; principles</span>About Aranruth Industries</a>
+        <a href="systems.html"><span class="sub">Full technical dossier</span>Systems</a>
+        <a href="newsroom.html"><span class="sub">Field reports &amp; releases</span>Newsroom</a>
+        <a href="leadership.html"><span class="sub">Command structure</span>Leadership</a>
+        <a href="access.html"><span class="sub">Program intake &amp; channels</span>Access</a>
+      </div>
+    </div>
+    <div class="block open">
+      <button class="block-h" type="button" aria-expanded="true" aria-controls="links-argus"><span>ARGUS TECHNICAL</span><span class="sign" aria-hidden="true">—</span></button>
+      <div class="links" id="links-argus">
+        <a href="argus.html"><span class="sub">System page</span>ARGUS</a>
+        <a href="technology.html"><span class="sub">Multi-spectral &amp; edge inference</span>Technology</a>
+        <a href="architecture.html"><span class="sub">Processing pipeline</span>Architecture</a>
+        <a href="integration.html"><span class="sub">Mission profiles</span>Integration</a>
+      </div>
+    </div>
+    <div class="block">
+      <button class="block-h" type="button" aria-expanded="false" aria-controls="links-contact"><span>CONTACT</span><span class="sign" aria-hidden="true">+</span></button>
+      <div class="links" id="links-contact">
+        <a href="access.html"><span class="sub">Start program intake</span>Request access</a>
+        <a href="mailto:defense@aranruth.com"><span class="sub">Defense programs</span>defense@aranruth.com</a>
+        <a href="mailto:ventas@aranruth.com"><span class="sub">Sales</span>ventas@aranruth.com</a>
+        <a href="mailto:careers@aranruth.com"><span class="sub">Careers</span>careers@aranruth.com</a>
+      </div>
+    </div>
+    <div class="legal"><span>© 2026 ARANRUTH INDUSTRIES</span><span>RESTRICTED ACCESS</span></div>
+  </footer>
+
+  <script src="assets/js/ui.js"></script>
+</body>
+</html>

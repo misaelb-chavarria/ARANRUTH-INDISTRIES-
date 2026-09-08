@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="BASHEE — Autonomous acoustic denial software engineered by Aranruth Industries to neutralize 0% RF autonomous drone swarms via harmonic IMU resonance disruption.">
+<title>BASHEE // ARANRUTH INDUSTRIES</title>
+
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        colors: {
+          black: '#000000',
+          surface: '#050505',
+          borderZinc: '#222222',
+          mutedText: '#737373',
+          lightText: '#e5e5e5'
+        }
+      }
+    }
+  }
+</script>
+
+<style>
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #000000; }
+body { margin: 0; background: #000000; color: #e5e5e5; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; overflow-x: hidden; }
+a { color: inherit; text-decoration: none; }
+button, input, select, textarea { font: inherit; }
+
+/* INDUSTRIAL GRID PATTERN */
+.tactical-grid {
+  background-image: linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+</style>
+</head>
+<body class="bg-black text-[#e5e5e5]">
+
+<div class="min-h-screen bg-black flex flex-col justify-between tactical-grid">
+
+  <!-- TOP BAR WITH HAMBURGER DRAWER -->
+  <nav class="border-b border-[#222222] px-6 py-4 flex justify-between items-center bg-black/95 sticky top-0 z-50 backdrop-blur-md">
+    <div class="flex items-center gap-3">
+      <span class="w-2 h-2 bg-white inline-block"></span>
+      <span class="text-xs font-bold tracking-[0.3em] text-white">BASHEE // ARANRUTH INDUSTRIES</span>
+    </div>
+    
+    <div class="flex items-center gap-6">
+      <button id="menuToggle" aria-label="Toggle Navigation" class="flex flex-col justify-center items-center w-10 h-10 border border-[#222222] bg-[#050505] hover:border-white transition-colors cursor-pointer group">
+        <span class="w-4 h-0.5 bg-white mb-1 transition-transform group-hover:translate-x-0.5"></span>
+        <span class="w-4 h-0.5 bg-white mb-1"></span>
+        <span class="w-4 h-0.5 bg-white transition-transform group-hover:-translate-x-0.5"></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- HIDDEN TACTICAL HAMBURGER DRAWER -->
+  <div id="navDrawer" class="fixed inset-0 z-50 bg-black/98 backdrop-blur-lg transform translate-x-full transition-transform duration-300 flex flex-col justify-between p-8 sm:p-16 border-l border-[#222222]">
+    <div class="flex justify-between items-center border-b border-[#222222] pb-6">
+      <span class="text-xs font-bold tracking-[0.3em] text-white">ARANRUTH // COMMAND DIRECTORY</span>
+      <button id="menuClose" class="text-xs tracking-[0.2em] text-[#737373] hover:text-white uppercase px-4 py-2 border border-[#222222] cursor-pointer">
+        [ CLOSE ✕ ]
+      </button>
+    </div>
+    <div class="flex flex-col gap-6 my-auto text-xl sm:text-3xl font-black uppercase tracking-tight">
+      <a href="#threat" class="nav-link hover:text-[#737373] transition-colors flex items-center justify-between border-b border-[#111] pb-4">
+        <span>01 / THREAT MATRIX</span>
+        <span class="text-xs font-mono text-[#737373]">0% RF SWARMS</span>
+      </a>
+      <a href="#sensing" class="nav-link hover:text-[#737373] transition-colors flex items-center justify-between border-b border-[#111] pb-4">
+        <span>02 / PASSIVE TDOA SENSING</span>
+        <span class="text-xs font-mono text-[#737373]">ZERO EMISSION</span>
+      </a>
+      <a href="#resonance" class="nav-link hover:text-[#737373] transition-colors flex items-center justify-between border-b border-[#111] pb-4">
+        <span>03 / IMU HARMONIC RESONANCE</span>
+        <span class="text-xs font-mono text-[#737373]">KINETIC COLLAPSE</span>
+      </a>
+      <a href="#swap" class="nav-link hover:text-[#737373] transition-colors flex items-center justify-between border-b border-[#111] pb-4">
+        <span>04 / SWaP DEPLOYMENT KITS</span>
+        <span class="text-xs font-mono text-[#737373]">FOB / MRAP / PACK</span>
+      </a>
+      <a href="#c4isr" class="nav-link hover:text-[#737373] transition-colors flex items-center justify-between border-b border-[#111] pb-4">
+        <span>05 / C4ISR INTEROPERABILITY</span>
+        <span class="text-xs font-mono text-[#737373]">ATAK / BMS READY</span>
+      </a>
+      <a href="#intake" class="nav-link hover:text-white transition-colors flex items-center justify-between pb-4 text-white">
+        <span>06 / PROCUREMENT INTAKE</span>
+        <span class="text-xs font-mono text-white">DEFENSE SECURE</span>
+      </a>
+    </div>
+    <div class="border-t border-[#222222] pt-6 flex justify-between text-[10px] text-[#737373] tracking-[0.2em]">
+      <span>ARANRUTH INDUSTRIES // RESTRICTED ACCESS</span>
+      <span>STANAG 4586 / MIL-STD-810H</span>
+    </div>
+  </div>
+
+  <header class="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] border-b border-[#222222] bg-black">
+    <!-- HERO LEFT CONTENT -->
+    <div class="p-8 sm:p-14 lg:p-20 flex flex-col justify-center border-b lg:border-b-0 lg:border-r border-[#222222]">
+      <div class="text-[10px] tracking-[0.3em] text-[#737373] uppercase mb-4">ARANRUTH INDUSTRIES // DEFENSE PLATFORM</div>
+      <h1 class="text-5xl sm:text-7xl font-black uppercase tracking-tighter m-0 leading-none text-white">
+        BASHEE
+      </h1>
+      <p class="max-w-xl mt-6 text-lg sm:text-xl text-[#d4d4d4] font-normal leading-relaxed tracking-tight">
+        Autonomous acoustic denial software engineered to neutralize 0% RF autonomous drone swarms operating in GNSS-denied environments. Zero radar warning. Zero radio emissions. Total kinetic collapse.
+      </p>
+      <p class="max-w-xl mt-4 text-xs text-[#737373] leading-relaxed">
+        Engineered by Aranruth Industries. BASHEE operates 100% passively via distributed acoustic sensor nodes. Utilizing real-time TDOA (Time Difference of Arrival) algorithms to lock blade-passing frequencies, it calculates 3D swarm coordinates instantly and unleashes high-energy directional acoustic beams tuned to MEMS IMU resonant frequencies—corrupting on-board telemetry and forcing immediate structural drop.
+      </p>
+    </div>
+
+    <!-- HERO RIGHT: VIDEO CONTAINER -->
+    <div class="relative min-h-[420px] lg:min-h-full bg-[#030303] flex items-center justify-center p-6 lg:p-10">
+      <div class="w-full h-full max-w-2xl aspect-video border border-[#262626] bg-black relative overflow-hidden shadow-2xl flex flex-col">
+        <!-- Video Header Bar -->
+        <div class="px-4 py-2.5 bg-[#080808] border-b border-[#222222] flex justify-between items-center text-[10px] tracking-[0.2em] text-[#737373]">
+          <span class="flex items-center gap-2">
+            <span class="w-1.5 h-1.5 bg-white rounded-full"></span>
+            ARANRUTH // OPERATIONAL FEED (<code class="text-white font-mono">bashee-demo.mp4</code>)
+          </span>
+          <span class="text-white">LIVE SENSOR TELEMETRY</span>
+        </div>
+
+        <!-- Video Element -->
+        <div class="relative flex-1 bg-black flex items-center justify-center">
+          <video autoplay muted loop playsinline class="w-full h-full object-cover">
+            <source src="bashee-demo.mp4" type="video/mp4">
+            <!-- Fallback if video file is missing -->
+            <div class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-[#050505]">
+              <span class="text-xs text-white tracking-widest uppercase mb-2">VIDEO FILE NOT FOUND</span>
+              <p class="text-[11px] text-[#737373] max-w-xs leading-relaxed">
+                To display operational footage, place an MP4 file named exactly <code class="text-white font-mono">bashee-demo.mp4</code> in the root directory of this artifact.
+              </p>
+            </div>
+          </video>
+        </div>
+
+        <!-- Video Footer Bar -->
+        <div class="px-4 py-2 bg-[#080808] border-t border-[#222222] flex justify-between text-[9px] tracking-[0.15em] text-[#737373]">
+          <span>AZ: 314.2° // EL: +42° // TDOA ERROR: &lt;0.3m</span>
+          <span class="text-white">EFFECTOR: LOCKED</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section id="threat" class="border-b border-[#222222]">
+    <div class="grid grid-cols-1 md:grid-cols-[240px_1fr] border-b border-[#222222] p-8">
+      <div class="text-[11px] text-[#737373] tracking-[0.25em] uppercase font-bold">01 / THREAT MATRIX</div>
+      <h2 class="text-2xl sm:text-4xl font-black uppercase tracking-tight m-0 mt-2 md:mt-0 text-white">
+        AUTONOMOUS SWARMS.<br>ABSOLUTE RADIO SILENCE.
+      </h2>
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-[0.8fr_1.2fr] p-8 sm:p-14 gap-12 bg-[#020202]">
+      <div class="text-[11px] tracking-[0.2em] text-[#737373] uppercase">BATTLEFIELD THREAT ANALYSIS</div>
+      <div class="max-w-4xl space-y-6">
+        <p class="text-lg sm:text-xl text-white font-medium leading-relaxed">
+          Modern conflict has proven the lethality of autonomous inertial navigation swarms (SLAM / GNSS-denied) executing terminal attack phases with zero RF transmission links.
+        </p>
+        <p class="text-xs sm:text-sm text-[#888888] leading-relaxed">
+          Legacy military primary radars suffer from severe low-altitude ground clutter saturation, while traditional electromagnetic RF jammers are completely useless against pre-programmed payloads operating in total radio silence.
+        </p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
+          <div class="border border-[#222] p-6 bg-black">
+            <span class="text-[10px] text-[#737373] tracking-widest uppercase block mb-2">Radar Vulnerability</span>
+            <h4 class="text-white font-bold uppercase text-sm">Ultra-Low RCS Profile</h4>
+            <p class="text-xs text-[#737373] mt-2">Carbon-composite fuselages yielding radar cross-sections below 0.01 m², rendering them invisible to conventional active air-defense sweeps.</p>
+          </div>
+          <div class="border border-[#222] p-6 bg-black">
+            <span class="text-[10px] text-[#737373] tracking-widest uppercase block mb-2">EW Jammer Failure</span>
+            <h4 class="text-white font-bold uppercase text-sm">RF Jamming Immunity</h4>
+            <p class="text-xs text-[#737373] mt-2">With no command-and-control telemetry to intercept or corrupt, electronic countermeasures fail entirely against autonomous trajectory execution.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="sensing" class="border-b border-[#222222] bg-black">
+    <div class="grid grid-cols-1 md:grid-cols-[240px_1fr] border-b border-[#222222] p-8">
+      <div class="text-[11px] text-[#737373] tracking-[0.25em] uppercase font-bold">02 / PASSIVE TDOA SENSING</div>
+      <h2 class="text-2xl sm:text-4xl font-black uppercase tracking-tight m-0 mt-2 md:mt-0 text-white">
+        PASSIVE ACOUSTIC DETECTION.<br>ZERO ELECTROMAGNETIC FOOTPRINT.
+      </h2>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3">
+      <div class="p-8 border-r border-b md:border-b-0 border-[#222222] bg-[#030303]">
+        <span class="text-[10px] text-[#737373] tracking-[0.2em]">01 — DISTRIBUTED ARRAY</span>
+        <h3 class="text-lg font-bold uppercase mt-3 text-white">PASSIVE LISTENING NODES</h3>
+        <p class="mt-3 text-xs text-[#888888] leading-relaxed">
+          Perimeter-deployed acoustic sensor networks operating in pure receive-only mode. Unlocatable by hostile emitter-locating artillery radar due to zero active transmissions.
+        </p>
+      </div>
+      <div class="p-8 border-r border-b md:border-b-0 border-[#222222] bg-[#030303]">
+        <span class="text-[10px] text-[#737373] tracking-[0.2em]">02 — SPECTRAL FILTERING</span>
+        <h3 class="text-lg font-bold uppercase mt-3 text-white">BLADE PASSING FREQUENCY</h3>
+        <p class="mt-3 text-xs text-[#888888] leading-relaxed">
+          Combat-hardened neural nets isolating Rotor Blade Passing Frequencies (BPF) amidst heavy ambient battlefield noise, artillery concussion, high winds, and urban clutter.
+        </p>
+      </div>
+      <div class="p-8 bg-[#030303]">
+        <span class="text-[10px] text-[#737373] tracking-[0.2em]">03 — TDOA LOCALIZATION</span>
+        <h3 class="text-lg font-bold uppercase mt-3 text-white">3D SPATIAL PRECISION</h3>
+        <p class="mt-3 text-xs text-[#888888] leading-relaxed">
+          Ultra-low latency Time Difference of Arrival (TDOA) calculation yielding millimeter spatial resolution, outputting instantaneous azimuth, elevation, and vector telemetry.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="resonance" class="border-b border-[#222222]">
+    <div class="grid grid-cols-1 md:grid-cols-[240px_1fr] border-b border-[#222222] p-8">
+      <div class="text-[11px] text-[#737373] tracking-[0.25em] uppercase font-bold">03 / HARMONIC RESONANCE</div>
+      <h2 class="text-2xl sm:text-4xl font-black uppercase tracking-tight m-0 mt-2 md:mt-0 text-white">
+        PRECISION ACOUSTIC EFFECTOR.<br>IMU CHIP SATURATION.
+      </h2>
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-[1fr_1fr]">
+      <div class="p-8 sm:p-14 border-r border-[#222222] flex flex-col justify-center bg-[#020202]">
+        <span class="text-[10px] text-[#737373] tracking-[0.2em] uppercase">PHYSICAL DISRUPTION MECHANISM</span>
+        <h3 class="text-xl sm:text-2xl font-black uppercase tracking-tight mt-3 text-white">MEMS RESONANCE COUPLING</h3>
+        <p class="mt-4 text-xs sm:text-sm text-[#888888] leading-relaxed">
+          Inertial Measurement Units (IMUs) onboard commercial and military micro-UAVs rely on piezoelectric sensors and MEMS gyroscopes tuned to precise harmonic resonant frequencies (typically 11 kHz to 16 kHz).
+        </p>
+        <p class="mt-4 text-xs sm:text-sm text-[#888888] leading-relaxed">
+          BASHEE projects high-intensity directional acoustic pressure beams via synchronized phased arrays. Striking the airframe with the exact resonant frequency of the onboard balance chip drives internal sensors into uncontrolled harmonic oscillation, corrupting flight telemetry and triggering immediate loss of lift and stability.
+        </p>
+      </div>
+      <div class="p-8 sm:p-14 flex flex-col justify-center bg-black">
+        <div class="border border-[#262626] p-6 bg-[#050505]">
+          <span class="text-[10px] text-[#737373] tracking-[0.2em] block mb-4 uppercase">KINETIC EFFECTOR SPECIFICATIONS</span>
+          <div class="space-y-4 text-xs font-mono">
+            <div class="flex justify-between border-b border-[#222222] pb-3">
+              <span class="text-[#737373]">Transducer Architecture</span>
+              <span class="text-white font-bold">Directional Phased Acoustic Array</span>
+            </div>
+            <div class="flex justify-between border-b border-[#222222] pb-3">
+              <span class="text-[#737373]">Sweep Frequency Range</span>
+              <span class="text-white font-bold">11.2 kHz — 16.8 kHz (Adaptive Sweep)</span>
+            </div>
+            <div class="flex justify-between border-b border-[#222222] pb-3">
+              <span class="text-[#737373]">IMU / Gyro Saturation</span>
+              <span class="text-white font-bold">Kalman Filter Desynchronization</span>
+            </div>
+            <div class="flex justify-between border-b border-[#222222] pb-3">
+              <span class="text-[#737373]">Kinetic Response Latency</span>
+              <span class="text-white font-bold">&lt; 180 ms from initial lock</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-[#737373]">Operational Outcome</span>
+              <span class="text-white font-bold">Structural Collapse / Ground Impact</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="swap" class="border-b border-[#222222] bg-black">
+    <div class="grid grid-cols-1 md:grid-cols-[240px_1fr] border-b border-[#222222] p-8">
+      <div class="text-[11px] text-[#737373] tracking-[0.25em] uppercase font-bold">04 / SWaP & HARDWARE</div>
+      <h2 class="text-2xl sm:text-4xl font-black uppercase tracking-tight m-0 mt-2 md:mt-0 text-white">
+        SWaP-C OPTIMIZED.<br>MODULAR COMBAT DEPLOYMENT.
+      </h2>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3">
+      <div class="p-8 border-r border-b md:border-b-0 border-[#222222] bg-[#030303]">
+        <span class="text-[10px] text-[#737373] tracking-[0.2em]">CONFIG 01</span>
+        <h3 class="text-lg font-bold uppercase mt-3 text-white">FORWARD OPERATING BASE (FOB)</h3>
+        <p class="mt-3 text-xs text-[#888888] leading-relaxed">
+          Modular fixed turrets featuring long-range acoustic panels for 360-degree perimeter defense of forward operating bases and military encampments. 24/7 autonomous operation with fail-safe redundancy.
+        </p>
+      </div>
+      <div class="p-8 border-r border-b md:border-b-0 border-[#222222] bg-[#030303]">
+        <span class="text-[10px] text-[#737373] tracking-[0.2em]">CONFIG 02</span>
+        <h3 class="text-lg font-bold uppercase mt-3 text-white">ARMORED CONVOY DEFENSE</h3>
+        <p class="mt-3 text-xs text-[#888888] leading-relaxed">
+          Compact roof-mounted tactical vehicle systems (MRAP / JLTV compatible) designed to neutralize loitering munitions on-the-move during combat patrols and logistical resupply convoys.
+        </p>
+      </div>
+      <div class="p-8 bg-[#030303]">
+        <span class="text-[10px] text-[#737373] tracking-[0.2em]">CONFIG 03</span>
+        <h3 class="text-lg font-bold uppercase mt-3 text-white">MANPACK INFANTRY KIT</h3>
+        <p class="mt-3 text-xs text-[#888888] leading-relaxed">
+          Rapid-deployment portable kit engineered for light infantry and special operations teams. High-density battery pack with full operational setup achieved in under 120 seconds.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="c4isr" class="border-b border-[#222222] bg-[#020202]">
+    <div class="grid grid-cols-1 md:grid-cols-[240px_1fr] border-b border-[#222222] p-8">
+      <div class="text-[11px] text-[#737373] tracking-[0.25em] uppercase font-bold">05 / C4ISR INTEGRATION</div>
+      <h2 class="text-2xl sm:text-4xl font-black uppercase tracking-tight m-0 mt-2 md:mt-0 text-white">
+        TACTICAL INTEROPERABILITY.<br>ATAK &amp; BMS INTEGRATED.
+      </h2>
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] p-8 sm:p-14 gap-12">
+      <div class="space-y-6">
+        <p class="text-base sm:text-lg text-white font-medium leading-relaxed">
+          BASHEE integrates natively with NATO and allied C4ISR architectures through Aranruth Industries secure middleware.
+        </p>
+        <p class="text-xs sm:text-sm text-[#888888] leading-relaxed">
+          The software communicates via standardized STANAG 4586 protocols and synchronizes directly with situational awareness platforms including ATAK (Android Tactical Assault Kit) and Battle Management Systems (BMS), allowing operators to track acoustic threats on the tactical map and authorize automated or manual kinetic engagements.
+        </p>
+        <div class="grid grid-cols-2 gap-4 pt-2">
+          <div class="border border-[#222] p-4 bg-black">
+            <span class="text-[10px] text-[#737373] uppercase block">Edge Processing</span>
+            <span class="text-white font-bold text-sm mt-1 block">NVIDIA Jetson / Ruggedized FPGA</span>
+          </div>
+          <div class="border border-[#222] p-4 bg-black">
+            <span class="text-[10px] text-[#737373] uppercase block">Link Encryption</span>
+            <span class="text-white font-bold text-sm mt-1 block">AES-256 / STANAG End-to-End</span>
+          </div>
+        </div>
+      </div>
+      <div class="border border-[#262626] p-6 bg-black flex flex-col justify-center">
+        <span class="text-[10px] text-[#737373] tracking-[0.2em] uppercase mb-4 block">MILITARY COMPLIANCE STANDARDS</span>
+        <ul class="space-y-3 text-xs font-mono text-[#d4d4d4]">
+          <li class="flex items-center gap-3 border-b border-[#181818] pb-2">
+            <span class="w-1.5 h-1.5 bg-white"></span>
+            <span>MIL-STD-810H (Extreme Environmental Durability)</span>
+          </li>
+          <li class="flex items-center gap-3 border-b border-[#181818] pb-2">
+            <span class="w-1.5 h-1.5 bg-white"></span>
+            <span>MIL-STD-461G (Electromagnetic Compatibility)</span>
+          </li>
+          <li class="flex items-center gap-3 border-b border-[#181818] pb-2">
+            <span class="w-1.5 h-1.5 bg-white"></span>
+            <span>STANAG 4586 (UAV / Swarm Interface Protocols)</span>
+          </li>
+          <li class="flex items-center gap-3">
+            <span class="w-1.5 h-1.5 bg-white"></span>
+            <span>IP67 / IP69K (Dust & High-Pressure Water Sealing)</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="intake" class="border-b border-[#222222] bg-black">
+    <div class="grid grid-cols-1 md:grid-cols-[240px_1fr] border-b border-[#222222] p-8">
+      <div class="text-[11px] text-[#737373] tracking-[0.25em] uppercase font-bold">06 / PROCUREMENT</div>
+      <h2 class="text-2xl sm:text-4xl font-black uppercase tracking-tight m-0 mt-2 md:mt-0 text-white">
+        REQUEST PROGRAM EVALUATION<br>&amp; TECHNICAL DOSSIER.
+      </h2>
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-[0.8fr_1.2fr] gap-12 p-8 sm:p-14">
+      <div>
+        <span class="text-[10px] text-[#737373] tracking-[0.2em] uppercase">SECURE CHANNEL / DEFENSE &amp; GOVERNMENT</span>
+        <h3 class="text-xl font-bold uppercase mt-3 text-white">INSTITUTIONAL ACQUISITION</h3>
+        <p class="mt-4 text-xs text-[#888888] leading-relaxed">
+          BASHEE software and Aranruth Industries acoustic effector systems are supplied exclusively to Ministries of Defense, military command authorities, government agencies, and cleared defense contractors.
+        </p>
+        <div class="mt-6 p-4 border border-[#262626] bg-[#030303] text-[10px] text-[#737373] uppercase tracking-wider leading-relaxed">
+          SECURITY NOTICE: DO NOT TRANSMIT CLASSIFIED DATA, REAL-WORLD OPERATIONAL COORDINATES, OR RESTRICTED TELEMETRY PARAMETERS THROUGH THIS INTAKE PORTAL.
+        </div>
+      </div>
+
+      <form id="basheeForm" class="border-t border-[#262626]" method="post" action="/contact/bashee" novalidate>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 py-4 border-b border-[#222222]">
+          <div>
+            <label class="block text-[10px] tracking-[0.2em] text-[#737373] uppercase mb-2" for="b-name">OFFICIAL NAME / RANK</label>
+            <input class="w-full bg-black border border-[#262626] p-3 text-white text-xs outline-none focus:border-white transition-colors" id="b-name" name="name" type="text" placeholder="FULL NAME / OFFICIAL RANK" required>
+          </div>
+          <div>
+            <label class="block text-[10px] tracking-[0.2em] text-[#737373] uppercase mb-2" for="b-org">AGENCY / MILITARY BRANCH</label>
+            <input class="w-full bg-black border border-[#262626] p-3 text-white text-xs outline-none focus:border-white transition-colors" id="b-org" name="organization" type="text" placeholder="ARMED FORCES / DEFENSE CONTRACTOR" required>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 py-4 border-b border-[#222222]">
+          <div>
+            <label class="block text-[10px] tracking-[0.2em] text-[#737373] uppercase mb-2" for="b-email">OFFICIAL EMAIL (.mil / .gov)</label>
+            <input class="w-full bg-black border border-[#262626] p-3 text-white text-xs outline-none focus:border-white transition-colors" id="b-email" name="email" type="email" placeholder="name@defense.mil" required>
+          </div>
+          <div>
+            <label class="block text-[10px] tracking-[0.2em] text-[#737373] uppercase mb-2" for="b-domain">TACTICAL DEPLOYMENT DOMAIN</label>
+            <select class="w-full bg-black border border-[#262626] p-3 text-white text-xs outline-none cursor-pointer focus:border-white transition-colors" id="b-domain" name="domain" required>
+              <option value="" disabled selected>SELECT DEPLOYMENT DOMAIN</option>
+              <option value="FOB">Forward Operating Base (FOB) Defense</option>
+              <option value="Convoy">Mobile Convoy Protection (MRAP / JLTV)</option>
+              <option value="Infrastructure">Critical Infrastructure Hardening</option>
+              <option value="Integrator">C4ISR Defense Systems Integrator</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="py-4 border-b border-[#222222]">
+          <label class="block text-[10px] tracking-[0.2em] text-[#737373] uppercase mb-2" for="b-req">TECHNICAL REQUIREMENT SUMMARY</label>
+          <textarea class="w-full bg-black border border-[#262626] p-3 text-white text-xs outline-none min-h-[100px] resize-y focus:border-white transition-colors" id="b-req" name="requirement" placeholder="DESCRIBE SCOPE, EVALUATION TIMELINE, AND SWaP REQUIREMENTS..." required></textarea>
+        </div>
+
+        <!-- PROFESSIONAL TACTICAL CAPTCHA -->
+        <div class="py-6 border-b border-[#222222] bg-[#030303] p-4 my-4 border border-[#222]">
+          <div class="flex justify-between items-center mb-3">
+            <span class="text-[10px] text-white tracking-[0.2em] uppercase font-bold flex items-center gap-2">
+              <span class="w-1.5 h-1.5 bg-white rounded-full animate-ping"></span>
+              TACTICAL SECURITY VERIFICATION // MIL-STD CHALLENGE
+            </span>
+            <span id="captchaRefresh" class="text-[9px] text-[#737373] hover:text-white uppercase tracking-wider cursor-pointer">[ REGENERATE HASH ]</span>
+          </div>
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+            <div id="captchaQuestion" class="bg-black border border-[#333] px-4 py-3 text-xs font-mono text-white tracking-widest select-none flex-1">
+              LOADING HASH CHALLENGE...
+            </div>
+            <input class="w-full sm:w-48 bg-black border border-[#262626] p-3 text-white text-xs outline-none focus:border-white transition-colors font-mono uppercase" id="b-captcha" name="captcha" type="text" placeholder="ENTER ANSWER" required autocomplete="off">
+          </div>
+          <span class="block text-[9px] text-[#737373] mt-2 tracking-wider">Solve mathematical or cryptographic verification to authorize transmission pipe.</span>
+        </div>
+
+        <div class="pt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <span class="text-[9px] text-[#737373] uppercase tracking-wider">Verified unclassified defense ingestion channel.</span>
+          <button id="basheeSubmit" type="submit" class="w-full sm:w-auto px-8 py-4 bg-white text-black text-xs tracking-[0.2em] uppercase hover:bg-[#e5e5e5] transition-colors font-bold cursor-pointer">
+            TRANSMIT INQUIRY ↗
+          </button>
+        </div>
+        <div id="basheeStatus" class="mt-4 text-xs text-white uppercase tracking-wider hidden" role="status"></div>
+      </form>
+    </div>
+  </section>
+
+  <footer class="border-t border-[#222222] bg-black p-8 sm:p-12 flex flex-col sm:flex-row justify-between items-center gap-6">
+    <div>
+      <span class="text-xs font-bold tracking-widest text-white">BASHEE // ARANRUTH INDUSTRIES</span>
+      <span class="block text-[10px] text-[#737373] mt-1">AUTONOMOUS PASSIVE SWARM DENIAL SYSTEM</span>
+    </div>
+    <div class="text-[10px] text-[#737373] tracking-widest uppercase">
+      RESTRICTED // DEFENSE PROGRAM INTAKE
+    </div>
+  </footer>
+
+</div>
+
+<script>
+window.onload = function() {
+  const menuToggle = document.getElementById('menuToggle');
+  const menuClose = document.getElementById('menuClose');
+  const navDrawer = document.getElementById('navDrawer');
+  const navLinks = document.querySelectorAll('.nav-link');
+
+  function toggleMenu() {
+    if(navDrawer.classList.contains('translate-x-full')) {
+      navDrawer.classList.remove('translate-x-full');
+      navDrawer.classList.add('translate-x-0');
+    } else {
+      navDrawer.classList.remove('translate-x-0');
+      navDrawer.classList.add('translate-x-full');
+    }
+  }
+
+  if(menuToggle) menuToggle.addEventListener('click', toggleMenu);
+  if(menuClose) menuClose.addEventListener('click', toggleMenu);
+
+  navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      navDrawer.classList.remove('translate-x-0');
+      navDrawer.classList.add('translate-x-full');
+    });
+  });
+
+  // TACTICAL CAPTCHA GENERATOR
+  const captchaQuestion = document.getElementById('captchaQuestion');
+  const captchaRefresh = document.getElementById('captchaRefresh');
+  const captchaInput = document.getElementById('b-captcha');
+  let currentCaptchaAnswer = '';
+
+  function generateCaptcha() {
+    const challenges = [
+      { q: "SOLVE: 14 * 6 - 8 = ?", a: "76" },
+      { q: "SOLVE: 32 + 45 - 12 = ?", a: "65" },
+      { q: "HEX DECRYPT: 0x2A + 0x10 = ? (DECIMAL)", a: "58" },
+      { q: "STANAG PROTOCOL CHECK: ENTER SUM OF 4 + 5 + 8 =", a: "17" },
+      { q: "SOLVE: 64 / 4 + 19 = ?", a: "35" },
+      { q: "CRYPTOGRAPHIC HASH CHECK: 9 * 9 - 13 =", a: "68" }
+    ];
+    const selected = challenges[Math.floor(Math.random() * challenges.length)];
+    captchaQuestion.textContent = selected.q;
+    currentCaptchaAnswer = selected.a;
+    captchaInput.value = '';
+  }
+
+  generateCaptcha();
+  if(captchaRefresh) {
+    captchaRefresh.addEventListener('click', generateCaptcha);
+  }
+
+  const form = document.getElementById('basheeForm');
+  const status = document.getElementById('basheeStatus');
+  if(form) {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = document.getElementById('b-email').value;
+      const userCaptcha = captchaInput.value.trim();
+
+      if(!email) {
+        status.textContent = 'ERROR: OFFICIAL DEFENSE EMAIL REQUIRED (.MIL / .GOV).';
+        status.classList.remove('hidden');
+        return;
+      }
+
+      if(userCaptcha !== currentCaptchaAnswer) {
+        status.textContent = 'SECURITY ERROR: TACTICAL CAPTCHA VERIFICATION FAILED. RE-ENTER HASH.';
+        status.classList.remove('hidden');
+        generateCaptcha();
+        return;
+      }
+
+      status.textContent = 'SECURE HANDSHAKE VERIFIED. INQUIRY TRANSMITTED TO ARANRUTH INDUSTRIES COMMAND.';
+      status.classList.remove('hidden');
+      form.reset();
+      generateCaptcha();
+    });
+  }
+};
+</script>
+</body>
+</html>

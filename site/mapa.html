@@ -1,0 +1,2674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Volume — Aranruth Industries — 125 Object Technical Model</title>
+    <script>
+        // Defensive console polyfill. Some embedded/sandboxed preview
+        // environments (used to test HTML before real deployment) expose a
+        // stripped-down `console` missing methods like `assert`, `table` or
+        // `group` that libraries such as <model-viewer> call internally.
+        // In a real browser these already exist natively and this is a
+        // harmless no-op; it only matters in those restricted previews.
+        (function () {
+            var noop = function () {};
+            var methods = ['assert', 'table', 'group', 'groupCollapsed', 'groupEnd',
+                'trace', 'count', 'countReset', 'time', 'timeEnd', 'timeLog', 'dir', 'dirxml'];
+            if (typeof window.console === 'undefined') window.console = {};
+            methods.forEach(function (m) {
+                if (typeof window.console[m] !== 'function') window.console[m] = noop;
+            });
+        })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Google <model-viewer>: single cross-platform AR launcher.
+         Handles Scene Viewer on Android, AR Quick Look on iOS (via ios-src),
+         and inline WebXR immersive-ar on any other capable browser —
+         no per-platform branching needed in our own code. -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #f5f5f0;
+            --text-color: #111111;
+            --text-secondary: #666666;
+            --border-color: #eee;
+            --accent-color: #1a3a5c;
+            --card-bg: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Inter, "SF Pro Display", "SF Pro Text", Helvetica, Arial, sans-serif;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        #canvas-container {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        /* UI Overlays */
+        .ui-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 24px;
+        }
+
+        header, .info-card, .sidebar, .reset-btn, .qr-container, .tooltip {
+            pointer-events: auto;
+        }
+
+        /* Header hidden — branding lives on the maquette, floating card, and entrance sign */
+        header {
+            display: none;
+            max-width: 500px;
+        }
+
+        .eyebrow {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        h1 {
+            font-size: 56px;
+            font-weight: 800;
+            line-height: 1.05;
+            color: var(--text-color);
+            margin-bottom: 12px;
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            font-size: 15px;
+            line-height: 1.5;
+            color: var(--text-secondary);
+        }
+
+        /* Floating info card — white, over the 3D model (Anduril Arsenal-1) */
+        .info-card {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 340px;
+            background: #ffffff;
+            border: none;
+            border-radius: 12px;
+            padding: 22px 22px 16px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            pointer-events: none;
+            z-index: 12;
+            will-change: transform;
+        }
+
+        .info-card h3 {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -0.4px;
+            margin-bottom: 12px;
+            color: #111111;
+        }
+
+        .info-card .card-rule {
+            height: 1px;
+            background: #eeeeee;
+            border: none;
+            margin: 0 0 16px;
+        }
+
+        .info-card .location {
+            display: none;
+        }
+
+        .specs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px 18px;
+            font-size: 14px;
+            color: #333333;
+            margin-bottom: 16px;
+        }
+
+        .spec-item label {
+            display: block;
+            color: #5a4a42;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-bottom: 3px;
+        }
+
+        .spec-item value {
+            font-weight: 700;
+            color: #111111;
+            font-size: 14px;
+        }
+
+        .card-footer {
+            font-size: 12px;
+            color: #888888;
+            text-align: center;
+            border-top: none;
+            padding-top: 4px;
+            letter-spacing: 0.2px;
+            text-transform: none;
+        }
+
+        /* Right Sidebar (Inspection panel on click) */
+        .sidebar {
+            position: absolute;
+            top: 24px;
+            right: -360px;
+            width: 340px;
+            height: calc(100% - 48px);
+            background: #ffffff;
+            border-left: 1px solid var(--border-color);
+            box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+            transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            padding: 24px;
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar.active {
+            right: 0;
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .sidebar-header h2 {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            padding: 4px 8px;
+        }
+
+        .close-btn:hover {
+            color: var(--text-color);
+        }
+
+        .sidebar-content {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        .sidebar-content h4 {
+            color: var(--text-color);
+            margin-top: 16px;
+            margin-bottom: 6px;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: absolute;
+            background: rgba(17, 17, 17, 0.85);
+            color: #ffffff;
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: 4px;
+            pointer-events: none;
+            display: none;
+            z-index: 30;
+            transform: translate(-50%, -120%);
+            white-space: nowrap;
+            backdrop-filter: blur(4px);
+        }
+
+        /* Reset — bottom right, Arsenal-1 */
+        .reset-btn {
+            position: absolute;
+            bottom: 24px;
+            right: 24px;
+            left: auto;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #ffffff;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #666666;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            transition: background 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            pointer-events: auto;
+        }
+
+        .reset-btn svg {
+            width: 14px;
+            height: 14px;
+            stroke: #666666;
+            fill: none;
+        }
+
+        .reset-btn:hover {
+            background: #f7f7f4;
+        }
+
+        /* QR Code Container (hidden so RESET owns the corner) */
+        .qr-container {
+            display: none;
+            position: absolute;
+            bottom: 24px;
+            left: 24px;
+            right: auto;
+            background: #ffffff;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .qr-box {
+            width: 80px;
+            height: 80px;
+            background: #000000;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 9px;
+            font-family: monospace;
+        }
+
+        .qr-label {
+            font-size: 10px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 1023px) {
+            .qr-container {
+                display: none;
+            }
+            .info-card {
+                width: 280px;
+                padding: 16px;
+            }
+            h1 {
+                font-size: 38px;
+            }
+        }
+
+        /* AR launch button — sits to the left of RESET */
+        .ar-btn {
+            position: absolute;
+            bottom: 24px;
+            right: 132px;
+            display: none; /* revealed by JS only when the device can actually do AR */
+            align-items: center;
+            gap: 8px;
+            background: var(--accent-color);
+            border: none;
+            border-radius: 10px;
+            padding: 10px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #ffffff;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.16);
+            transition: background 0.2s, opacity 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            pointer-events: auto;
+        }
+
+        .ar-btn svg {
+            width: 14px;
+            height: 14px;
+            stroke: #ffffff;
+            fill: none;
+        }
+
+        .ar-btn:hover {
+            background: #142f4a;
+        }
+
+        .ar-btn[disabled] {
+            opacity: 0.6;
+            cursor: default;
+        }
+
+        @media (max-width: 1023px) {
+            .ar-btn {
+                right: 24px;
+                bottom: 72px;
+            }
+        }
+
+        /* Small status pill shown while the live scene is exported to GLB */
+        .ar-toast {
+            position: absolute;
+            bottom: 76px;
+            right: 24px;
+            background: #111111;
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.4px;
+            padding: 8px 14px;
+            border-radius: 8px;
+            opacity: 0;
+            transform: translateY(6px);
+            transition: opacity 0.2s, transform 0.2s;
+            pointer-events: none;
+            z-index: 30;
+        }
+
+        .ar-toast.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* model-viewer is used purely as the AR launch engine (Scene Viewer /
+           Quick Look / inline WebXR). It is never shown as a 3D preview —
+           our own Three.js canvas stays the only visible viewport. */
+        model-viewer#arViewer {
+            position: fixed;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            pointer-events: none;
+            overflow: hidden;
+            bottom: 0;
+            right: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="canvas-container"></div>
+
+    <div class="ui-layer">
+        <header>
+            <div class="eyebrow">ARANRUTH INDUSTRIES</div>
+            <h1>The Volume</h1>
+            <div class="subtitle">A proving ground at 1:400. Place it on the floor. Walk the volume — air, node line, spectrum pad, perimotor, acoustic bowl. Not an office. Not a campus.</div>
+        </header>
+
+        <div class="info-card" id="floatInfoCard">
+            <h3>The Volume</h3>
+            <div class="card-rule"></div>
+            <div class="specs-grid">
+                <div class="spec-item"><label>Capital Investment</label><value>$200M+</value></div>
+                <div class="spec-item"><label>Manufacturing Footprint</label><value>4,020 ha</value></div>
+                <div class="spec-item"><label>Total New Jobs (2030)</label><value>100+</value></div>
+                <div class="spec-item"><label>Annual Economic Output</label><value>$800M+</value></div>
+            </div>
+            <div class="card-footer">ARANRUTH INDUSTRIES — Electromagnetic Environment Control</div>
+        </div>
+
+        <button class="reset-btn" id="resetViewBtn" type="button">
+            <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 12a9 9 0 1 0 3-6.7"/>
+                <polyline points="3 4 3 10 9 10"/>
+            </svg>
+            RESET
+        </button>
+
+        <button class="ar-btn" id="arBtn" type="button">
+            <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 2 2 7l10 5 10-5-10-5Z"/>
+                <path d="M2 17l10 5 10-5"/>
+                <path d="M2 12l10 5 10-5"/>
+            </svg>
+            <span id="arBtnLabel">VER EN AR</span>
+        </button>
+
+        <div class="qr-container">
+            <div class="qr-box">ARANRUTH QR</div>
+            <div class="qr-label">Continue on mobile</div>
+        </div>
+    </div>
+
+    <div class="ar-toast" id="arToast">Preparando modelo…</div>
+
+    <!--
+      AR launcher element.
+      - src        -> GLB used by Android Scene Viewer + inline WebXR (set at runtime from the live Three.js scene, see exportSceneToGLB()).
+      - ios-src    -> USDZ used by iOS AR Quick Look. Point this at your prebuilt, hosted .usdz (see integration notes at the end of this file).
+      - ar-modes   -> tries WebXR first, falls back to Scene Viewer, falls back to Quick Look.
+    -->
+    <model-viewer
+        id="arViewer"
+        ios-src="./model.usdz"
+        ar
+        ar-modes="webxr scene-viewer quick-look"
+        camera-controls
+        reveal="manual">
+    </model-viewer>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2 id="sidebarTitle">Object</h2>
+            <button class="close-btn" id="closeSidebar">&times;</button>
+        </div>
+        <div class="sidebar-content" id="sidebarContent">
+            Select a component to view technical specifications.
+        </div>
+    </div>
+
+    <div class="tooltip" id="tooltip"></div>
+
+    <!-- Three.js r160 using the official module/addon layout -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+    <script type="module">
+        import * as THREE from "three";
+        import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+        import { GLTFExporter } from "three/addons/exporters/GLTFExporter.js";
+
+        // Database of specs for inspection panel
+        const objectSpecs = {
+            "workshop": { title: "Main Workshop", specs: "Main integration and electromechanical testing building. 15m × 5m × 10m. Reinforced steel structure with sliding doors and RF-shielded control." },
+            "offices": { title: "Offices & Control Room", specs: "Real-time command and telemetry center. 10m × 3.5m × 6m. RF-shielded windows and access porch." },
+            "container_main": { title: "Main Container (FPGA + RF)", specs: "High-density signal processing rack and broadband transceivers (1 MHz - 6 GHz)." },
+            "container_solar": { title: "Solar Container (Batteries + Inverter)", specs: "Autonomous energy storage system with pure-sine inverters and integrated thermal management." },
+            "bodega": { title: "Warehouse / Secondary Storage", specs: "Storage for modular components, repuestos de antenas y herrajes de montaje." },
+            "tower_tx": { title: "TX Tower (Transmitter)", specs: "Lattice tower de 15m de altura con panel direccional de alta potencia orientado a la línea de pruebas principal." },
+            "tower_rx": { title: "RX Tower (Receiver)", specs: "Receiver tower de 10m ubicada a 125m de la TX para pruebas de propagación en línea de vista (LoS)." },
+            "antenna_array": { title: "Spectrum Pad (Antenna Array)", specs: "Linear array de 6 antenas en postes de 3m con concrete base de 70m y backhaul de fibra óptica." },
+            "starlink": { title: "Satellite Terminal (Starlink)", specs: "High-speed, low-latency satellite backup link for external telemetry." },
+            "solar_array": { title: "External Solar Array", specs: "100 m² de paneles fotovoltaicos south-facing with a 25° tilt for a 300 kW base supply." },
+            "battery_container": { title: "Backup Battery Bank", specs: "Specialized container with forced ventilation for chemical energy storage." },
+            "generator": { title: "Diesel Backup Generator", specs: "Sound-insulated generator under a shelter with insulated vertical exhaust and automatic start system." },
+            "fuel_tank": { title: "Fuel Tank (Diesel)", specs: "4m-long horizontal cylinder on a concrete containment base with safety valves." },
+            "water_tank": { title: "Elevated Water Tank", specs: "Industrial water supply for cooling systems and general services." },
+            "parking": { title: "Parking", specs: "25m × 15m reinforced concrete platform with perimeter markings and access lines." },
+            "vehicle_1": { title: "Field Pickup", specs: "4x4 utility vehicle for field patrol and technical personnel transport." },
+            "vehicle_2": { title: "Tactical SUV", specs: "Emissions monitoring unit and transport vehicle for portable measurement equipment." },
+            "vehicle_3": { title: "Heavy Cargo Truck", specs: "Logistics vehicle for transporting containers and large-format equipment." },
+            "perimeter_fence": { title: "Perimeter Fence", specs: "Security fence de 200m × 150m with reinforced posts, mesh, and motorized main gate." },
+            "main_road": { title: "Main Road", specs: "Compacted-earth paved access con bermas de grava estabilizada." },
+            "secondary_road": { title: "Secondary Road", specs: "Internal rapid-connection roads entre talleres, oficinas y áreas de prueba." },
+            "road_to_array": { title: "Road to Spectrum Pad", specs: "Specialized concrete road to prevent vibration in precision measurement equipment." },
+            "light_pole_1": { title: "Lighting Poles", specs: "High-efficiency LED light towers with angled arms and symmetric distribution." },
+            "light_pole_2": { title: "Lighting Poles", specs: "High-efficiency LED light towers with angled arms and symmetric distribution." },
+            "light_pole_3": { title: "Lighting Poles", specs: "High-efficiency LED light towers with angled arms and symmetric distribution." },
+            "light_pole_4": { title: "Lighting Poles", specs: "High-efficiency LED light towers with angled arms and symmetric distribution." },
+            "signage_entrance": { title: "Entrance Signage", specs: "Poste de 4m con letrero corporativo tridimensional 'ARANRUTH INDUSTRIES'." },
+            "flag": { title: "Flag Mast", specs: "Institutional mast de 5m con Aranruth Industries corporate emblem." },
+            "staging_area": { title: "Staging / Assembly Area", specs: "Concrete platforms with open shipping container and operational forklift." },
+            "forklift": { title: "Industrial Forklift", specs: "Vehículo de maniobras con mástil vertical para manipulación de equipos pesados." },
+            "trees": { title: "Xeric Vegetation (Mesquite & Palo Verde)", specs: "Native species of the Mapimí Basin adapted to high-radiation conditions." },
+            "shrubs": { title: "Shrubs (Creosote & Palo Berrendo)", specs: "Perennial flora dispersed around the outer perimeter of the complex." },
+            "cacti": { title: "Cacti (Opuntia)", specs: "Protected endemic population in the buffer zone." },
+            "barrels": { title: "Storage Barrels", specs: "Auxiliary cylindrical containers for fluids and maintenance." },
+            "boxes": { title: "Modular Packaging Boxes", specs: "Transport containers for sensitive electronic components." },
+            "fire_extinguisher": { title: "Fire Extinguisher Station", specs: "Standard emergency equipment mounted to structural walls." },
+            "sandbags": { title: "Anchoring System (Sandbags)", specs: "Temporary stabilization ballast for light structures and tower anchoring." },
+            "traffic_cones": { title: "Traffic Cones", specs: "Temporary traffic marking for traffic control and safe-area delimitation." },
+            "terrain": { title: "Terrain — Mapimí Basin", specs: "500m × 300m plane with procedural micro-relief, gravel zones, compacted earth, and simulated cracks." },
+            "maquette_platform": { title: "Maquette Platform", specs: "Beige architectural plinth with frontal ARANRUTH INDUSTRIES branding, 60% of the front face width." }
+        };
+
+        // Inspection records for the 90 new interactive groups.
+        Object.assign(objectSpecs, {
+            mess_hall:{title:'Mess Hall',specs:'Box 12m × 4m × 8m #e0e0e0, techo plano, 4 puertas, 6 ventanas, porche exterior de 6 postes y mesa larga visible por ventana.'},
+            dormitory:{title:'Dormitory',specs:'Box 10m × 3.5m × 15m #d8d8d8, techo plano, 5 puertas, 10 ventanas pequeñas y zócalo de concreto de 0.3m.'},
+            security_post:{title:'Security Post',specs:'Caseta 2.5m × 2.5m × 2m #333, 3 ventanas, techo con saliente de 0.5m y poste de luz dedicado.'},
+            medical:{title:'Medical / First Aid',specs:'Box 4m × 2m × 3m blanco, cruz roja frontal de 0.5m, 1 puerta y 1 ventana.'},
+            server_room:{title:'Server Room',specs:'Box 5m × 2.5m × 4m #2a2a2a, rejillas de ventilación, armored door y LED indicador verde con luz tenue.'},
+            transformer_station:{title:'Transformer Station',specs:'2 transformadores 2m × 1m × 1.5m, bases de concreto, 4 postes de soporte, cables y valla perimetral pequeña.'},
+            pump_house:{title:'Pump House',specs:'Box 3m × 2m × 2.5m #8a8a8a, puerta, tubería de entrada/salida y motor visible en el techo.'},
+            laundry:{title:'Laundry',specs:'Box 4m × 2m × 3m #c0c0c0, puerta, ventana, dos tendederos y tres prendas colgadas.'},
+            shower:{title:'Outdoor Shower',specs:'4 postes, techo 2m × 2m, 2 duchas y 2 bancos de 1.5m × 0.3m × 0.4m.'},
+            fuel_pump_station:{title:'Fuel Pump Station',specs:'2 bombas rojas, concrete base, tubería subterránea hacia el tanque de combustible y techo sostenido por 4 postes.'},
+            waste_storage:{title:'Waste Storage',specs:'3 contenedores verdes sobre suelo de concreto con sombras.'},
+            radio_shack:{title:'Radio Shack',specs:'Buried bunker; only the concrete slab, metal hatch, handle, and four anchor bolts are visible.'},
+            parabolic_1:{title:'3m Parabolic Antenna',specs:'Plato de 3m de diámetro, brazo de soporte y base; orientada al este.'},
+            parabolic_2:{title:'1.5m Parabolic Antenna',specs:'Plato de 1.5m de diámetro, mismo diseño, base sobre plataforma de concreto y orientación suroeste.'},
+            yagi_1:{title:'TX Yagi Antenna',specs:'Mástil de 5m con 7 elementos horizontales de 3m a 0.5m; orientada hacia la torre TX.'},
+            yagi_2:{title:'RX Yagi Antenna',specs:'Mástil de 3m con 5 elementos; orientada hacia la torre RX.'},
+            waveguide_run_1:{title:'Waveguide Workshop → TX',specs:'Tubería de waveguide de 0.1m × 20m a 1.5m sobre soportes, con curva central; representa la conexión workshop → torre TX.'},
+            waveguide_run_2:{title:'Waveguide Workshop → RX',specs:'Tubería de waveguide 0.1m × 15m con 3 soportes; conexión workshop → torre RX.'},
+            anechoic_chamber:{title:'Anechoic Chamber',specs:'Shielded container 8m × 4m × 3.5m, armored door con 4 pernos, 2 ventiladores, 3 LED lights y concrete base 9m × 5m.'},
+            spectrum_analyzer_outdoor:{title:'Outdoor Instrumentation Rack',specs:'Rack 1m × 0.6m × 1.2m sobre ruedas, 2 pantallas frontales y 4 cables hacia el suelo.'},
+            gps_antenna:{title:'GPS Array',specs:'Three GPS antennas in a 10m triangle, each with a post and circular dish.'},
+            magnetometer:{title:'Magnetometer',specs:'3 postes en triángulo de 5m, esferas sensoras y cables hacia el centro.'},
+            barometric_station:{title:'Barometric Station',specs:'Poste 2m, caja superior de 0.3m y 2 sensores laterales.'},
+            lightning_rod:{title:'Lightning Rod',specs:'Poste de 12m en la esquina del workshop, punta esférica y cable de bajada.'},
+            atv_1:{title:'ATV 1',specs:'Base 1.5m × 0.8m × 0.5m, 4 ruedas y manubrio; acabado verde oscuro #2a4a2a.'},
+            atv_2:{title:'ATV 2',specs:'Mismo diseño del ATV, acabado #666, ubicado en el estacionamiento.'},
+            flatbed_truck:{title:'Flatbed Truck',specs:'Chasis 7m × 2.4m × 1m, plataforma 5m × 2.4m, cabina 2m × 2.4m × 2.5m, 8 ruedas y contenedor pequeño.'},
+            jeep:{title:'Jeep / 4×4 Militar',specs:'Vehículo abierto 4m × 1.8m × 1.5m verde oliva, 4 ruedas, parabrisas inclinado y portaequipaje.'},
+            boat:{title:'Boat / Launch en Trailer',specs:'Casco 4m × 1.2m × 0.5m sobre trailer con chasis, 2 ruedas y enganche; ubicado en staging.'},
+            drone_warehouse:{title:'Drone Warehouse',specs:'Box 3m × 2m × 2.5m con puerta; 4 drones simplificados, 2 en techo y 2 junto al almacén.'},
+            well_pump:{title:'Water Well Pump',specs:'2m × 2m concrete platform, pump tower with four 3m posts, top motor, and pipe to the tank.'},
+            septic_tank:{title:'Septic Tank',specs:'Buried horizontal cylindrical tank; only the main cover and two inspection covers remain visible.'},
+            rain_harvest:{title:'Rain Harvest System',specs:'4 canaletas en el techo del workshop, 2 tanques de captación y tubería de conexión.'},
+            water_pipes:{title:'Main Water Pipes',specs:'Tubería de 0.15m × 30m a 0.5m sobre soportes cada 3m y 3 curvas parciales; conecta pump house, tanque de agua y edificios.'},
+            drainage_channel:{title:'Drainage Channel',specs:'Trinchera 0.5m × 0.3m × 20m junto al camino principal con rejas cada 5m.'},
+            fire_hydrant:{title:'Fire Hydrants',specs:'2 hidrantes rojos con 2 boquillas laterales; uno en el estacionamiento y otro junto al workshop.'},
+            cell_tower:{title:'Microcelda / Torre de Comunicaciones',specs:'25m lattice structure, base 3m × 3m, 4 pilares, anillos, diagonales, 3 paneles a 120° y antena omnidireccional. This is the tallest structure on the site.'},
+            fiber_splice:{title:'Fiber Splice Cabinet',specs:'Armario 1m × 0.6m × 1.5m junto al workshop con 4 cables de colores saliendo por la base.'},
+            network_rack_outdoor:{title:'Outdoor Network Rack',specs:'Rack 0.6m × 0.6m × 1.2m, 6 LEDs y techo protector de 1m × 1m.'},
+            mesh_node_1:{title:'Nodo Mesh Wireless 1',specs:'Poste de 4m y 2 paneles opuestos; forma parte del triángulo mesh de 50m.'},
+            mesh_node_2:{title:'Nodo Mesh Wireless 2',specs:'Poste de 4m y 2 paneles opuestos; forma parte del triángulo mesh de 50m.'},
+            mesh_node_3:{title:'Nodo Mesh Wireless 3',specs:'Poste de 4m y 2 paneles opuestos; forma parte del triángulo mesh de 50m.'},
+            dry_creek:{title:'Dry Creek',specs:'Surco de 30m cruzando el terreno norte-sur con piedras dispersas en el fondo.'},
+            rock_formation_1:{title:'Rock Formation 1',specs:'Cluster exterior de 6 rocas entre 1m y 3m de diámetro.'},
+            rock_formation_2:{title:'Rock Formation 2',specs:'Cluster exterior de 3 rocas grandes entre 2m y 4m.'},
+            scree_slope:{title:'Scree Slope',specs:'Plano inclinado 10m × 8m con 20 piedras pequeñas.'},
+            playa_area:{title:'Clay Flat / Playa Seca',specs:'Círculo de 15m de diámetro con grietas radiales.'},
+            dune_line:{title:'Dune Line',specs:'5 montículos de 5m × 3m × 1m separados 10m en el borde sur.'},
+            exposed_bedrock:{title:'Exposed Bedrock',specs:'3 planos irregulares de roca madre a nivel del suelo con parche de musgo.'},
+            erosion_gullies:{title:'Erosion Gullies',specs:'6 líneas en abanico desde un punto para simular erosión hídrica.'},
+            mesquite_11:{title:'Large Mesquite',specs:'Tronco 0.3m × 3m y 3 esferas de copa; el más grande del sitio, a 100m de la valla.'},
+            mesquite_12:{title:'Mesquite',specs:'Tronco 0.2m × 2m y 2 esferas de copa de 1.5m.'},
+            mesquite_13:{title:'Young Mesquite',specs:'Tronco 0.1m × 1m y copa de 0.8m.'},
+            creosote_cluster:{title:'Cluster de Creosote',specs:'5 arbustos de 0.6m agrupados en un círculo de 3m.'},
+            ocotillo:{title:'Ocotillo',specs:'10 tallos delgados de 4m en abanico, sin hojas; una de tres unidades del terreno.'},
+            ocotillo_2:{title:'Ocotillo 2',specs:'6 tallos de 3m, sin hojas.'},
+            ocotillo_3:{title:'Ocotillo 3',specs:'10 tallos de 5m, el más grande.'},
+            agave:{title:'Agave',specs:'Roseta de 12 hojas triangulares de 0.8m; 4 unidades dispersas en la especificación.'},
+            agave_2:{title:'Agave 2',specs:'Roseta más pequeña de 8 hojas, aproximadamente 0.5m.'},
+            dead_tree:{title:'Dead Tree',specs:'Tronco de 4m con 3 ramas secas; sin copa e inclinado 15°.'},
+            road_sign_1:{title:'Restricted Access Sign',specs:'2.5m post and sign 0.6m × 0.4m con texto ARANRUTH — DO NOT ENTER WITHOUT AUTHORIZATION.'},
+            road_sign_2:{title:'Speed Sign',specs:'White circular sign with red border and number 20, installed on the main road.'},
+            hazard_sign:{title:'Peligro RF — TX',specs:'Yellow sign with radiation symbol beside the TX tower.'},
+            hazard_sign_2:{title:'Peligro RF — RX',specs:'Mismo diseño de peligro RF junto a la torre RX.'},
+            directional_sign:{title:'Directional Sign',specs:'Flecha con WORKSHOP → y ← SPECTRUM PAD en el cruce de caminos.'},
+            no_smoking:{title:'No Smoking',specs:'Circular no-smoking sign beside the fuel tank.'},
+            emergency_sign:{title:'Emergency Sign',specs:'Rectángulo azul con texto EMERGENCY: +52 625 XXX XXXX junto al medical.'},
+            survey_markers:{title:'Survey Markers',specs:'5 estacas rojas con banderín en una línea recta de 100m.'},
+            tool_cabinet:{title:'Tool Cabinet',specs:'Gabinete 1.5m × 0.6m × 1.8m azul con 4 cajones y una puerta.'},
+            air_compressor:{title:'Air Compressor',specs:'Tanque cilíndrico, motor, depósito y manguera enrollada sobre ruedas.'},
+            welding_station:{title:'Welding Station',specs:'Mesa, máquina de soldar naranja, 2 cilindros de gas y manguera.'},
+            crane:{title:'Small Crane',specs:'Base amarilla, torre de 8m, brazo de 5m, cable de 3m y gancho.'},
+            scissor_lift:{title:'Scissor Lifts',specs:'2 unidades; una extendida a 3m y otra plegada, con bases, tijera y plataforma amarilla.'},
+            pipe_rack:{title:'Pipe Rack',specs:'2 filas de soportes con 12 tubos de 6m apilados en 3 niveles.'},
+            pallet_stack:{title:'Pallet Stack',specs:'5 pallets apilados y 3 cajas encima en el staging area.'},
+            concrete_mixers:{title:'Concrete Mixers',specs:'2 mezcladoras con base, cilindro, rueda; una cargada con material y otra vacía.'},
+            fire_extinguisher_2:{title:'Fire Extinguisher 2',specs:'Red extinguisher mounted on the container_main wall.'},
+            fire_extinguisher_3:{title:'Fire Extinguisher 3',specs:'Red extinguisher mounted on the mess_hall wall.'},
+            first_aid_kit:{title:'First Aid Kit de Primeros Auxilios',specs:'Caja blanca 0.3m × 0.2m × 0.15m con cruz roja en la pared del workshop.'},
+            emergency_light:{title:'Emergency Lights',specs:'4 luminarias de emergencia con 2 LEDs rojos cada una; distribuidas entre workshop y container_main.'},
+            emergency_shower:{title:'Emergency Shower',specs:'Poste rojo de 2m, boquilla y palanca roja junto al fuel_tank.'},
+            spill_kit:{title:'Spill Kit',specs:'Caja amarilla de 0.5m × 0.4m × 0.3m con tapa junto al tanque de combustible.'},
+            picnic_table:{title:'Picnic Table',specs:'Table and two wooden benches beside the mess hall.'},
+            bbq_grill:{title:'BBQ Grill',specs:'Base de 0.5m × 0.4m × 0.7m, rejilla y chimenea; junto a la mesa de picnic.'},
+            laundry_line:{title:'Outdoor Laundry Line',specs:'2 postes, cuerda tensada y 5 prendas de colores.'},
+            trash_cans:{title:'Trash Cans',specs:'4 botes cilíndricos con tapa; 2 en estacionamiento, 1 junto al mess_hall y 1 junto al workshop.'},
+            bike_rack:{title:'Bike Rack',specs:'3 U invertidas y 2 bicicletas simplificadas junto a las oficinas.'},
+            notice_board:{title:'Notice Board',specs:'Tablero de 1m × 0.7m con 4 papeles pegados en la pared del mess_hall.'},
+            dog_kennel:{title:'Dog Kennel',specs:'4 postes, techo 1.5m × 1m y perro simplificado tumbado con patas extendidas.'},
+            radio_antenna_whip:{title:'Office Whip Antenna',specs:'3 antenas whip de 1m a 30° entre sí sobre la esquina del techo; base de 0.05m × 0.1m.'}
+        });
+
+        // English inspection records for elements 91-160.
+        Object.assign(objectSpecs, {
+            garden_beds:{title:'Garden Beds',specs:'Six garden beds with soil blocks, stone borders, plants, and a row layout in front of the offices.'},
+            garden_path:{title:'Garden Path',specs:'Twelve stone slabs in a straight line connecting the parking area to the office entrance.'},
+            garden_lamp_1:{title:'Garden Lamp 1',specs:'Garden lamp with dark post and warm globe light; low-intensity point light.'},
+            garden_lamp_2:{title:'Garden Lamp 2',specs:'Garden lamp with dark post and warm globe light; low-intensity point light.'},
+            garden_lamp_3:{title:'Garden Lamp 3',specs:'Garden lamp with dark post and warm globe light; low-intensity point light.'},
+            garden_lamp_4:{title:'Garden Lamp 4',specs:'Garden lamp with dark post and warm globe light; low-intensity point light.'},
+            flower_bed:{title:'Flower Pot 1',specs:'Flower pot with eight green stems and eight mixed-color flowers; three pots are represented by this group.'},
+            flower_bed_2:{title:'Flower Pot 2',specs:'Flower pot with five orange flowers and green stems.'},
+            flower_bed_3:{title:'Flower Pot 3',specs:'Flower pot with six purple flowers and green stems.'},
+            hedge_row:{title:'Hedge Row',specs:'Low hedge formed by ten flattened green forms in a straight line between the parking area and garden.'},
+            fountain:{title:'Garden Fountain',specs:'Decorative fountain with stone base, central column, upper bowl, and translucent blue water.'},
+            garden_bench:{title:'Garden Bench',specs:'Garden bench assembly with two seats, four legs, and a backrest beside the fountain.'},
+            quarantine_zone:{title:'Quarantine Zone',specs:'Concrete quarantine area bounded by yellow tape and posts, containing three sealed containers.'},
+            restricted_gate:{title:'Restricted Gate',specs:'Closed red barrier gate with two posts and an authorized-personnel warning sign.'},
+            cage_area:{title:'Secure Cage Area',specs:'Four secure storage cages built as metal cube frames, each containing one storage box, on a concrete floor.'},
+            bio_hazard_zone:{title:'Biohazard Zone',specs:'Biosecurity area with warning posts, alternating yellow and black markings, two drums, one wheelbarrow, and a biohazard sign.'},
+            drone_exclusion:{title:'Drone Exclusion Zone',specs:'Thirty-meter diameter no-fly zone marked by red stakes and red perimeter tape with a central NO FLY ZONE sign.'},
+            evidence_storage:{title:'Evidence Storage',specs:'Secure evidence storage building with armored door, six bolts, two locks, security camera, and EVIDENCE — DO NOT OPEN sign.'},
+            isolation_shack:{title:'Isolation Shack',specs:'Isolation bunker with secure door, viewing port, ventilation panels, roof antenna, and concrete apron.'},
+            radio_quiet_zone:{title:'RF Quiet Zone',specs:'Fifty-meter diameter RF quiet zone marked by white stakes and a central RF QUIET ZONE — ALL TRANSMISSIONS OFF sign.'},
+            decon_tent:{title:'Decontamination Tent',specs:'Temporary decontamination tent with four posts, translucent roof and entry curtain, two folding chairs, and one table.'},
+            containment_barricade:{title:'Containment Barricade',specs:'Semicircular containment barricade with six drums, two orange cones, and red safety tape near the fuel tank.'},
+            salt_flat:{title:'Salt Flat',specs:'Bright salt-flat feature with an irregular layered edge and twelve radial surface cracks.'},
+            mud_cracks:{title:'Mud Crack Field',specs:'Ten-by-eight-meter dry mud field with twenty shallow cracks arranged in a drying pattern.'},
+            alluvial_fan:{title:'Alluvial Fan',specs:'Triangular alluvial fan with fifteen stones distributed outward from the apex at decreasing density.'},
+            termite_mounds:{title:'Termite Mounds',specs:'Cluster of four termite mounds with three visible surface openings on each mound.'},
+            wind_erosion_arc:{title:'Wind Erosion Arcs',specs:'Three partial stone arches at the terrain edge representing wind-eroded rock.'},
+            animal_track:{title:'Animal Tracks',specs:'Twelve translucent paired tracks forming a ten-meter trail along the dirt route.'},
+            burrow:{title:'Burrow',specs:'Three buried circular burrow entrances in a triangular arrangement, including one visible entrance.'},
+            rock_outcrop_line:{title:'Rock Outcrop Line',specs:'Eight irregular rock forms arranged over a thirty-meter line to represent an exposed geological vein.'},
+            prickly_pear_grove:{title:'Prickly Pear Grove',specs:'Group of ten prickly-pear plants built from layered green paddles, with pink flowers on several plants.'},
+            nopal_cactus:{title:'Large Nopal Cactus',specs:'Large nopal cactus with eight paddles in three levels and five yellow flowers.'},
+            cholla_cactus:{title:'Cholla Cactus Group',specs:'Three cholla cacti with segmented stems and visible light-colored spines on two specimens.'},
+            "devil's_tongue":{title:"Devil's Tongue Cacti",specs:'Five devil’s-tongue forms with reddish stems and repeated yellow spine details.'},
+            desert_willow:{title:'Desert Willow',specs:'Desert willow with trunk, five branches, and five gray-green crowns; two units are represented by this group.'},
+            desert_willow_2:{title:'Desert Willow 2',specs:'Smaller desert willow with reduced height and three branches.'},
+            sagebrush_cluster:{title:'Sagebrush Cluster',specs:'Eight gray-green sagebrush shrubs with visible stems in a compact cluster.'},
+            dead_shrub:{title:'Dead Shrub Group',specs:'Five leafless dead shrubs made from dry gray-brown stems at varied angles.'},
+            underground_tank_1:{title:'Underground Fuel Tank',specs:'Buried fuel tank represented by an access cover, anchor bolts, concrete surround, and FUEL marker.'},
+            underground_tank_2:{title:'Underground Water Tank',specs:'Buried water tank represented by an access cover, anchor bolt, concrete surround, and WATER marker.'},
+            cable_trench:{title:'Cable Trenches',specs:'Four recessed cable trenches with concrete cover sections representing underground inter-building cabling.'},
+            manhole_1:{title:'Manhole 1',specs:'Roadside access manhole with steel cover and two anchor bolts.'},
+            manhole_2:{title:'Manhole 2',specs:'Roadside access manhole with steel cover and two anchor bolts.'},
+            manhole_3:{title:'Manhole 3',specs:'Roadside access manhole with steel cover and two anchor bolts.'},
+            concrete_pad_1:{title:'Concrete Pads 1',specs:'Five equipment foundation pads distributed across the site; two include four anchor bolts each.'},
+            concrete_pad_2:{title:'Concrete Pad 2',specs:'Four-by-four-meter concrete loading pad with eight anchors and yellow perimeter marking.'},
+            sandwich_board:{title:'Sandwich Board',specs:'Portable announcement board beside the mess hall displaying MEETING 0800 — WORKSHOP.'},
+            water_bottles:{title:'Water Bottles',specs:'Four translucent blue water bottles placed on the picnic table.'},
+            backpacks:{title:'Backpacks',specs:'Two field backpacks, one olive and one dark gray, hanging from the bike rack.'},
+            tool_box:{title:'Tool Box',specs:'Open red tool box with raised lid and three visible tools.'},
+            ladder:{title:'Ladder',specs:'Three-meter aluminum ladder with two rails and five rungs, leaning against the workshop.'},
+            extension_cord:{title:'Extension Cord',specs:'Yellow extension cord coiled into three loops with plugs at both ends in the parking area.'},
+            wheelbarrow:{title:'Wheelbarrow',specs:'Single-wheel wheelbarrow with metal tray, handles, and a load of soil.'},
+            shovels:{title:'Shovels',specs:'Three shovels with wooden handles and metal blades resting against the workshop wall.'},
+            gas_can:{title:'Gas Cans',specs:'Two red fuel cans with dark caps in the parking area.'},
+            first_aid_box:{title:'First Aid Box',specs:'White wall-mounted first-aid box with red cross and two metal handles beside the mess hall.'},
+            radio_handheld:{title:'Handheld Radios',specs:'Two compact handheld radios with antennas and green status LEDs on the workshop table.'},
+            laptop_outdoor:{title:'Outdoor Laptop',specs:'Compact field laptop with dark base, raised display, and green status indicator on a concrete pad.'},
+            solar_charger:{title:'Portable Solar Charger',specs:'Portable charger with dark housing, blue solar panel, and three indicator LEDs.'},
+            security_camera_1:{title:'Security Camera Network',specs:'Four pole-mounted security cameras located at the entrance, workshop, fuel tank, and staging area.'},
+            bird_1:{title:'Bird 1',specs:'Small dark bird perched on the TX tower ring at ten meters.'},
+            bird_2:{title:'Bird 2',specs:'Small dark bird perched on the wire between the workshop and TX tower.'},
+            bird_3:{title:'Bird 3',specs:'Small bird in flight at five meters above the terrain edge.'},
+            rabbit:{title:'Rabbit',specs:'Small resting rabbit with flattened body, head, ears, and four legs at the garden edge.'},
+            scorpion:{title:'Scorpion',specs:'Small scorpion model with body, eight legs, segmented tail, and pincer on a rock formation.'},
+            lizard:{title:'Lizard',specs:'Small flat lizard with body, head, four legs, and tail resting on a garden-path slab.'},
+            cloud_1:{title:'Cloud 1',specs:'Soft white cloud cluster at one hundred meters, slowly translating along the X axis.'},
+            cloud_2:{title:'Cloud 2',specs:'Soft white cloud cluster at eighty meters on the opposite side of the site.'},
+            sun_glow:{title:'Sun Glow',specs:'Translucent warm solar disc at two hundred meters with a matching point light.'},
+            heat_haze:{title:'Heat Haze',specs:'Three translucent heat-shimmer planes above the main road with animated opacity.'}
+        });
+
+        // Scene Setup
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xf5f5f0);
+
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
+        const ISO_CAM = new THREE.Vector3(18, 12, 155);
+        const ISO_TARGET = new THREE.Vector3(0, -7, 55);
+        camera.position.copy(ISO_CAM);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        container.appendChild(renderer.domElement);
+
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.maxPolarAngle = Math.PI / 2 - 0.02;
+        controls.minDistance = 20;
+        controls.maxDistance = 300;
+        controls.target.copy(ISO_TARGET);
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0xf0e8d8, 0.4);
+        scene.add(ambientLight);
+
+        const hemiLight = new THREE.HemisphereLight(0x87ceeb, 0xd4a574, 0.3);
+        scene.add(hemiLight);
+
+        const dirLight = new THREE.DirectionalLight(0xfff8ee, 1.05);
+        dirLight.position.set(40, 90, 55);
+        dirLight.castShadow = true;
+        dirLight.shadow.mapSize.width = 2048;
+        dirLight.shadow.mapSize.height = 2048;
+        dirLight.shadow.camera.near = 0.5;
+        dirLight.shadow.camera.far = 400;
+        const d = 120;
+        dirLight.shadow.camera.left = -d;
+        dirLight.shadow.camera.right = d;
+        dirLight.shadow.camera.top = d;
+        dirLight.shadow.camera.bottom = -d;
+        scene.add(dirLight);
+
+        // Helper Canvas Texture for Text
+        function createTextTexture(text1, text2 = '', bgColor = '#ffffff', textColor = '#111111', width = 1024, height = 512) {
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = bgColor;
+            ctx.fillRect(0, 0, width, height);
+
+            ctx.fillStyle = textColor;
+            ctx.font = 'bold 64px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(text1, width / 2, height / 2 - (text2 ? 35 : 0));
+
+            if (text2) {
+                ctx.font = '28px sans-serif';
+                ctx.fillText(text2, width / 2, height / 2 + 45);
+            }
+
+            const texture = new THREE.CanvasTexture(canvas);
+            texture.colorSpace = THREE.SRGBColorSpace;
+            return texture;
+        }
+
+        function createBrandFaceTexture() {
+            const width = 2048;
+            const height = 360;
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#ede5dd';
+            ctx.fillRect(0, 0, width, height);
+            ctx.fillStyle = '#111111';
+            ctx.beginPath();
+            ctx.moveTo(70, 90);
+            ctx.lineTo(150, 90);
+            ctx.lineTo(150, 170);
+            ctx.lineTo(110, 210);
+            ctx.lineTo(70, 170);
+            ctx.closePath();
+            ctx.fill();
+            ctx.font = '800 132px Inter, Helvetica, Arial, sans-serif';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('ARANRUTH INDUSTRIES', 190, height / 2);
+            const texture = new THREE.CanvasTexture(canvas);
+            texture.colorSpace = THREE.SRGBColorSpace;
+            texture.anisotropy = 8;
+            return texture;
+        }
+
+        function createEntranceSignTexture() {
+            const width = 1536;
+            const height = 614;
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, width, height);
+            ctx.fillStyle = '#111111';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            let titleSize = 112;
+            ctx.font = '800 ' + titleSize + 'px Inter, Helvetica, Arial, sans-serif';
+            while (ctx.measureText('ARANRUTH INDUSTRIES').width > width * 0.92 && titleSize > 48) {
+                titleSize -= 4;
+                ctx.font = '800 ' + titleSize + 'px Inter, Helvetica, Arial, sans-serif';
+            }
+            ctx.fillText('ARANRUTH INDUSTRIES', width / 2, height * 0.38);
+            const subSize = Math.round(titleSize * 0.4);
+            ctx.font = '600 ' + subSize + 'px Inter, Helvetica, Arial, sans-serif';
+            ctx.fillStyle = '#111111';
+            ctx.fillText('ELECTROMAGNETIC ENVIRONMENT CONTROL', width / 2, height * 0.68);
+            const texture = new THREE.CanvasTexture(canvas);
+            texture.colorSpace = THREE.SRGBColorSpace;
+            texture.anisotropy = 8;
+            return texture;
+        }
+
+        function createSatelliteTexture() {
+            const c = document.createElement('canvas');
+            c.width = 1024;
+            c.height = 1024;
+            const ctx = c.getContext('2d');
+            ctx.fillStyle = '#c4b496';
+            ctx.fillRect(0, 0, 1024, 1024);
+            for (let i = 0; i < 55; i++) {
+                const tones = ['#8f9a6c', '#d2c4a4', '#a89878', '#b8c4a0', '#c8b090'];
+                ctx.fillStyle = tones[i % tones.length];
+                ctx.globalAlpha = 0.55;
+                ctx.fillRect(Math.random() * 1024, Math.random() * 1024, 60 + Math.random() * 160, 40 + Math.random() * 110);
+            }
+            ctx.globalAlpha = 1;
+            ctx.fillStyle = '#b5b5ae';
+            ctx.fillRect(340, 380, 220, 170);
+            ctx.fillRect(280, 470, 90, 70);
+            ctx.fillRect(560, 410, 70, 95);
+            ctx.strokeStyle = '#8a8580';
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.moveTo(512, 40);
+            ctx.lineTo(500, 980);
+            ctx.moveTo(80, 620);
+            ctx.lineTo(960, 590);
+            ctx.stroke();
+            const texture = new THREE.CanvasTexture(c);
+            texture.colorSpace = THREE.SRGBColorSpace;
+            texture.wrapS = THREE.RepeatWrapping;
+            texture.wrapT = THREE.RepeatWrapping;
+            texture.repeat.set(2, 2);
+            return texture;
+        }
+
+        function addYellowFootprint(group, width, depth, y = 0.06) {
+            const hw = width / 2;
+            const hd = depth / 2;
+            const pts = [
+                new THREE.Vector3(-hw, y, -hd),
+                new THREE.Vector3(hw, y, -hd),
+                new THREE.Vector3(hw, y, hd),
+                new THREE.Vector3(-hw, y, hd),
+                new THREE.Vector3(-hw, y, -hd)
+            ];
+            const line = new THREE.Line(
+                new THREE.BufferGeometry().setFromPoints(pts),
+                new THREE.LineBasicMaterial({ color: 0xffcc00, linewidth: 2 })
+            );
+            group.add(line);
+        }
+
+        function addYellowEdges(mesh, group) {
+            const edges = new THREE.EdgesGeometry(mesh.geometry, 24);
+            const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0xffcc00 }));
+            line.position.copy(mesh.position);
+            line.rotation.copy(mesh.rotation);
+            line.scale.copy(mesh.scale);
+            group.add(line);
+        }
+
+        // Master Group to hold all 35+ objects for Raycasting and management
+        const interactiveObjects = [];
+
+        function registerGroup(group, name) {
+            group.name = name;
+            group.traverse(child => {
+                child.userData.parentName = name;
+            });
+            scene.add(group);
+            interactiveObjects.push(group);
+            return group;
+        }
+
+        // ==========================================
+        // 1. TERRAIN (35. terrain)
+        // ==========================================
+        const terrainGeo = new THREE.PlaneGeometry(500, 300, 64, 64);
+        terrainGeo.rotateX(-Math.PI / 2);
+        const pos = terrainGeo.attributes.position;
+        for (let i = 0; i < pos.count; i++) {
+            const vx = pos.getX(i);
+            const vz = pos.getZ(i);
+            const ny = Math.sin(vx * 0.03) * Math.cos(vz * 0.03) * 0.3 + Math.sin(vx * 0.1) * 0.05;
+            pos.setY(i, ny);
+        }
+        terrainGeo.computeVertexNormals();
+        const terrainMat = new THREE.MeshStandardMaterial({
+            map: createSatelliteTexture(),
+            color: 0xe8e0d4,
+            roughness: 0.95,
+            metalness: 0.0
+        });
+        const terrainMesh = new THREE.Mesh(terrainGeo, terrainMat);
+        terrainMesh.visible = false;
+        
+        const terrainGroup = new THREE.Group();
+        terrainGroup.add(terrainMesh);
+
+        // Add gravel patches & cracks around
+        for (let i = 0; i < 20; i++) {
+            const crackGeo = new THREE.PlaneGeometry(Math.random() * 8 + 4, 0.02);
+            crackGeo.rotateX(-Math.PI / 2);
+            const crackMat = new THREE.MeshStandardMaterial({ color: 0xa0784a, roughness: 1.0 });
+            const crack = new THREE.Mesh(crackGeo, crackMat);
+            crack.position.set((Math.random() - 0.5) * 200, 0.05, (Math.random() - 0.5) * 120);
+            crack.rotation.y = Math.random() * Math.PI;
+            terrainGroup.add(crack);
+        }
+        registerGroup(terrainGroup, "terrain");
+
+        // ==========================================
+        // MAQUETTE PLATFORM + FRONT BRANDING (Anduril Arsenal-1)
+        // ==========================================
+        const platH = 14;
+        const maquetteShape = new THREE.Shape();
+        const outline = [
+            [-78, 82], [-40, 90], [8, 88], [48, 84], [80, 72],
+            [86, 20], [84, -20], [78, -70],
+            [70, -88], [-70, -88],
+            [-80, -70], [-86, -18], [-84, 28], [-80, 60]
+        ];
+        maquetteShape.moveTo(outline[0][0], outline[0][1]);
+        for (let i = 1; i < outline.length; i++) {
+            maquetteShape.lineTo(outline[i][0], outline[i][1]);
+        }
+        maquetteShape.closePath();
+        const maquetteGeo = new THREE.ExtrudeGeometry(maquetteShape, {
+            depth: platH,
+            bevelEnabled: true,
+            bevelThickness: 0.4,
+            bevelSize: 0.6,
+            bevelSegments: 2
+        });
+        maquetteGeo.rotateX(-Math.PI / 2);
+        const maquetteMat = new THREE.MeshStandardMaterial({
+            color: 0xede5dd,
+            roughness: 0.92,
+            metalness: 0.02
+        });
+        const maquetteMesh = new THREE.Mesh(maquetteGeo, maquetteMat);
+        maquetteMesh.position.y = -platH;
+        maquetteMesh.castShadow = true;
+        maquetteMesh.receiveShadow = true;
+        const maquetteGroup = new THREE.Group();
+        maquetteGroup.add(maquetteMesh);
+
+        const topCap = new THREE.Mesh(
+            new THREE.PlaneGeometry(168, 178),
+            new THREE.MeshStandardMaterial({
+                map: createSatelliteTexture(),
+                color: 0xe8e0d4,
+                roughness: 0.95,
+                metalness: 0
+            })
+        );
+        topCap.rotation.x = -Math.PI / 2;
+        topCap.position.y = 0.01;
+        topCap.receiveShadow = true;
+        maquetteGroup.add(topCap);
+
+        const brandMap = createBrandFaceTexture();
+        const brandMat = new THREE.MeshBasicMaterial({ map: brandMap });
+        const fascia = new THREE.Mesh(
+            new THREE.BoxGeometry(110, platH - 0.4, 3.2),
+            [
+                maquetteMat,
+                maquetteMat,
+                maquetteMat,
+                maquetteMat,
+                brandMat,
+                maquetteMat
+            ]
+        );
+        fascia.position.set(0, -platH / 2, 86.4);
+        fascia.castShadow = true;
+        maquetteGroup.add(fascia);
+
+        const brandW = 110 * 0.6;
+        const brandH = (platH - 0.4) * 0.7;
+        const brandPlane = new THREE.Mesh(
+            new THREE.PlaneGeometry(brandW, brandH),
+            new THREE.MeshBasicMaterial({ map: brandMap, depthTest: true, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 })
+        );
+        brandPlane.position.set(0, -platH / 2, 88.15);
+        maquetteGroup.add(brandPlane);
+        registerGroup(maquetteGroup, "maquette_platform");
+
+        const cardAnchor = new THREE.Vector3(-8, 26, -4);
+        const stemGeom = new THREE.BufferGeometry().setFromPoints([
+            new THREE.Vector3(-8, 0.2, -4),
+            cardAnchor.clone()
+        ]);
+        const cardStem = new THREE.Line(stemGeom, new THREE.LineBasicMaterial({ color: 0xcccccc }));
+        scene.add(cardStem);
+        const floatInfoCard = document.getElementById('floatInfoCard');
+        const _cardNdc = new THREE.Vector3();
+        function updateFloatingCard() {
+            _cardNdc.copy(cardAnchor).project(camera);
+            const x = (_cardNdc.x * 0.5 + 0.5) * window.innerWidth;
+            const y = (-_cardNdc.y * 0.5 + 0.5) * window.innerHeight;
+            const visible = _cardNdc.z < 1;
+            floatInfoCard.style.display = visible ? 'block' : 'none';
+            floatInfoCard.style.transform = `translate(${x}px, ${y}px) translate(-50%, -108%)`;
+        }
+
+        // ==========================================
+        // 2. ROADS & INFRASTRUCTURE PATHS
+        // ==========================================
+        const roadMat = new THREE.MeshStandardMaterial({ color: 0xb8926a, roughness: 0.8 });
+        const concreteRoadMat = new THREE.MeshStandardMaterial({ color: 0xaaaaaa, roughness: 0.6 });
+
+        const mainRoadGeo = new THREE.BoxGeometry(8, 0.04, 80);
+        const mainRoadMesh = new THREE.Mesh(mainRoadGeo, roadMat);
+        mainRoadMesh.position.set(0, 0.02, 60);
+        mainRoadMesh.receiveShadow = true;
+        registerGroup(mainRoadMesh, "main_road");
+
+        const secRoadGeo = new THREE.BoxGeometry(4, 0.04, 60);
+        const secRoadMesh = new THREE.Mesh(secRoadGeo, roadMat);
+        secRoadMesh.position.set(-15, 0.02, 0);
+        secRoadMesh.rotation.y = Math.PI / 2;
+        secRoadMesh.receiveShadow = true;
+        registerGroup(secRoadMesh, "secondary_road");
+
+        const roadArrayGeo = new THREE.BoxGeometry(4, 0.04, 90);
+        const roadArrayMesh = new THREE.Mesh(roadArrayGeo, concreteRoadMat);
+        roadArrayMesh.position.set(45, 0.02, -20);
+        roadArrayMesh.receiveShadow = true;
+        registerGroup(roadArrayMesh, "road_to_array");
+
+        // ==========================================
+        // 3. WORKSHOP (1. workshop)
+        // ==========================================
+        const workshopGroup = new THREE.Group();
+        const workshopBoxGeo = new THREE.BoxGeometry(10, 6, 15);
+        const workshopMat = new THREE.MeshStandardMaterial({ color: 0xe8e8e8, roughness: 0.7 });
+        const workshopMesh = new THREE.Mesh(workshopBoxGeo, workshopMat);
+        workshopMesh.position.y = 3;
+        workshopMesh.castShadow = true;
+        workshopMesh.receiveShadow = true;
+        workshopGroup.add(workshopMesh);
+
+        // Roof double slope
+        const roofMat = new THREE.MeshStandardMaterial({ color: 0x555555, roughness: 0.5 });
+        const roofGeo1 = new THREE.BoxGeometry(10.4, 0.2, 7.8);
+        const roof1 = new THREE.Mesh(roofGeo1, roofMat);
+        roof1.position.set(0, 6.3, 3.7);
+        roof1.rotation.x = 0.26;
+        roof1.castShadow = true;
+        workshopGroup.add(roof1);
+
+        const roof2 = new THREE.Mesh(roofGeo1, roofMat);
+        roof2.position.set(0, 6.3, -3.7);
+        roof2.rotation.x = -0.26;
+        roof2.castShadow = true;
+        workshopGroup.add(roof2);
+
+        // Doors & Windows
+        const doorMat = new THREE.MeshStandardMaterial({ color: 0x444444, roughness: 0.4 });
+        for (let i = -1; i <= 1; i++) {
+            const door = new THREE.Mesh(new THREE.BoxGeometry(2, 3, 0.1), doorMat);
+            door.position.set(i * 3, 1.5, 7.51);
+            workshopGroup.add(door);
+        }
+
+        const winMat = new THREE.MeshStandardMaterial({ color: 0xa8d4e8, roughness: 0.2, metalness: 0.8 });
+        for (let i = -3; i <= 3; i += 2) {
+            const win = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.5, 0.1), winMat);
+            win.position.set(i, 4.5, 7.51);
+            workshopGroup.add(win);
+        }
+
+        // Facade Text "ARANRUTH"
+        const workshopTextTex = createTextTexture("ARANRUTH", "", "#ffffff", "#333333", 512, 128);
+        const workshopTextMat = new THREE.MeshBasicMaterial({ map: workshopTextTex, transparent: true });
+        const workshopTextMesh = new THREE.Mesh(new THREE.PlaneGeometry(4, 1), workshopTextMat);
+        workshopTextMesh.position.set(0, 5, 7.56);
+        workshopGroup.add(workshopTextMesh);
+
+        addYellowEdges(workshopMesh, workshopGroup);
+        addYellowFootprint(workshopGroup, 10.4, 15.4);
+        workshopGroup.position.set(-20, 0, 0);
+        registerGroup(workshopGroup, "workshop");
+
+        // ==========================================
+        // 4. OFFICES / CONTROL ROOM (2. offices)
+        // ==========================================
+        const officesGroup = new THREE.Group();
+        const officeBox = new THREE.Mesh(
+            new THREE.BoxGeometry(6, 4, 10),
+            new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.6 })
+        );
+        officeBox.position.y = 2;
+        officeBox.castShadow = true;
+        officeBox.receiveShadow = true;
+        officesGroup.add(officeBox);
+
+        // Windows
+        for (let i = -3; i <= 3; i += 2) {
+            const win = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.5, 0.1), winMat);
+            win.position.set(3.01, 2, i);
+            officesGroup.add(win);
+        }
+
+        addYellowEdges(officeBox, officesGroup);
+        addYellowFootprint(officesGroup, 6.4, 10.4);
+        officesGroup.position.set(-20, 0, -18);
+        registerGroup(officesGroup, "offices");
+
+        // ==========================================
+        // 5. MAIN CONTAINER (3. container_main)
+        // ==========================================
+        const containerMainGroup = new THREE.Group();
+        const cMain = new THREE.Mesh(
+            new THREE.BoxGeometry(3, 3, 6),
+            new THREE.MeshStandardMaterial({ color: 0x4a4a4a, roughness: 0.5 })
+        );
+        cMain.position.y = 1.7;
+        cMain.castShadow = true;
+        cMain.receiveShadow = true;
+        containerMainGroup.add(cMain);
+
+        // Concrete base blocks
+        for (let x of [-1.2, 1.2]) {
+            for (let z of [-2.5, 2.5]) {
+                const block = new THREE.Mesh(
+                    new THREE.BoxGeometry(0.5, 0.2, 0.5),
+                    new THREE.MeshStandardMaterial({ color: 0x999999 })
+                );
+                block.position.set(x, 0.1, z);
+                containerMainGroup.add(block);
+            }
+        }
+        addYellowEdges(cMain, containerMainGroup);
+        addYellowFootprint(containerMainGroup, 3.4, 6.4);
+        containerMainGroup.position.set(-5, 0, -10);
+        registerGroup(containerMainGroup, "container_main");
+
+        // ==========================================
+        // 6. SOLAR CONTAINER (4. container_solar)
+        // ==========================================
+        const containerSolarGroup = new THREE.Group();
+        const cSolar = new THREE.Mesh(
+            new THREE.BoxGeometry(3, 3, 6),
+            new THREE.MeshStandardMaterial({ color: 0x6a6a6a, roughness: 0.5 })
+        );
+        cSolar.position.y = 1.5;
+        cSolar.castShadow = true;
+        cSolar.receiveShadow = true;
+        containerSolarGroup.add(cSolar);
+
+        // Roof panels
+        const panelMat = new THREE.MeshStandardMaterial({ color: 0x1a3a5c, roughness: 0.2, metalness: 0.8 });
+        for (let i = -2; i <= 2; i += 1.3) {
+            const panel = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.05, 1), panelMat);
+            panel.position.set(0, 3.1, i);
+            panel.rotation.x = 0.26;
+            containerSolarGroup.add(panel);
+        }
+        addYellowEdges(cSolar, containerSolarGroup);
+        addYellowFootprint(containerSolarGroup, 3.4, 6.4);
+        containerSolarGroup.position.set(-5, 0, -18);
+        registerGroup(containerSolarGroup, "container_solar");
+
+        // ==========================================
+        // 7. WAREHOUSE (5. bodega)
+        // ==========================================
+        const bodegaGroup = new THREE.Group();
+        const bodegaBox = new THREE.Mesh(
+            new THREE.BoxGeometry(6, 5, 8),
+            new THREE.MeshStandardMaterial({ color: 0xd0d0d0, roughness: 0.6 })
+        );
+        bodegaBox.position.y = 2.5;
+        bodegaBox.castShadow = true;
+        bodegaBox.receiveShadow = true;
+        bodegaGroup.add(bodegaBox);
+        addYellowEdges(bodegaBox, bodegaGroup);
+        addYellowFootprint(bodegaGroup, 6.4, 8.4);
+        bodegaGroup.position.set(5, 0, -15);
+        registerGroup(bodegaGroup, "bodega");
+
+        // ==========================================
+        // 8. TX TOWER (6. tower_tx)
+        // ==========================================
+        const towerTxGroup = new THREE.Group();
+        const towerBase = new THREE.Mesh(
+            new THREE.BoxGeometry(3, 0.3, 3),
+            new THREE.MeshStandardMaterial({ color: 0x999999 })
+        );
+        towerBase.position.y = 0.15;
+        towerTxGroup.add(towerBase);
+
+        const metalPillarMat = new THREE.MeshStandardMaterial({ color: 0x888888, metalness: 0.8, roughness: 0.2 });
+        for (let x of [-1, 1]) {
+            for (let z of [-1, 1]) {
+                const pillar = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 15), metalPillarMat);
+                pillar.position.set(x, 7.5, z);
+                pillar.castShadow = true;
+                towerTxGroup.add(pillar);
+            }
+        }
+        // Rings
+        for (let h = 2.5; h <= 15; h += 2.5) {
+            const ring = new THREE.Mesh(new THREE.BoxGeometry(2.1, 0.05, 2.1), metalPillarMat);
+            ring.position.y = h;
+            towerTxGroup.add(ring);
+        }
+        // Antenna panel on top
+        const txPanel = new THREE.Mesh(new THREE.BoxGeometry(1, 2, 0.2), new THREE.MeshStandardMaterial({ color: 0xdddddd }));
+        txPanel.position.set(0, 15, 1);
+        txPanel.castShadow = true;
+        towerTxGroup.add(txPanel);
+
+        towerTxGroup.position.set(30, 0, 30);
+        registerGroup(towerTxGroup, "tower_tx");
+
+        // ==========================================
+        // 9. RX TOWER (7. tower_rx)
+        // ==========================================
+        const towerRxGroup = new THREE.Group();
+        const rxBase = new THREE.Mesh(
+            new THREE.BoxGeometry(2, 0.3, 2),
+            new THREE.MeshStandardMaterial({ color: 0x999999 })
+        );
+        rxBase.position.y = 0.15;
+        towerRxGroup.add(rxBase);
+
+        for (let x of [-0.7, 0.7]) {
+            for (let z of [-0.7, 0.7]) {
+                const pillar = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 10), metalPillarMat);
+                pillar.position.set(x, 5, z);
+                pillar.castShadow = true;
+                towerRxGroup.add(pillar);
+            }
+        }
+        const rxPanel = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.5, 0.2), new THREE.MeshStandardMaterial({ color: 0xdddddd }));
+        rxPanel.position.set(0, 10, -0.8);
+        rxPanel.castShadow = true;
+        towerRxGroup.add(rxPanel);
+
+        towerRxGroup.position.set(30, 0, -95); // 125m separation from TX
+        registerGroup(towerRxGroup, "tower_rx");
+
+        // ==========================================
+        // 10. SPECTRUM PAD (8. antenna_array)
+        // ==========================================
+        const antennaArrayGroup = new THREE.Group();
+        const padBase = new THREE.Mesh(
+            new THREE.BoxGeometry(70, 0.1, 5),
+            new THREE.MeshStandardMaterial({ color: 0xaaaaaa, roughness: 0.5 })
+        );
+        padBase.position.set(0, 0.05, 0);
+        padBase.receiveShadow = true;
+        antennaArrayGroup.add(padBase);
+
+        for (let i = -25; i <= 25; i += 10) {
+            const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 3), metalPillarMat);
+            pole.position.set(i, 1.5, 0);
+            pole.castShadow = true;
+            antennaArrayGroup.add(pole);
+
+            const antHead = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.3, 0.1), new THREE.MeshStandardMaterial({ color: 0xcccccc }));
+            antHead.position.set(i, 3, 0);
+            antHead.castShadow = true;
+            antennaArrayGroup.add(antHead);
+        }
+        antennaArrayGroup.position.set(45, 0, 20);
+        registerGroup(antennaArrayGroup, "antenna_array");
+
+        // ==========================================
+        // 11. STARLINK TERMINAL (9. starlink)
+        // ==========================================
+        const starlinkGroup = new THREE.Group();
+        const slPole = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 2), metalPillarMat);
+        slPole.position.y = 1;
+        starlinkGroup.add(slPole);
+        const slDish = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.6, 0.05, 16), new THREE.MeshStandardMaterial({ color: 0xffffff }));
+        slDish.position.set(0, 2, 0);
+        slDish.rotation.x = 0.5;
+        slDish.castShadow = true;
+        starlinkGroup.add(slDish);
+
+        starlinkGroup.position.set(-16, 0, -22);
+        registerGroup(starlinkGroup, "starlink");
+
+        // ==========================================
+        // 12. SOLAR ARRAY (10. solar_array)
+        // ==========================================
+        const solarArrayGroup = new THREE.Group();
+        for (let r = 0; r < 4; r++) {
+            for (let c = 0; c < 5; c++) {
+                const panel = new THREE.Mesh(new THREE.BoxGeometry(1, 0.05, 2), panelMat);
+                panel.position.set((c - 2) * 1.4, 0.8, (r - 1.5) * 2.5);
+                panel.rotation.x = 0.4;
+                panel.castShadow = true;
+                solarArrayGroup.add(panel);
+            }
+        }
+        solarArrayGroup.position.set(25, 0, -35);
+        registerGroup(solarArrayGroup, "solar_array");
+
+        // ==========================================
+        // 13. BATTERY CONTAINER (11. battery_container)
+        // ==========================================
+        const batteryGroup = new THREE.Group();
+        const batBox = new THREE.Mesh(
+            new THREE.BoxGeometry(4, 2.5, 2),
+            new THREE.MeshStandardMaterial({ color: 0x555555, roughness: 0.5 })
+        );
+        batBox.position.y = 1.25;
+        batBox.castShadow = true;
+        batBox.receiveShadow = true;
+        batteryGroup.add(batBox);
+        batteryGroup.position.set(25, 0, -20);
+        registerGroup(batteryGroup, "battery_container");
+
+        // ==========================================
+        // 14. GENERATOR (12. generator)
+        // ==========================================
+        const generatorGroup = new THREE.Group();
+        const genBox = new THREE.Mesh(
+            new THREE.BoxGeometry(2, 1.5, 1),
+            new THREE.MeshStandardMaterial({ color: 0x555555 })
+        );
+        genBox.position.y = 0.75;
+        genBox.castShadow = true;
+        generatorGroup.add(genBox);
+
+        // Shed roof
+        for (let x of [-1, 1]) {
+            for (let z of [-0.5, 0.5]) {
+                const shedPole = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 2.5), metalPillarMat);
+                shedPole.position.set(x, 1.25, z);
+                generatorGroup.add(shedPole);
+            }
+        }
+        const shedRoof = new THREE.Mesh(new THREE.BoxGeometry(3, 0.1, 2), new THREE.MeshStandardMaterial({ color: 0x777777 }));
+        shedRoof.position.y = 2.5;
+        generatorGroup.add(shedRoof);
+
+        generatorGroup.position.set(10, 0, 45);
+        registerGroup(generatorGroup, "generator");
+
+        // ==========================================
+        // 15. FUEL TANK (13. fuel_tank)
+        // ==========================================
+        const fuelTankGroup = new THREE.Group();
+        const tankBase = new THREE.Mesh(
+            new THREE.BoxGeometry(5, 0.3, 2.5),
+            new THREE.MeshStandardMaterial({ color: 0x999999 })
+        );
+        tankBase.position.y = 0.15;
+        fuelTankGroup.add(tankBase);
+
+        const tankCylinder = new THREE.Mesh(
+            new THREE.CylinderGeometry(1, 1, 4, 16),
+            new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.3 })
+        );
+        tankCylinder.rotation.z = Math.PI / 2;
+        tankCylinder.position.y = 1.3;
+        tankCylinder.castShadow = true;
+        fuelTankGroup.add(tankCylinder);
+
+        fuelTankGroup.position.set(-25, 0, 45);
+        registerGroup(fuelTankGroup, "fuel_tank");
+
+        // ==========================================
+        // 16. WATER TANK (14. water_tank)
+        // ==========================================
+        const waterTankGroup = new THREE.Group();
+        for (let x of [-1, 1]) {
+            for (let z of [-1, 1]) {
+                const p = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 1.5), metalPillarMat);
+                p.position.set(x, 0.75, z);
+                waterTankGroup.add(p);
+            }
+        }
+        const waterCyl = new THREE.Mesh(
+            new THREE.CylinderGeometry(1.5, 1.5, 3, 32),
+            new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.4 })
+        );
+        waterCyl.position.y = 3;
+        waterCyl.castShadow = true;
+        waterTankGroup.add(waterCyl);
+
+        waterTankGroup.position.set(-35, 0, 20);
+        registerGroup(waterTankGroup, "water_tank");
+
+        // ==========================================
+        // 17. PARKING (15. parking)
+        // ==========================================
+        const parkingGroup = new THREE.Group();
+        const parkPlate = new THREE.Mesh(
+            new THREE.BoxGeometry(25, 0.05, 15),
+            new THREE.MeshStandardMaterial({ color: 0x999999, roughness: 0.7 })
+        );
+        parkPlate.position.y = 0.025;
+        parkPlate.receiveShadow = true;
+        parkingGroup.add(parkPlate);
+
+        // Parking lines
+        const lineMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+        for (let i = -10; i <= 10; i += 4) {
+            const line = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.06, 4), lineMat);
+            line.position.set(i, 0.03, 0);
+            parkingGroup.add(line);
+        }
+
+        parkingGroup.position.set(15, 0, 15);
+        registerGroup(parkingGroup, "parking");
+
+        // ==========================================
+        // 18-20. VEHICLES (16. vehicle_1, 17. vehicle_2, 18. vehicle_3)
+        // ==========================================
+        function createVehicle(color, isTruck = false, isSUV = false) {
+            const vGroup = new THREE.Group();
+            const bodyMat = new THREE.MeshStandardMaterial({ color: color, roughness: 0.4, metalness: 0.3 });
+            const wheelMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.9 });
+
+            if (isTruck) {
+                const chassis = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.8, 6), bodyMat);
+                chassis.position.y = 0.6;
+                chassis.castShadow = true;
+                vGroup.add(chassis);
+                const cargo = new THREE.Mesh(new THREE.BoxGeometry(2.2, 2, 4), new THREE.MeshStandardMaterial({ color: 0x666666 }));
+                cargo.position.set(0, 2, 1);
+                cargo.castShadow = true;
+                vGroup.add(cargo);
+                const cab = new THREE.Mesh(new THREE.BoxGeometry(2.2, 2, 2), bodyMat);
+                cab.position.set(0, 2, -2);
+                cab.castShadow = true;
+                vGroup.add(cab);
+            } else {
+                const body = new THREE.Mesh(new THREE.BoxGeometry(1.8, isSUV ? 1.7 : 1.4, 4.5), bodyMat);
+                body.position.y = 0.8;
+                body.castShadow = true;
+                vGroup.add(body);
+            }
+
+            // Wheels
+            const wheelGeo = new THREE.CylinderGeometry(0.4, 0.4, 0.3, 16);
+            wheelGeo.rotateZ(Math.PI / 2);
+            for (let x of [-1, 1]) {
+                for (let z of [-1.5, 1.5]) {
+                    const wheel = new THREE.Mesh(wheelGeo, wheelMat);
+                    wheel.position.set(x * 1.0, 0.4, z);
+                    vGroup.add(wheel);
+                }
+            }
+            return vGroup;
+        }
+
+        const v1 = createVehicle(0x222222);
+        v1.position.set(12, 0, 12);
+        registerGroup(v1, "vehicle_1");
+
+        const v2 = createVehicle(0x444444, false, true);
+        v2.position.set(16, 0, 12);
+        registerGroup(v2, "vehicle_2");
+
+        const v3 = createVehicle(0x333333, true);
+        v3.position.set(20, 0, 15);
+        registerGroup(v3, "vehicle_3");
+
+        // ==========================================
+        // 21. PERIMETER FENCE (19. perimeter_fence)
+        // ==========================================
+        const fenceGroup = new THREE.Group();
+        const fenceMat = new THREE.MeshStandardMaterial({ color: 0x555555 });
+        // Simplified boundary posts & rails
+        for (let x = -50; x <= 50; x += 10) {
+            for (let z of [-40, 40]) {
+                const post = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 1.5), fenceMat);
+                post.position.set(x, 0.75, z);
+                fenceGroup.add(post);
+            }
+        }
+        for (let z = -40; z <= 40; z += 10) {
+            for (let x of [-50, 50]) {
+                const post = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 1.5), fenceMat);
+                post.position.set(x, 0.75, z);
+                fenceGroup.add(post);
+            }
+        }
+        registerGroup(fenceGroup, "perimeter_fence");
+
+        // ==========================================
+        // 22-25. LIGHT POLES (23. light_pole ×4)
+        // ==========================================
+        function createLightPole(x, z, name) {
+            const lpGroup = new THREE.Group();
+            const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 6), new THREE.MeshStandardMaterial({ color: 0x666666 }));
+            pole.position.y = 3;
+            pole.castShadow = true;
+            lpGroup.add(pole);
+
+            const lum = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.15, 0.3), new THREE.MeshStandardMaterial({ color: 0xdddddd }));
+            lum.position.set(0.8, 5.8, 0);
+            lum.rotation.z = -0.3;
+            lpGroup.add(lum);
+
+            lpGroup.position.set(x, 0, z);
+            return registerGroup(lpGroup, name);
+        }
+
+        createLightPole(10, 8, "light_pole_1");
+        createLightPole(20, 8, "light_pole_2");
+        createLightPole(-15, 10, "light_pole_3");
+        createLightPole(-25, -10, "light_pole_4");
+
+        // ==========================================
+        // 26. SIGNAGE ENTRANCE (24. signage_entrance)
+        // ==========================================
+        const signageGroup = new THREE.Group();
+        const signPost = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.14, 4), new THREE.MeshStandardMaterial({ color: 0x555555 }));
+        signPost.position.y = 2;
+        signageGroup.add(signPost);
+
+        const signTextTex = createEntranceSignTexture();
+        const signMat = new THREE.MeshBasicMaterial({ map: signTextTex });
+        const signMesh = new THREE.Mesh(new THREE.BoxGeometry(3, 1.2, 0.12), signMat);
+        signMesh.position.set(0, 4.2, 0);
+        signMesh.castShadow = true;
+        signageGroup.add(signMesh);
+        const signBack = new THREE.Mesh(
+            new THREE.PlaneGeometry(3, 1.2),
+            new THREE.MeshBasicMaterial({ map: signTextTex })
+        );
+        signBack.position.set(0, 4.2, -0.07);
+        signBack.rotation.y = Math.PI;
+        signageGroup.add(signBack);
+
+        signageGroup.position.set(0, 0, 72);
+        signageGroup.rotation.y = 0;
+        signageGroup.scale.set(2.4, 2.4, 2.4);
+        registerGroup(signageGroup, "signage_entrance");
+
+        // ==========================================
+        // 27. FLAG (25. flag)
+        // ==========================================
+        const flagGroup = new THREE.Group();
+        const flagPole = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 5), new THREE.MeshStandardMaterial({ color: 0xcccccc }));
+        flagPole.position.y = 2.5;
+        flagGroup.add(flagPole);
+        const flagCloth = new THREE.Mesh(new THREE.BoxGeometry(1, 0.6, 0.02), new THREE.MeshStandardMaterial({ color: 0x1a3a5c }));
+        flagCloth.position.set(0.5, 4.4, 0);
+        flagGroup.add(flagCloth);
+        flagGroup.position.set(-15, 0, -14);
+        registerGroup(flagGroup, "flag");
+
+        // ==========================================
+        // 28. STAGING AREA & FORKLIFT (26. staging_area & forklift)
+        // ==========================================
+        const stagingGroup = new THREE.Group();
+        for (let i = -1; i <= 1; i++) {
+            const plat = new THREE.Mesh(new THREE.BoxGeometry(3, 0.3, 3), new THREE.MeshStandardMaterial({ color: 0xaaaaaa }));
+            plat.position.set(i * 3.5, 0.15, -30);
+            plat.receiveShadow = true;
+            stagingGroup.add(plat);
+        }
+        // Shipping container in staging
+        const sc = new THREE.Mesh(new THREE.BoxGeometry(6, 2.5, 2.5), new THREE.MeshStandardMaterial({ color: 0x1a3a5c }));
+        sc.position.set(0, 1.25, -30);
+        sc.castShadow = true;
+        sc.receiveShadow = true;
+        stagingGroup.add(sc);
+        stagingGroup.position.set(20, 0, 0);
+        registerGroup(stagingGroup, "staging_area");
+
+        // Forklift
+        const forkliftGroup = new THREE.Group();
+        const flBody = new THREE.Mesh(new THREE.BoxGeometry(2, 1, 1), new THREE.MeshStandardMaterial({ color: 0xffcc00 }));
+        flBody.position.y = 0.5;
+        flBody.castShadow = true;
+        forkliftGroup.add(flBody);
+        forkliftGroup.position.set(15, 0, -28);
+        registerGroup(forkliftGroup, "forklift");
+
+        // ==========================================
+        // 29-31. VEGETATION: TREES, SHRUBS, CACTI (27. trees, 28. shrubs, 29. cacti)
+        // ==========================================
+        function createTrees() {
+            const group = new THREE.Group();
+            const trunkMat = new THREE.MeshStandardMaterial({ color: 0x5a4030 });
+            const leafMat = new THREE.MeshStandardMaterial({ color: 0x4a6a3a });
+            for (let i = 0; i < 10; i++) {
+                const x = (Math.random() - 0.5) * 400;
+                const z = (Math.random() - 0.5) * 240;
+                if (Math.abs(x) < 70 && Math.abs(z) < 60) continue; // keep clear of buildings
+
+                const tree = new THREE.Group();
+                const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 1.5), trunkMat);
+                trunk.position.y = 0.75;
+                tree.add(trunk);
+                const canopy = new THREE.Mesh(new THREE.SphereGeometry(1, 8, 8), leafMat);
+                canopy.scale.set(1, 0.6, 1);
+                canopy.position.y = 1.8;
+                tree.add(canopy);
+                tree.position.set(x, 0, z);
+                group.add(tree);
+            }
+            return registerGroup(group, "trees");
+        }
+        createTrees();
+
+        function createShrubs() {
+            const group = new THREE.Group();
+            const shrubMat = new THREE.MeshStandardMaterial({ color: 0x6a7a4a });
+            for (let i = 0; i < 20; i++) {
+                const x = (Math.random() - 0.5) * 420;
+                const z = (Math.random() - 0.5) * 260;
+                if (Math.abs(x) < 80 && Math.abs(z) < 70) continue;
+
+                const shrub = new THREE.Mesh(new THREE.SphereGeometry(0.6, 6, 6), shrubMat);
+                shrub.scale.set(1, 0.5, 1);
+                shrub.position.set(x, 0.3, z);
+                group.add(shrub);
+            }
+            return registerGroup(group, "shrubs");
+        }
+        createShrubs();
+
+        function createCacti() {
+            const group = new THREE.Group();
+            const cactusMat = new THREE.MeshStandardMaterial({ color: 0x4a7a4a });
+            for (let i = 0; i < 8; i++) {
+                const x = (Math.random() - 0.5) * 350;
+                const z = (Math.random() - 0.5) * 200;
+                if (Math.abs(x) < 70 && Math.abs(z) < 60) continue;
+
+                const cactus = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 1.2), cactusMat);
+                cactus.position.set(x, 0.6, z);
+                group.add(cactus);
+            }
+            return registerGroup(group, "cacti");
+        }
+        createCacti();
+
+        // ==========================================
+        // 32-37. ADDITIONAL DETAILS (30. barrels, 31. boxes, 32. fire_extinguisher, 33. sandbags, 34. traffic_cones)
+        // ==========================================
+        function createBarrels() {
+            const group = new THREE.Group();
+            const bMat = new THREE.MeshStandardMaterial({ color: 0x444444 });
+            for (let i = 0; i < 3; i++) {
+                const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 1, 16), bMat);
+                barrel.position.set(-14 + i * 0.7, 0.5, 6);
+                barrel.castShadow = true;
+                group.add(barrel);
+            }
+            return registerGroup(group, "barrels");
+        }
+        createBarrels();
+
+        function createBoxes() {
+            const group = new THREE.Group();
+            const boxMat = new THREE.MeshStandardMaterial({ color: 0xc4a882 });
+            for (let i = 0; i < 4; i++) {
+                const box = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.5, 0.5), boxMat);
+                box.position.set(22 + (i % 2) * 0.6, 0.25, -28 + Math.floor(i / 2) * 0.6);
+                box.castShadow = true;
+                group.add(box);
+            }
+            return registerGroup(group, "boxes");
+        }
+        createBoxes();
+
+        function createFireExtinguisher() {
+            const group = new THREE.Group();
+            const ext = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 0.4), new THREE.MeshStandardMaterial({ color: 0xcc0000 }));
+            ext.position.set(-15, 2, 7.55);
+            group.add(ext);
+            return registerGroup(group, "fire_extinguisher");
+        }
+        createFireExtinguisher();
+
+        function createSandbags() {
+            const group = new THREE.Group();
+            const sbMat = new THREE.MeshStandardMaterial({ color: 0xc4a882, roughness: 0.9 });
+            for (let i = 0; i < 6; i++) {
+                const sb = new THREE.Mesh(new THREE.SphereGeometry(0.3, 6, 6), sbMat);
+                sb.scale.set(1.2, 0.5, 0.8);
+                sb.position.set(30 + (i % 3) * 0.4 - 0.4, 0.15, 31 + Math.floor(i / 3) * 0.4);
+                group.add(sb);
+            }
+            return registerGroup(group, "sandbags");
+        }
+        createSandbags();
+
+        function createTrafficCones() {
+            const group = new THREE.Group();
+            const coneMat = new THREE.MeshStandardMaterial({ color: 0xff6600 });
+            for (let i = 0; i < 4; i++) {
+                const cone = new THREE.Mesh(new THREE.ConeGeometry(0.2, 0.6, 12), coneMat);
+                cone.position.set(10 + i * 2, 0.3, 20);
+                cone.castShadow = true;
+                group.add(cone);
+            }
+            return registerGroup(group, "traffic_cones");
+        }
+        createTrafficCones();
+
+
+
+        // ================================================================
+        // ADDITIONAL 90 ELEMENTS — INTEGRATED INTO THE EXISTING MODEL
+        // ================================================================
+        const ADD90 = [];
+        const add90Group = (name, x, y = 0, z = 0) => {
+            const g = new THREE.Group();
+            g.position.set(x, y, z);
+            registerGroup(g, name);
+            ADD90.push(name);
+            return g;
+        };
+        const M = (color, roughness = 0.65, metalness = 0.0) =>
+            new THREE.MeshStandardMaterial({ color, roughness, metalness });
+        const add90Box = (g, w, h, d, color, x = 0, y = 0, z = 0, rot = null, material = null) => {
+            const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), material || M(color));
+            m.position.set(x, y, z);
+            if (rot) m.rotation.set(rot.x || 0, rot.y || 0, rot.z || 0);
+            m.castShadow = true;
+            m.receiveShadow = true;
+            g.add(m);
+            return m;
+        };
+        const add90Cyl = (g, r, h, color, x = 0, y = 0, z = 0, rx = 0, ry = 0, rz = 0, material = null, radial = 16) => {
+            const m = new THREE.Mesh(new THREE.CylinderGeometry(r, r, h, radial), material || M(color));
+            m.position.set(x, y, z);
+            m.rotation.set(rx, ry, rz);
+            m.castShadow = true;
+            m.receiveShadow = true;
+            g.add(m);
+            return m;
+        };
+        const add90Sphere = (g, r, color, x = 0, y = 0, z = 0, scale = [1,1,1], material = null, segments = 12) => {
+            const m = new THREE.Mesh(new THREE.SphereGeometry(r, segments, segments), material || M(color));
+            m.position.set(x, y, z);
+            m.scale.set(scale[0], scale[1], scale[2]);
+            m.castShadow = true;
+            m.receiveShadow = true;
+            g.add(m);
+            return m;
+        };
+        const add90Plane = (g, w, h, color, x = 0, y = 0, z = 0, rx = 0, ry = 0, rz = 0, material = null) => {
+            const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), material || M(color));
+            m.position.set(x, y, z);
+            m.rotation.set(rx, ry, rz);
+            m.castShadow = true;
+            m.receiveShadow = true;
+            g.add(m);
+            return m;
+        };
+        const add90RodBetween = (g, r, p1, p2, color, radial = 12) => {
+            const a = new THREE.Vector3(...p1), b = new THREE.Vector3(...p2);
+            const dir = new THREE.Vector3().subVectors(b, a);
+            const len = dir.length();
+            const m = new THREE.Mesh(new THREE.CylinderGeometry(r, r, len, radial), M(color));
+            m.position.copy(a).add(b).multiplyScalar(0.5);
+            m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.normalize());
+            m.castShadow = true;
+            m.receiveShadow = true;
+            g.add(m);
+            return m;
+        };
+        const add90Torus = (g, radius, tube, color, x, y, z, rx = Math.PI/2, ry = 0, rz = 0, arc = Math.PI * 1.2) => {
+            const m = new THREE.Mesh(new THREE.TorusGeometry(radius, tube, 8, 24, arc), M(color));
+            m.position.set(x, y, z);
+            m.rotation.set(rx, ry, rz);
+            m.castShadow = true;
+            m.receiveShadow = true;
+            g.add(m);
+            return m;
+        };
+        const add90Emissive = (g, r, color, x, y, z, intensity = 0.25) => {
+            const mat = new THREE.MeshStandardMaterial({ color, emissive: color, emissiveIntensity: intensity, roughness: 0.35 });
+            const m = new THREE.Mesh(new THREE.SphereGeometry(r, 10, 10), mat);
+            m.position.set(x,y,z);
+            m.castShadow = true;
+            g.add(m);
+            const light = new THREE.PointLight(color, intensity, 4);
+            light.position.set(x,y,z);
+            g.add(light);
+            return m;
+        };
+        const add90TextPlane = (g, text, w, h, x, y, z, rx = 0, ry = 0, rz = 0, bg = '#ffffff', fg = '#111111', font = 'bold 34px sans-serif') => {
+            const c = document.createElement('canvas');
+            c.width = 768; c.height = 384;
+            const ctx = c.getContext('2d');
+            ctx.fillStyle = bg; ctx.fillRect(0,0,c.width,c.height);
+            ctx.fillStyle = fg; ctx.font = font; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            const words = String(text).split(' ');
+            let lines = [''];
+            for (const word of words) {
+                const test = lines[lines.length-1] ? lines[lines.length-1] + ' ' + word : word;
+                if (ctx.measureText(test).width > 690 && lines[lines.length-1]) lines.push(word); else lines[lines.length-1] = test;
+            }
+            const lh = 70;
+            lines.slice(0, 5).forEach((line, i) => ctx.fillText(line, c.width/2, c.height/2 + (i-(Math.min(lines.length,5)-1)/2)*lh));
+            const tex = new THREE.CanvasTexture(c);
+            const mat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, side: THREE.DoubleSide });
+            const m = new THREE.Mesh(new THREE.PlaneGeometry(w,h), mat);
+            m.position.set(x,y,z); m.rotation.set(rx,ry,rz); m.castShadow = false; m.receiveShadow = false; g.add(m);
+            return m;
+        };
+        const add90TriangleLeaf = (g, size, color, x, y, z, rx = 0, ry = 0, rz = 0) => {
+            const shape = new THREE.Shape();
+            shape.moveTo(0, 0); shape.lineTo(size, size*0.22); shape.lineTo(size*0.45, size); shape.lineTo(0, 0);
+            const geo = new THREE.ShapeGeometry(shape);
+            const m = new THREE.Mesh(geo, M(color));
+            m.position.set(x,y,z); m.rotation.set(rx,ry,rz); m.castShadow = true; m.receiveShadow = true; g.add(m); return m;
+        };
+
+        // ----------------------------------------------------------------
+        // A. BUILDINGS ADDITIONAL (1-12)
+        // ----------------------------------------------------------------
+        const messHall = add90Group('mess_hall', -2, 0, 28);
+        add90Box(messHall, 12, 4, 8, 0xe0e0e0, 0, 2, 0);
+        add90Box(messHall, 12.3, 0.25, 8.3, 0x777777, 0, 4.2, 0);
+        for (let i = 0; i < 4; i++) add90Box(messHall, 2, 2.5, 0.12, 0x444444, -4.2 + i*2.8, 1.25, 4.06);
+        for (let i = 0; i < 6; i++) add90Box(messHall, 1, 1, 0.08, 0xa8d4e8, -4.2 + i*1.7, 2.7, -4.06);
+        for (let i = -2.5; i <= 2.5; i += 1) add90Cyl(messHall, 0.06, 3.2, 0x555555, i, 1.6, 5.3);
+        add90Box(messHall, 8, 0.18, 2, 0x777777, 0, 3.25, 5.3);
+        add90Box(messHall, 5, 0.12, 0.9, 0x8a7a5a, 0, 1.7, -3.3);
+        add90Box(messHall, 0.12, 1.7, 0.12, 0x8a7a5a, -2.3, 0.85, -3.55);
+        add90Box(messHall, 0.12, 1.7, 0.12, 0x8a7a5a, 2.3, 0.85, -3.55);
+
+        const dorm = add90Group('dormitory', -18, 0, 28);
+        add90Box(dorm, 10, 3.5, 15, 0xd8d8d8, 0, 1.75, 0);
+        add90Box(dorm, 10.3, 0.22, 15.3, 0x777777, 0, 3.7, 0);
+        add90Box(dorm, 10.6, 0.3, 15.6, 0x999999, 0, 0.15, 0);
+        for (let i = 0; i < 5; i++) add90Box(dorm, 0.9, 2, 0.12, 0x555555, -3.6 + i*1.8, 1, 7.56);
+        for (let i = 0; i < 5; i++) { add90Box(dorm, 0.5, 0.5, 0.08, 0xa8d4e8, -3.5 + i*1.8, 2.5, -7.56); add90Box(dorm, 0.5, 0.5, 0.08, 0xa8d4e8, -3.5 + i*1.8, 1.0, -7.56); }
+
+        const security = add90Group('security_post', 0, 0, 39);
+        add90Box(security, 2.5, 2, 2.5, 0x333333, 0, 1, 0);
+        add90Box(security, 3, 0.18, 3, 0x222222, 0, 2.1, 0);
+        for (const x of [-1,0,1]) add90Box(security, 1, 0.8, 0.08, 0xa8d4e8, x*0.65, 1.2, 1.26);
+        add90Cyl(security, 0.06, 3.5, 0x666666, -1.3, 1.75, -1.3);
+        add90Box(security, 0.6, 0.15, 0.25, 0xdddddd, -1.0, 3.2, -1.3);
+
+        const medical = add90Group('medical', 7, 0, 28);
+        add90Box(medical, 4, 2, 3, 0xffffff, 0, 1.5, 0);
+        add90Box(medical, 0.9, 2, 0.12, 0x555555, -1.0, 1, 1.56);
+        add90Box(medical, 0.8, 0.6, 0.08, 0xa8d4e8, 1.0, 1.6, 1.56);
+        add90Plane(medical, 0.5, 0.5, 0xcc0000, 0, 1.65, 1.61, 0, 0, 0);
+        add90Box(medical, 0.14, 0.48, 0.02, 0xffffff, 0, 1.65, 1.63);
+        add90Box(medical, 0.48, 0.14, 0.02, 0xffffff, 0, 1.65, 1.63);
+
+        const server = add90Group('server_room', -12, 0, 0);
+        add90Box(server, 5, 2.5, 4, 0x2a2a2a, 0, 1.25, 0);
+        add90Box(server, 1, 0.5, 0.08, 0x111111, 0, 1.4, 2.05);
+        add90Box(server, 1, 0.5, 0.08, 0x111111, 0, 1.4, -2.05);
+        add90Box(server, 1, 2, 0.12, 0x111111, 2.56, 1, 0);
+        for (let i = 0; i < 4; i++) add90Cyl(server, 0.05, 0.16, 0x777777, 2.64, 1.2 + (i%2)*0.22, -0.35 + Math.floor(i/2)*0.7, 0, 0, Math.PI/2, null, 10);
+        add90Emissive(server, 0.1, 0x00ff00, 2.62, 1.95, 1.85, 0.18);
+
+        const transformer = add90Group('transformer_station', -3, 0, -28);
+        for (let i = 0; i < 2; i++) { add90Box(transformer, 2, 1.5, 1, 0x4a6a4a, -1.2+i*2.4, 1, 0); add90Box(transformer, 2.2, 0.2, 1.2, 0x999999, -1.2+i*2.4, 0.1, 0); }
+        for (const x of [-1.8, 1.8]) for (const z of [-0.8,0.8]) add90Cyl(transformer,0.08,4,0x555555,x,2,z);
+        add90RodBetween(transformer,0.03,[-1.2,2,0.4],[1.2,2,0.4],0x333333);
+        add90RodBetween(transformer,0.03,[-1.2,2,-0.4],[1.2,2,-0.4],0x333333);
+        for (let i=-2;i<=2;i+=1) add90Cyl(transformer,0.04,1.2,0x555555,-1.8+i,0.6,-2.0);
+        add90Box(transformer, 4.5, 0.06, 0.06, 0x555555, 0, 1.2, -2.0);
+
+        const pump = add90Group('pump_house', -30, 0, 8);
+        add90Box(pump, 3, 2.5, 2, 0x8a8a8a, 0, 1.25, 0);
+        add90Box(pump, 0.8, 1.8, 0.12, 0x555555, 0, 0.9, 1.06);
+        add90Cyl(pump, 0.15, 1.5, 0x666666, -1.7, 1.2, 0, 0, 0, Math.PI/2);
+        add90Cyl(pump, 0.15, 1.5, 0x666666, 1.7, 1.2, 0, 0, 0, Math.PI/2);
+        add90Cyl(pump, 0.3, 0.5, 0x444444, 0, 2.7, 0, Math.PI/2, 0, 0);
+
+        const laundry = add90Group('laundry', -30, 0, -4);
+        add90Box(laundry, 4, 2, 3, 0xc0c0c0, 0, 1, 0);
+        add90Box(laundry, 0.9, 2, 0.1, 0x555555, -1, 1, 1.56);
+        add90Box(laundry, 0.8, 0.8, 0.08, 0xa8d4e8, 0.8, 1.2, 1.56);
+        for (let x of [-1.7,1.7]) add90Cyl(laundry,0.08,2.2,0x888888,x,1.1,3.0);
+        add90RodBetween(laundry,0.01,[-1.7,2.0,3],[1.7,2.0,3],0xcccccc,8);
+        ['#4466aa','#aa4444','#44aa44'].forEach((c,i)=>add90Plane(laundry,0.3,0.5,c,-0.8+i*0.8,1.65,3.01,0,0,0));
+
+        const shower = add90Group('shower', -27, 0, -10);
+        for (let x of [-0.85,0.85]) for (let z of [-0.85,0.85]) add90Cyl(shower,0.05,2.5,0x777777,x,1.25,z);
+        add90Box(shower,2,0.12,2,0x777777,0,2.5,0);
+        for (let x of [-0.5,0.5]) { add90Cyl(shower,0.025,0.5,0x666666,x,2.0,0); add90Sphere(shower,0.1,0x666666,x,2.25,0); }
+        for (let x of [-0.85,0.85]) add90Box(shower,1.5,0.3,0.4,0x8a7a6a,x*0.0,0.45,x*1.2);
+
+        const fuelPump = add90Group('fuel_pump_station', -18, 0, 38);
+        add90Box(fuelPump,4,0.2,2,0x999999,0,0.1,0);
+        for (let x of [-0.7,0.7]) add90Box(fuelPump,0.6,1.2,0.3,0xcc0000,x,0.7,0);
+        for (let x of [-1,1]) for (let z of [-0.45,0.45]) add90Cyl(fuelPump,0.04,2.3,0x555555,x,1.15,z);
+        add90Box(fuelPump,2,0.1,1,0x555555,0,2.3,0);
+        add90Cyl(fuelPump,0.1,6,0x333333,2.5,0.06,0,Math.PI/2,0,0);
+
+        const waste = add90Group('waste_storage', -10, 0, 36);
+        add90Box(waste,4.4,0.12,2.0,0x999999,0,0.06,0);
+        for (let i=0;i<3;i++) add90Box(waste,1.2,0.8,0.8,0x3a5a3a,-1.5+i*1.5,0.52,0);
+
+        const radioShack = add90Group('radio_shack', -36, 0, -5);
+        add90Box(radioShack,3,0.3,3,0x999999,0,0.15,0);
+        add90Box(radioShack,2.5,0.1,2.5,0x555555,0,0.38,0);
+        add90Cyl(radioShack,0.05,0.35,0x555555,0,0.58,0,0,0,0,10);
+        for (const x of [-1.0,1.0]) for (const z of [-1.0,1.0]) add90Cyl(radioShack,0.03,0.1,0x666666,x,0.45,z);
+
+        // ----------------------------------------------------------------
+        // B. RF ADDITIONAL (13-24)
+        // ----------------------------------------------------------------
+        const parab1 = add90Group('parabolic_1', 12, 0, -22);
+        add90Cyl(parab1,0.3,0.5,0x888888,0,0.25,0);
+        add90Cyl(parab1,0.025,1.5,0x555555,0,1.0,0);
+        const dish1 = new THREE.Mesh(new THREE.CylinderGeometry(1.5,0.75,0.35,32),M(0xdddddd)); dish1.position.y=1.9; dish1.rotation.z=Math.PI*0.32; dish1.castShadow=true; parab1.add(dish1);
+        const feed1 = add90Cyl(parab1,0.05,0.9,0x555555,0.35,2.05,0,0,Math.PI/2,0);
+        parab1.rotation.y = -Math.PI/2;
+
+        const parab2 = add90Group('parabolic_2', 18, 0, -22);
+        add90Box(parab2,2,0.15,2,0x999999,0,0.075,0);
+        add90Cyl(parab2,0.3,0.5,0x888888,0,0.35,0);
+        add90Cyl(parab2,0.025,1.0,0x555555,0,0.9,0);
+        const dish2 = new THREE.Mesh(new THREE.CylinderGeometry(0.75,0.4,0.25,24),M(0xdddddd)); dish2.position.y=1.55; dish2.rotation.z=-Math.PI*0.3; dish2.castShadow=true; parab2.add(dish2);
+        parab2.rotation.y = Math.PI*0.75;
+
+        function addYagi(name, x, z, mastH, lengths, targetAngle) {
+            const g = add90Group(name, x, 0, z);
+            add90Cyl(g,0.08,mastH,0x888888,0,mastH/2,0);
+            const y = mastH*0.58;
+            lengths.forEach((len,i)=>add90Cyl(g,0.03,len,0x777777,0,y+i*0.35,0,0,0,Math.PI/2));
+            g.rotation.y = targetAngle;
+            return g;
+        }
+        addYagi('yagi_1', 5, -20, 5, [3,2.8,2.5,2,1.5,1,0.5], Math.atan2(30,30));
+        addYagi('yagi_2', 8, -28, 3, [2.4,2.0,1.6,1.2,0.8], Math.atan2(-95,22));
+
+        const wave1 = add90Group('waveguide_run_1', -4, 1.5, 16);
+        add90RodBetween(wave1,0.1,[-10,0,0],[10,0,0],0xaaaaaa,16);
+        for (let x=-8;x<=8;x+=4) add90Cyl(wave1,0.05,1.5,0x777777,x,-0.75,0);
+        add90Torus(wave1,2,0.1,0xaaaaaa,0,0,0,0,0,Math.PI/2,Math.PI);
+        wave1.rotation.y = 0.45;
+
+        const wave2 = add90Group('waveguide_run_2', -8, 1.5, -5);
+        add90RodBetween(wave2,0.1,[-7,0,0],[8,0,0],0xaaaaaa,16);
+        for (let x of [-5,0,5]) add90Cyl(wave2,0.05,1.5,0x777777,x,-0.75,0);
+        wave2.rotation.y = -0.25;
+
+        const anechoic = add90Group('anechoic_chamber', -30, 0, -28);
+        add90Box(anechoic,9,0.2,5,0x999999,0,0.1,0);
+        add90Box(anechoic,8,3.5,4,0x333333,0,1.85,0);
+        add90Box(anechoic,1.2,2.2,0.12,0x222222,0,1.1,2.06);
+        for (let i=0;i<4;i++) add90Cyl(anechoic,0.04,0.12,0x999999,-0.45+i*0.3,1.1,2.14,Math.PI/2,0,0, null, 10);
+        for (let x of [-1.5,1.5]) { const fan = add90Cyl(anechoic,0.3,0.1,0x555555,x,3.65,0); for(let a=0;a<3;a++) add90Plane(anechoic,0.5,0.12,0x555555,x,3.65,0,0, a*2*Math.PI/3, 0); }
+        for (let y=1;y<=3;y++) add90Emissive(anechoic,0.05,0xffffff,4.08,y,0,0.12);
+
+        const analyzer = add90Group('spectrum_analyzer_outdoor', 32, 0, 10);
+        add90Box(analyzer,1,1.2,0.6,0x444444,0,0.6,0);
+        for (let x of [-0.38,0.38]) add90Cyl(analyzer,0.1,0.08,0x222222,x,0.12,0,0,0,Math.PI/2);
+        add90Box(analyzer,0.3,0.2,0.02,0x111111,-0.18,0.95,0.31);
+        add90Box(analyzer,0.3,0.2,0.02,0x111111,0.18,0.95,0.31);
+        for(let i=-1.5;i<=1.5;i+=1) add90RodBetween(analyzer,0.02,[i*0.08,0.4,0],[i*0.12,0, -0.7],0x222222,8);
+
+        const gps = add90Group('gps_antenna', -2, 0, -34);
+        [[-5,0], [5,0], [0,8.66]].forEach(([x,z])=>{ add90Cyl(gps,0.05,1.5,0x888888,x,0.75,z); add90Cyl(gps,0.3,0.05,0xdddddd,x,1.52,z); });
+
+        const magnetometer = add90Group('magnetometer', 36, 0, -12);
+        const magPts=[[-2.5,0],[2.5,0],[0,4.33]];
+        magPts.forEach(([x,z])=>{add90Cyl(magnetometer,0.05,1,0x666666,x,0.5,z);add90Sphere(magnetometer,0.15,0x4a4a6a,x,1.02,z);});
+        magPts.forEach(([x,z])=>add90RodBetween(magnetometer,0.02,[0,0.6,2.9],[x,0.6,z],0x333333,8));
+
+        const baro = add90Group('barometric_station', 40, 0, 2);
+        add90Cyl(baro,0.08,2,0x777777,0,1,0);
+        add90Box(baro,0.3,0.3,0.3,0xdddddd,0,2.1,0);
+        add90Cyl(baro,0.05,0.1,0xaaaaaa,-0.2,2.1,0,0,0,Math.PI/2);
+        add90Cyl(baro,0.05,0.1,0xaaaaaa,0.2,2.1,0,0,0,Math.PI/2);
+
+        const lightning = add90Group('lightning_rod', -25.2, 0, 7.2);
+        add90Cyl(lightning,0.05,12,0x999999,0,6,0);
+        add90Sphere(lightning,0.1,0xcccccc,0,12.1,0);
+        add90RodBetween(lightning,0.02,[-0.02,5.8,0],[0.0,0.1,0],0x555555,8);
+
+        // ----------------------------------------------------------------
+        // C. VEHICLES ADDITIONAL (25-30)
+        // ----------------------------------------------------------------
+        function addATV(name, x, z, color) {
+            const g=add90Group(name,x,0,z); add90Box(g,1.5,0.5,0.8,color,0,0.55,0);
+            for(const xx of [-0.62,0.62]) for(const zz of [-0.28,0.28]) add90Cyl(g,0.3,0.22,0x111111,xx,0.3,zz,0,0,Math.PI/2);
+            add90RodBetween(g,0.03,[0,0.8,0],[0.4,1.15,0],0x333333,8);
+            add90RodBetween(g,0.03,[0.4,1.15,0],[0.15,1.5,0.2],0x333333,8);
+        }
+        addATV('atv_1', 7, 18, 0x2a4a2a);
+        addATV('atv_2', 10, 18, 0x666666);
+
+        const flatbed = add90Group('flatbed_truck', 31, 0, -26);
+        add90Box(flatbed,7,1,2.4,0x333333,0,0.75,0);
+        add90Box(flatbed,5,0.1,2.4,0x555555,1,1.3,0);
+        add90Box(flatbed,2,2.5,2.4,0x333333,-2.4,1.75,0);
+        for(let x of [-2.6,-0.9,0.9,2.6]) for(let z of [-1,1]) add90Cyl(flatbed,0.5,0.3,0x111111,x,0.35,z,0,0,Math.PI/2);
+        add90Box(flatbed,2,1,1,0x4a6a4a,1,1.9,0);
+
+        const jeep = add90Group('jeep', 24, 0, 25);
+        add90Box(jeep,4,1.5,1.8,0x4a5a3a,0,0.95,0);
+        for(let x of [-1.5,1.5]) for(let z of [-0.85,0.85]) add90Cyl(jeep,0.5,0.3,0x111111,x,0.45,z,0,0,Math.PI/2);
+        add90Plane(jeep,1.5,0.8,0xa8d4e8,0,1.85,0.88,Math.PI*0.055,0,0);
+        for(let x of [-0.75,0.75]) for(let z of [-0.45,0.45]) add90Cyl(jeep,0.03,1.0,0x555555,x,2.0,z);
+        add90Box(jeep,1.5,0.06,1,0x555555,0,2.05,0);
+
+        const boat = add90Group('boat', 32, 0, -34);
+        const hullGeo = new THREE.BoxGeometry(4,0.6,1.2); hullGeo.translate(0,0,0); const hull=new THREE.Mesh(hullGeo,M(0xeeeeee)); hull.position.set(0,0.8,0); hull.scale.z=1; hull.castShadow=true; boat.add(hull);
+        add90Box(boat,3,0.3,1.5,0x555555,0,0.35,0);
+        for(let x of [-1.05,1.05]) add90Cyl(boat,0.3,0.2,0x111111,x,0.05,0,0,0,Math.PI/2);
+        add90RodBetween(boat,0.04,[-2,0.35,0],[2.0,0.35,0],0x555555);
+
+        const droneWarehouse = add90Group('drone_warehouse', 8, 0, -27);
+        add90Box(droneWarehouse,3,2.5,2.0,0x555555,0,1.25,0);
+        add90Box(droneWarehouse,1,1.8,0.1,0x333333,0,0.9,1.06);
+        function addDrone(g,x,y,z){ add90Cyl(g,0.1,0.2,0x333333,x,y,z); add90Cyl(g,0.025,0.6,0x777777,x,y,z,0,0,Math.PI/4); add90Cyl(g,0.025,0.6,0x777777,x,y,z,0,0,-Math.PI/4); }
+        addDrone(droneWarehouse,-0.6,2.65,-0.5); addDrone(droneWarehouse,0.6,2.65,0.5); addDrone(droneWarehouse,2,0.4,1.2); addDrone(droneWarehouse,2.7,0.4,1.8);
+
+        // ----------------------------------------------------------------
+        // D. WATER / SANITATION (31-36)
+        // ----------------------------------------------------------------
+        const well = add90Group('well_pump', -38, 0, 28);
+        add90Box(well,2,0.3,2,0x999999,0,0.15,0);
+        for(let x of [-0.8,0.8]) for(let z of [-0.8,0.8]) add90Cyl(well,0.05,3,0x666666,x,1.5,z);
+        add90Cyl(well,0.3,0.5,0x444444,0,3.2,0,Math.PI/2,0,0);
+        add90Cyl(well,0.1,3,0x666666,1.5,1.5,0,0,0,Math.PI/2);
+
+        const septic = add90Group('septic_tank', -35, 0, 34);
+        const septicBody = add90Cyl(septic,1.5,3,0x333333,0,-0.8,0,0,0,Math.PI/2); septicBody.castShadow=true;
+        add90Cyl(septic,0.5,0.1,0x555555,0,0.02,0);
+        add90Cyl(septic,0.4,0.05,0x666666,-0.75,0.05,0);
+        add90Cyl(septic,0.4,0.05,0x666666,0.75,0.05,0);
+
+        const rain = add90Group('rain_harvest', -20, 0, 0);
+        for(let x of [-4.2,-1.4,1.4,4.2]) add90Cyl(rain,0.1,5,0x888888,x,4.25,0,0,0,Math.PI/2);
+        for(let x of [-2.2,2.2]) add90Cyl(rain,1,1.5,0x4a6a8a,x,0.75,2.5);
+        add90RodBetween(rain,0.05,[-4.2,4.0,0],[-2.2,1.5,2.5],0x666666,10);
+        add90RodBetween(rain,0.05,[4.2,4.0,0],[2.2,1.5,2.5],0x666666,10);
+
+        const waterPipes = add90Group('water_pipes', -30, 0.5, 12);
+        add90RodBetween(waterPipes,0.15,[-10,0,0],[12,0,0],0x666666,16);
+        for(let x=-9;x<=9;x+=3) add90Cyl(waterPipes,0.05,0.9,0x777777,x,-0.45,0);
+        add90Torus(waterPipes,1.2,0.15,0x666666,-4,0,0,0,Math.PI/2,0,Math.PI*1.2);
+        add90Torus(waterPipes,1.0,0.15,0x666666,5,0,0,0,Math.PI/2,0,Math.PI*1.2);
+        add90Torus(waterPipes,0.8,0.15,0x666666,9,0,0,0,Math.PI/2,0,Math.PI*1.2);
+
+        const drainage = add90Group('drainage_channel', 0, 0, 52);
+        add90Box(drainage,0.5,0.3,20,0xaaaaaa,0,0.15,0);
+        for(let z=-7.5;z<=7.5;z+=5) add90Plane(drainage,0.5,0.1,0x777777,0,0.32,z,Math.PI/2,0,0);
+
+        const hydrant = add90Group('fire_hydrant', 15, 0, 8);
+        for(let [x,z] of [[0,0],[10,-5]]) { add90Cyl(hydrant,0.2,0.8,0xcc0000,x,0.4,z); add90Cyl(hydrant,0.08,0.15,0xcc0000,x+0.2,0.55,z,0,0,Math.PI/2); add90Cyl(hydrant,0.08,0.15,0xcc0000,x-0.2,0.55,z,0,0,-Math.PI/2); }
+
+        // ----------------------------------------------------------------
+        // E. COMMUNICATIONS / NETWORK (37-42)
+        // ----------------------------------------------------------------
+        const cellTower = add90Group('cell_tower', 42, 0, 35);
+        add90Box(cellTower,3,0.25,3,0x999999,0,0.125,0);
+        for(let x of [-1.3,1.3]) for(let z of [-1.3,1.3]) add90Cyl(cellTower,0.08,25,0x777777,x,12.5,z);
+        for(let y=3;y<=24;y+=3) add90Torus(cellTower,1.35,0.04,0x777777,0,y,0,0,0,0,Math.PI*2);
+        for(let y=1.5;y<24;y+=2) for(let i=0;i<3;i++){ const a=i*Math.PI*2/3; add90RodBetween(cellTower,0.04,[Math.cos(a)*1.3,y,Math.sin(a)*1.3],[Math.cos(a+0.75)*1.3,y+1.5,Math.sin(a+0.75)*1.3],0x777777,8); }
+        for(let i=0;i<3;i++){const a=i*2*Math.PI/3; add90Box(cellTower,1,0.5,0.05,0xdddddd,Math.cos(a)*0.9,25,Math.sin(a)*0.9,{x:0,y:a,z:0});}
+        add90Cyl(cellTower,0.05,1,0xcccccc,0,25.5,0);
+
+        const fiber = add90Group('fiber_splice', -13, 0, 5);
+        add90Box(fiber,1,1.5,0.6,0x555555,0,0.75,0);
+        [0xff0000,0x00ff00,0x0000ff,0xffff00].forEach((c,i)=>add90RodBetween(fiber,0.02,[0,0.1,0],[(-0.35+i*0.23),-0.3,0.2],c,8));
+
+        const networkRack = add90Group('network_rack_outdoor', 6, 0, 3);
+        add90Box(networkRack,0.6,1.2,0.6,0x333333,0,0.6,0);
+        const leds=[0x00ff00,0x00ff00,0xff0000,0x00ff00,0xffff00,0x00ff00]; leds.forEach((c,i)=>add90Emissive(networkRack,0.03,c,-0.18+(i%3)*0.18,0.55+Math.floor(i/3)*0.18,0.31,0.12));
+        add90Box(networkRack,1,0.1,1,0x777777,0,1.5,0);
+
+        function addMeshNode(name,x,z){const g=add90Group(name,x,0,z);add90Cyl(g,0.08,4,0x666666,0,2,0);add90Box(g,0.5,0.3,0.05,0xdddddd,0,4.0,0);add90Box(g,0.5,0.3,0.05,0xdddddd,0,4.0,0,{x:0,y:Math.PI/2,z:0});return g;}
+        addMeshNode('mesh_node_1',-25,-25); addMeshNode('mesh_node_2',0,-25); addMeshNode('mesh_node_3',25,-25);
+
+        // ----------------------------------------------------------------
+        // F. TERRAIN / GEOMORPHOLOGY (43-50)
+        // ----------------------------------------------------------------
+        const dryCreek = add90Group('dry_creek', 42, -0.1, -5);
+        add90Box(dryCreek,0.5,0.25,30,0xb8926a,0,-0.15,0);
+        for(let i=0;i<10;i++) add90Sphere(dryCreek,0.2+(i%3)*0.08,i%2?0x888888:0xaaaaaa,(Math.random()-0.5)*0.7,0.05,-13+i*2.8,[1,1,1]);
+
+        function addRockCluster(name,x,z,count,sizeMin,sizeMax,colors){const g=add90Group(name,x,0,z);for(let i=0;i<count;i++){const r=sizeMin+Math.random()*(sizeMax-sizeMin);add90Sphere(g,r,colors[i%colors.length],(Math.random()-0.5)*5,r*0.55,(Math.random()-0.5)*5,[1,0.7,0.9]);}return g;}
+        addRockCluster('rock_formation_1',58,22,6,1,3,[0xa08060,0x907050]);
+        addRockCluster('rock_formation_2',-58,-15,3,2,4,[0x9a7a5a]);
+
+        const scree = add90Group('scree_slope', -45, 0, -28); const slope=add90Plane(scree,10,8,0xb09070,-0.5,0,0,Math.PI/2,-0.12,0); for(let i=0;i<20;i++) add90Sphere(scree,0.1+Math.random()*0.2,0x999999,(Math.random()-0.5)*10,0.08, (Math.random()-0.5)*8);
+        const playa = add90Group('playa_area', 34, 0.02, -12); const playaMesh=new THREE.Mesh(new THREE.CircleGeometry(7.5,48),M(0xc4a882));playaMesh.rotation.x=-Math.PI/2;playaMesh.castShadow=true;playa.add(playaMesh);for(let i=0;i<8;i++){const a=i*Math.PI/4;add90RodBetween(playa,0.025,[0,0.06,0],[Math.cos(a)*7,0.06,Math.sin(a)*7],0xa08060,6);}
+        const dunes=add90Group('dune_line',0,0,-42);for(let i=0;i<5;i++)add90Sphere(dunes,1,0xd4a574,-20+i*10,0.55,0,[5,1,3]);
+        const bedrock=add90Group('exposed_bedrock',49,0,-28);for(let i=0;i<3;i++)add90Box(bedrock,3,0.3,2,0x8a7a6a,i*2-2,0.15,i*0.8-0.8);add90Plane(bedrock,0.5,0.5,0x5a7a4a,-0.8,0.33,-0.2);
+        const gullies=add90Group('erosion_gullies',-42,0,10);for(let i=0;i<6;i++){const a=-0.55+i*0.22;add90RodBetween(gullies,0.05,[0,0.05,0],[Math.sin(a)*5,0.05,Math.cos(a)*5],0xb8926a,6);}
+
+        // ----------------------------------------------------------------
+        // G. VEGETATION ADDITIONAL (51-60)
+        // ----------------------------------------------------------------
+        function addMesquite(name,x,z,scale,colors){const g=add90Group(name,x,0,z);add90Cyl(g,0.15*scale,3*scale,0x4a3a2a,0,1.5*scale,0);for(let i=0;i<3;i++)add90Sphere(g,1*scale,colors[i%colors.length],(i-1)*0.8*scale,3*scale+(i%2)*0.2,Math.sin(i)*0.7*scale,[1,0.65,1]);return g;}
+        addMesquite('mesquite_11',-58,28,1,[0x3a5a2a]); addMesquite('mesquite_12',-42,45,0.8,[0x4a6a3a]);
+        const mes13=add90Group('mesquite_13',55,45);add90Cyl(mes13,0.05,1,0x4a3a2a,0,0.5,0);add90Sphere(mes13,0.8,0x5a7a4a,0,1.1,0,[1,0.7,1]);
+        const creosote=add90Group('creosote_cluster',-48,0,5);for(let i=0;i<5;i++){const a=i*2*Math.PI/5;add90Sphere(creosote,0.6,0x6a7a4a,Math.cos(a)*1.5,0.35,Math.sin(a)*1.5,[1,0.5,1]);}
+        function addOcotillo(name,x,z,n,height){const g=add90Group(name,x,0,z);for(let i=0;i<n;i++){const a=(i-(n-1)/2)*0.12; add90Cyl(g,0.03,height,0x7a6a5a,0,height/2,0,0,a,0, null, 8);}return g;}
+        addOcotillo('ocotillo',-45,15,10,4); addOcotillo('ocotillo_2',46,-2,6,3); addOcotillo('ocotillo_3',-56,-34,10,5);
+        function addAgave(name,x,z,n,size){const g=add90Group(name,x,0,z);for(let i=0;i<n;i++){const a=i*2*Math.PI/n;add90TriangleLeaf(g,size,0x4a7a5a,Math.cos(a)*0.1,0.15,Math.sin(a)*0.1,0,a,0);}return g;}
+        addAgave('agave',18,-38,12,0.8); addAgave('agave_2',-10,-40,8,0.5);
+        const dead=add90Group('dead_tree',52,0,42);add90Cyl(dead,0.1,4,0x5a4a3a,0,2,0,0,0,0);for(let i=0;i<3;i++){const a=-0.5+i*0.5;add90RodBetween(dead,0.025,[0,2+i*0.2,0],[Math.sin(a)*1.5,3+i*0.2,Math.cos(a)*1.5],0x6a5a4a,8);}dead.rotation.z=Math.PI/12;
+
+        // ----------------------------------------------------------------
+        // H. SIGNAGE / MARKINGS (61-68)
+        // ----------------------------------------------------------------
+        const roadSign1=add90Group('road_sign_1',0,0,41);add90Cyl(roadSign1,0.05,2.5,0x888888,0,1.25,0);add90TextPlane(roadSign1,'ARANRUTH — DO NOT ENTER WITHOUT AUTHORIZATION',0.6,0.4,0,2.45,0.05,0,0,0,'#ffffff','#990000','bold 30px sans-serif');
+        const roadSign2=add90Group('road_sign_2',4,0,48);add90Cyl(roadSign2,0.05,2.5,0x888888,0,1.25,0);const s2=add90TextPlane(roadSign2,'20',0.4,0.4,0,2.35,0.04,0,0,0,'#ffffff','#111111','bold 42px sans-serif');
+        const hazard=add90Group('hazard_sign',29,0,32);add90Cyl(hazard,0.05,1,0x888888,0,0.5,0);add90TextPlane(hazard,'☢',0.5,0.5,0,1.05,0,'0','0','0','#ffcc00','#111111','bold 50px sans-serif');
+        const hazard2=add90Group('hazard_sign_2',30,0,-93);add90Cyl(hazard2,0.05,1,0x888888,0,0.5,0);add90TextPlane(hazard2,'☢',0.5,0.5,0,1.05,0,0,0,0,'#ffcc00','#111111','bold 50px sans-serif');
+        const directional=add90Group('directional_sign',-10,0,12);add90Cyl(directional,0.05,1.5,0x888888,0,0.75,0);add90TextPlane(directional,'WORKSHOP →   ← SPECTRUM PAD',0.8,0.2,0,1.5,0,'0','0','0','#ffffff','#111111','bold 22px sans-serif');
+        const noSmoking=add90Group('no_smoking',-22,0,43);add90Cyl(noSmoking,0.05,0.8,0x888888,0,0.4,0);add90TextPlane(noSmoking,'NO SMOKING',0.3,0.3,0,0.9,0,'0','0','0','#ffffff','#cc0000','bold 22px sans-serif');
+        const emergency=add90Group('emergency_sign',7,0,25);add90Cyl(emergency,0.05,1,0x888888,0,0.5,0);add90TextPlane(emergency,'EMERGENCY: +52 625 XXX XXXX',0.4,0.3,0,1.05,0,'0','0','0','#0066cc','#ffffff','bold 18px sans-serif');
+        const survey=add90Group('survey_markers',0,0,45);for(let i=0;i<5;i++){add90Cyl(survey,0.03,0.5,0xff0000,-40+i*20,0.25,0);add90Plane(survey,0.1,0.05,0xff0000,-40+i*20,0.52,0);}
+
+        // ----------------------------------------------------------------
+        // I. INDUSTRIAL / TOOLS (69-76)
+        // ----------------------------------------------------------------
+        const toolCab=add90Group('tool_cabinet',-14,0,5);add90Box(toolCab,1.5,1.8,0.6,0x4a6a8a,0,0.9,0);for(let i=0;i<4;i++)add90Box(toolCab,1.4,0.3,0.05,0x3a5a7a,0,0.35+i*0.36,0.33);add90Box(toolCab,0.6,1.7,0.03,0x4a6a8a,0,0.9,-0.32);
+        const air=add90Group('air_compressor',-8,0,6);add90Cyl(air,0.5,1,0x555555,0,0.55,0,0,0,Math.PI/2);add90Box(air,0.3,0.3,0.3,0x444444,-0.5,1.0,0);add90Cyl(air,0.3,0.5,0x666666,0.5,0.75,0,0,0,Math.PI/2);for(let x of [-0.5,0.5])add90Cyl(air,0.1,0.2,0x111111,x,0.15,0,0,0,Math.PI/2);add90Torus(air,0.3,0.03,0x333333,0.4,0.3,0,0,Math.PI/2,0,Math.PI*2);
+        const weld=add90Group('welding_station',-8,0,10);add90Box(weld,1.5,0.9,0.8,0x666666,0,0.45,0);add90Box(weld,0.4,0.5,0.3,0xcc4400,0,1.15,0);add90Cyl(weld,0.2,0.6,0x4444cc,-0.45,1.0,0);add90Cyl(weld,0.2,0.6,0xcc4444,0.45,1.0,0);add90RodBetween(weld,0.02,[-0.45,1.0,0.1],[0.8,1.0,0],0x333333,8);
+        const crane=add90Group('crane',24,0,-28);add90Box(crane,2,0.5,2,0xffcc00,0,0.25,0);for(let x of [-0.8,0.8])for(let z of [-0.8,0.8])add90Cyl(crane,0.1,8,0xffcc00,x,4,z);add90Box(crane,5,0.3,0.3,0xffcc00,2.0,8,0);add90Cyl(crane,0.02,3,0x333333,4.0,6.5,0);add90Torus(crane,0.1,0.03,0x555555,4,5.0,0,Math.PI/2,0,0,Math.PI*1.8);
+        function addScissor(g,x,raised){add90Box(g,1.5,0.5,1,0xffcc00,x,0.25,0);const h=raised?3:1;add90RodBetween(g,0.05,[x-0.55,0.5,-0.3],[x+0.55,h-0.5,0.3],0x888888,8);add90RodBetween(g,0.05,[x-0.55,h-0.5,0.3],[x+0.55,0.5,-0.3],0x888888,8);add90Box(g,1.5,0.1,1,0xffcc00,x,h,0);}
+        const scissor=add90Group('scissor_lift',18,0,-27);addScissor(scissor,-1.2,true);addScissor(scissor,1.2,false);
+        const pipeRack=add90Group('pipe_rack',28,0,-20);for(let x of [-3,0,3])for(let z of [-0.6,0.6])add90Box(pipeRack,0.3,0.5,0.3,0x666666,x,0.25,z);for(let level=0;level<3;level++)for(let i=0;i<4;i++)add90Cyl(pipeRack,0.1,6,0xaaaaaa,-3+i*2,0.7+level*0.45,0,0,0,Math.PI/2);
+        const pallets=add90Group('pallet_stack',20,0,-32);for(let i=0;i<5;i++)add90Box(pallets,1.2,0.15,1,0x8a7a5a,0,i*0.17,0);for(let i=0;i<3;i++)add90Box(pallets,0.8,0.8,0.8,0xc4a882,-0.4+i*0.4,0.45,0);
+        const mixers=add90Group('concrete_mixers',36,0,24);for(let i=0;i<2;i++){const x=i*1.6-0.8;add90Box(mixers,0.8,0.3,0.5,0x444444,x,0.2,0);add90Cyl(mixers,0.5,0.8,0x555555,x,0.8,0,Math.PI/2,0,0);add90Cyl(mixers,0.3,0.3,0x333333,x,0.4,0.6,0,Math.PI/2,0);if(i===0)add90Sphere(mixers,0.3,0xaaaaaa,x,1.3,0,[1,0.8,1]);}
+
+        // ----------------------------------------------------------------
+        // J. SAFETY / EMERGENCY (77-82)
+        // ----------------------------------------------------------------
+        const ext2=add90Group('fire_extinguisher_2',-5,1.2,-10);add90Cyl(ext2,0.15,0.4,0xcc0000,0,0,0);
+        const ext3=add90Group('fire_extinguisher_3',-2,0,28);add90Cyl(ext3,0.15,0.4,0xcc0000,3.0,2.0,4.08);
+        const firstAid=add90Group('first_aid_kit',-20,0,0);add90Box(firstAid,0.3,0.2,0.15,0xffffff,-1.0,2.1,7.58);add90Plane(firstAid,0.1,0.1,0xcc0000,-1.0,2.1,7.67);
+        const emerLight=add90Group('emergency_light',-20,0,0);for(let i=0;i<4;i++){const x=i%2? -4:-6; const z=i<2?2:-2; add90Box(emerLight,0.2,0.1,0.1,0xdddddd,x,6.05,z);add90Emissive(emerLight,0.02,0xff0000,x-0.05,6.07,z+0.06,0.12);add90Emissive(emerLight,0.02,0xff0000,x+0.05,6.07,z+0.06,0.12);}
+        const eShower=add90Group('emergency_shower',-23,0,44);add90Cyl(eShower,0.08,2,0xcc0000,0,1,0);add90Cyl(eShower,0.1,0.1,0x888888,0,2.05,0);add90Cyl(eShower,0.03,0.3,0xcc0000,0.12,1.8,0,0,0,Math.PI/2);
+        const spill=add90Group('spill_kit',-21,0,44);add90Box(spill,0.5,0.3,0.4,0xffcc00,0,0.15,0);add90Box(spill,0.52,0.04,0.42,0xffd84d,0,0.32,0);
+
+        // ----------------------------------------------------------------
+        // K. DAILY LIFE / HUMAN DETAIL (83-90)
+        // ----------------------------------------------------------------
+        const picnic=add90Group('picnic_table',4,0,30);add90Box(picnic,1.5,0.8,0.8,0x8a7a5a,0,0.85,0);for(let x of [-0.55,0.55])for(let z of [-0.25,0.25])add90Cyl(picnic,0.05,0.8,0x8a7a5a,x,0.4,z);for(let z of [-0.9,0.9])add90Box(picnic,1.5,0.4,0.3,0x8a7a5a,0,0.35,z);
+        const bbq=add90Group('bbq_grill',6,0,33);add90Box(bbq,0.5,0.7,0.4,0x333333,0,0.35,0);add90Plane(bbq,0.4,0.3,0x555555,0,0.73,0,0,0,0);for(let x=-0.12;x<=0.12;x+=0.08)add90Box(bbq,0.02,0.01,0.28,0x777777,x,0.75,0);add90Cyl(bbq,0.1,0.5,0x444444,0,1.05,0);
+        const laundryLine=add90Group('laundry_line',-26,0,-4);add90Cyl(laundryLine,0.08,2,0x888888,-1.5,1,0);add90Cyl(laundryLine,0.08,2,0x888888,1.5,1,0);add90RodBetween(laundryLine,0.01,[-1.5,2,0],[1.5,2,0],0xcccccc,8);['#4466aa','#aa4444','#44aa44','#664488','#886644'].forEach((c,i)=>add90Plane(laundryLine,0.3,0.5,c,-1.1+i*0.55,1.75,0));
+        const trash=add90Group('trash_cans',13,0,17);[[0,0],[2,0],[0,20],[2,20]].forEach(([x,z])=>{add90Cyl(trash,0.3,0.5,0x555555,x,0.25,z);add90Cyl(trash,0.3,0.05,0x666666,x,0.53,z);});
+        const bike=add90Group('bike_rack',-20,0,-20);for(let x of [-1.2,0,1.2]){add90Cyl(bike,0.03,0.8,0x555555,x,0.4,0);add90Torus(bike,0.1,0.03,0x555555,x,0.8,0,Math.PI/2,0,0,Math.PI);}
+        function addBike(g,x,z){add90Cyl(g,0.28,0.04,0x111111,x-0.5,0.3,z,0,Math.PI/2,0);add90Cyl(g,0.28,0.04,0x111111,x+0.5,0.3,z,0,Math.PI/2,0);add90RodBetween(g,0.02,[x-0.5,0.3,z],[x,0.55,z],0x333333,8);add90RodBetween(g,0.02,[x,0.55,z],[x+0.5,0.3,z],0x333333,8);add90RodBetween(g,0.02,[x-0.5,0.3,z],[x+0.15,0.3,z],0x333333,8);}
+        addBike(bike,-1,-1);addBike(bike,1,-1);
+        const notice=add90Group('notice_board',-2,3.0,32.05);add90Box(notice,1,0.7,0.05,0x8a7a5a,0,0,0);for(let i=0;i<4;i++)add90Plane(notice,0.2,0.3,i%2?0xffffcc:0xffffff,-0.3+(i%2)*0.5,-0.05+Math.floor(i/2)*0.25,0.04);
+        const kennel=add90Group('dog_kennel',-6,0,34);for(let x of [-0.7,0.7])for(let z of [-0.45,0.45])add90Cyl(kennel,0.05,1,0x8a7a5a,x,0.5,z);add90Box(kennel,1.5,0.08,1,0x8a7a5a,0,1.02,0);add90Box(kennel,0.4,0.2,0.2,0x8a6a4a,0,0.25,0);for(let x of [-0.15,0.15]) add90Cyl(kennel,0.03,0.2,0x8a6a4a,x,0.15,0.1,0,0,Math.PI/2);add90Box(kennel,0.15,0.15,0.15,0x8a6a4a,0.22,0.35,0);add90Cyl(kennel,0.02,0.2,0x8a6a4a,-0.25,0.35,0,0,0,Math.PI/2);
+        const whip=add90Group('radio_antenna_whip',-20,4.1,-18);for(let i=0;i<3;i++){const a=-Math.PI/6+i*Math.PI/6;add90Cyl(whip,0.02,1,0x888888,Math.cos(a)*0.12,0.5,Math.sin(a)*0.12,Math.sin(a)*0.5,0,0);}add90Cyl(whip,0.05,0.1,0x555555,0,0.05,0);
+
+        // ================================================================
+        // ADDITIONAL ELEMENTS (91-160) — ALL INTERACTIVE / ENGLISH
+        // ================================================================
+        const ADDITIONAL91_160 = [];
+        const animated60 = [];
+        const add60Group = (name, x, y = 0, z = 0) => {
+            const g = new THREE.Group();
+            g.name = name;
+            g.position.set(x, y, z);
+            g.userData.materialType = 'MeshStandardMaterial';
+            g.userData.castShadow = true;
+            registerGroup(g, name);
+            ADDITIONAL91_160.push(g);
+            return g;
+        };
+        const S = (color, roughness = 0.65, metalness = 0) =>
+            new THREE.MeshStandardMaterial({ color, roughness, metalness });
+        const sBox = (g,w,h,d,color,x=0,y=0,z=0,material=null) => { const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material||S(color)); m.position.set(x,y,z); m.castShadow=true; m.receiveShadow=true; g.add(m); return m; };
+        const sCyl = (g,r,h,color,x=0,y=0,z=0,rx=0,ry=0,rz=0,material=null,radial=12) => { const m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,radial),material||S(color)); m.position.set(x,y,z); m.rotation.set(rx,ry,rz); m.castShadow=true; m.receiveShadow=true; g.add(m); return m; };
+        const sSphere = (g,r,color,x=0,y=0,z=0,scale=[1,1,1],material=null) => { const m=new THREE.Mesh(new THREE.SphereGeometry(r,12,10),material||S(color)); m.position.set(x,y,z); m.scale.set(...scale); m.castShadow=true; m.receiveShadow=true; g.add(m); return m; };
+        const sPlane = (g,w,h,color,x=0,y=0,z=0,rx=0,ry=0,rz=0,opacity=1,transparent=false,material=null) => { const mat=material||new THREE.MeshStandardMaterial({color,roughness:0.8,transparent,opacity,side:THREE.DoubleSide}); const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h),mat); m.position.set(x,y,z); m.rotation.set(rx,ry,rz); m.castShadow=false; m.receiveShadow=false; g.add(m); return m; };
+        const sRod = (g,r,p1,p2,color,radial=10) => { const a=new THREE.Vector3(...p1),b=new THREE.Vector3(...p2),d=new THREE.Vector3().subVectors(b,a),len=d.length(); const m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,len,radial),S(color)); m.position.copy(a).add(b).multiplyScalar(0.5); m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize()); m.castShadow=true;m.receiveShadow=true;g.add(m);return m; };
+        const sTorus = (g,r,t,color,x=0,y=0,z=0,rx=0,ry=0,rz=0,arc=Math.PI*2) => { const m=new THREE.Mesh(new THREE.TorusGeometry(r,t,8,24,arc),S(color));m.position.set(x,y,z);m.rotation.set(rx,ry,rz);m.castShadow=true;m.receiveShadow=true;g.add(m);return m; };
+        const sText = (g,text,w,h,x,y,z,bg='#ffffff',fg='#111111',font='bold 24px sans-serif',rx=0,ry=0,rz=0) => { const c=document.createElement('canvas');c.width=1024;c.height=512;const ctx=c.getContext('2d');ctx.fillStyle=bg;ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle=fg;ctx.font=font;ctx.textAlign='center';ctx.textBaseline='middle';const words=String(text).split(' ');let lines=[''];for(const word of words){const test=lines[lines.length-1]?lines[lines.length-1]+' '+word:word;if(ctx.measureText(test).width>900&&lines[lines.length-1])lines.push(word);else lines[lines.length-1]=test;}lines.slice(0,4).forEach((line,i)=>ctx.fillText(line,c.width/2,c.height/2+(i-(Math.min(lines.length,4)-1)/2)*62));const tex=new THREE.CanvasTexture(c);const mat=new THREE.MeshBasicMaterial({map:tex,transparent:true,side:THREE.DoubleSide});const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h),mat);m.position.set(x,y,z);m.rotation.set(rx,ry,rz);m.castShadow=false;g.add(m);return m; };
+        const sGlow = (g,r,color,x,y,z,intensity=0.25,opacity=1) => { const mat=new THREE.MeshStandardMaterial({color,emissive:color,emissiveIntensity:intensity,transparent:opacity<1,opacity,roughness:0.35}); const m=new THREE.Mesh(new THREE.SphereGeometry(r,12,10),mat);m.position.set(x,y,z);m.castShadow=true;g.add(m);const light=new THREE.PointLight(color,intensity,8);light.position.set(x,y,z);g.add(light);return m; };
+
+        // ----------------------------------------------------------------
+        // L. GARDEN & LANDSCAPE (91-102)
+        // ----------------------------------------------------------------
+        function addGardenBed(g, x, z) {
+            const bed = new THREE.Group(); bed.position.set(x,0,z); g.add(bed);
+            sBox(bed,2,0.3,1,0x5a4a3a,0,0.15,0);
+            for(let i=0;i<8;i++){const a=(i/8)*Math.PI*2; sSphere(bed,0.16,0x8a7a6a,Math.cos(a)*0.9,0.2,Math.sin(a)*0.42,[1,0.65,1]);}
+            for(let i=0;i<5;i++){const px=-0.65+i*0.32; sCyl(bed,0.05,0.3,0x4a7a4a,px,0.45,(i%2?0.18:-0.18)); sSphere(bed,0.075,0x5a8a5a,px,0.63,(i%2?0.18:-0.18));}
+        }
+        const gardenBeds=add60Group('garden_beds',-12,0,-14);[-6,-2,2,6,10,14].forEach((x,z)=>addGardenBed(gardenBeds,x,z));
+        const gardenPath=add60Group('garden_path',-1,0,10);for(let i=0;i<12;i++)sBox(gardenPath,0.6,0.05,0.6,0xb0a090,0,0.03,-7+i*0.72);gardenPath.rotation.y=0;
+        function addGardenLamp(name,x,z){const g=add60Group(name,x,0,z);sCyl(g,0.04,0.8,0x333333,0,0.4,0);sGlow(g,0.15,0xfff5cc,0,0.88,0,0.3);}
+        addGardenLamp('garden_lamp_1',-10,9);addGardenLamp('garden_lamp_2',-6,6);addGardenLamp('garden_lamp_3',0,4);addGardenLamp('garden_lamp_4',5,7);
+        function addFlowerPot(name,x,z,count,flowerColors){const g=add60Group(name,x,0,z);sCyl(g,0.2,0.3,0x8a4a3a,0,0.15,0);for(let i=0;i<count;i++){const a=i/count*Math.PI*2; sCyl(g,0.02,0.3,0x4a7a4a,Math.cos(a)*0.12,0.38,Math.sin(a)*0.12);sSphere(g,0.05,flowerColors[i%flowerColors.length],Math.cos(a)*0.12,0.56,Math.sin(a)*0.12);}}
+        addFlowerPot('flower_bed',-18,2,8,[0xff4466,0xffaa00,0xff66aa,0xffffff]);
+        addFlowerPot('flower_bed_2',-16,4,5,[0xff8800]);
+        addFlowerPot('flower_bed_3',-14,6,6,[0xaa44ff]);
+        const hedge=add60Group('hedge_row',7,0,10);for(let i=0;i<10;i++)sSphere(hedge,0.25,0x3a6a3a,-1.35+i*0.3,0.25,0,[1,1.2,1]);
+        const fountain=add60Group('fountain',-4,0,-6);sCyl(fountain,0.75,0.3,0x8a8a8a,0,0.15,0);sCyl(fountain,0.075,1,0xaaaaaa,0,0.8,0);sCyl(fountain,0.4,0.22,0xaaaaaa,0,1.35,0);sPlane(fountain,0.7,0.7,0x4a8acc,0,1.47,0,-Math.PI/2,0,0,0.7,true);
+        const bench=add60Group('garden_bench',-7,0,-7);for(let z of [-0.18,0.18])sBox(bench,1.2,0.08,0.3,0x6a5a4a,0,0.6,z);for(let x of [-0.45,0.45])for(let z of [-0.18,0.18])sBox(bench,0.1,0.4,0.1,0x555555,x,0.38,z);sBox(bench,1.2,0.3,0.05,0x6a5a4a,0,0.78,0.24);
+
+        // ----------------------------------------------------------------
+        // M. ISOLATED / RESTRICTED ZONES (103-112)
+        // ----------------------------------------------------------------
+        const quarantine=add60Group('quarantine_zone',34,0,55);sPlane(quarantine,20,15,0x999999,0,0.01,0,-Math.PI/2);sBox(quarantine,20,0.05,0.05,0xffcc00,0,1,-7.5);sBox(quarantine,20,0.05,0.05,0xffcc00,0,1,7.5);sBox(quarantine,0.05,0.05,15,0xffcc00,-10,1,0);sBox(quarantine,0.05,0.05,15,0xffcc00,10,1,0);
+        const qCorners=[[-10,-7.5],[10,-7.5],[-10,7.5],[10,7.5]];for(let i=0;i<8;i++){const edge=i<4?[-10+i*20/3, -7.5]:i<6?[10, -7.5+(i-4)*15]:[10-(i-6)*20/2,7.5];sCyl(quarantine,0.05,1,0x333333,edge[0],1,edge[1]);}
+        [[-6,-2],[0,1],[6,-2]].forEach(([x,z])=>{sBox(quarantine,2,1,1,0x555555,x,0.5,z);sBox(quarantine,2.05,0.08,0.12,0xcc0000,x,0.8,z+0.51);});
+        const restricted=add60Group('restricted_gate',34,0,46);for(let x of [-2,2])sCyl(restricted,0.15,2.5,0x333333,x,1.25,0);sBox(restricted,4,0.1,0.1,0xcc0000,0,1.8,0);sText(restricted,'RESTRICTED — AUTHORIZED PERSONNEL ONLY',1,0.5,0,2.55,0,'#ffffff','#111111','bold 18px sans-serif');
+        const cage=add60Group('cage_area',40,0,42);for(let c=0;c<4;c++){const ox=-4.5+c*3;for(let x of [ox,ox+2])for(let z of [-1,1])sCyl(cage,0.03,2,0x555555,x,1,z);for(let z of [-1,1])for(let y of [0,2])sRod(cage,0.03,[ox,y,z],[ox+2,y,z],0x555555);for(let y of [0,2])sRod(cage,0.03,[ox,y,-1],[ox,y,1],0x555555);sBox(cage,1,1,1,0x888888,ox+1,0.5,0);}
+        sBox(cage,13,0.08,3,0x999999,0,0,0);
+        const bio=add60Group('bio_hazard_zone',-38,0,35);sPlane(bio,10,8,0x999999,0,0.01,0,-Math.PI/2);for(let i=0;i<6;i++)sCyl(bio,0.08,1.5,0x333333,-4+i*1.6,0.75,i%2?3.8:-3.8);for(let i=0;i<6;i++)sBox(bio,1.1,0.06,0.06,i%2?0xffcc00:0x111111,-4+i*1.6,1.55,i%2?3.8:-3.8);sCyl(bio,0.4,0.8,0x3a5a3a,-1,0.4,0);sCyl(bio,0.4,0.8,0x3a5a3a,1,0.4,0);sBox(bio,1,0.5,0.3,0x555555,3,0.25,0);for(let x of [2.65,3.35])sCyl(bio,0.12,0.15,0x333333,x,0.15,0.22,Math.PI/2);sText(bio,'BIOHAZARD',0.6,0.6,0,2,0,'#ffcc00','#111111','bold 22px sans-serif');
+        const droneEx=add60Group('drone_exclusion',-35,0,-62);const rEx=15;for(let i=0;i<12;i++){const a=i/12*Math.PI*2;sCyl(droneEx,0.03,0.8,0xff0000,Math.cos(a)*rEx,0.4,Math.sin(a)*rEx);}sTorus(droneEx,rEx,0.02,0xcc0000,0,0.5,0,Math.PI/2,0,0,Math.PI*2);sCyl(droneEx,0.05,1.5,0x333333,0,0.75,0);sText(droneEx,'NO FLY ZONE',1,0.5,0,1.6,0,'#ffffff','#111111','bold 24px sans-serif');
+        const evidence=add60Group('evidence_storage',42,0,34);sBox(evidence,3,2.5,2,0x444444,0,1.25,0);sBox(evidence,1,2,0.12,0x222222,0,1,1.06);for(let i=0;i<6;i++)sCyl(evidence,0.05,0.14,0xaaaaaa,-0.35+i*0.14,1.15,1.14,Math.PI/2);sCyl(evidence,0.05,0.1,0xaaaaaa,-0.18,0.95,1.15,Math.PI/2);sCyl(evidence,0.05,0.1,0xaaaaaa,0.18,0.95,1.15,Math.PI/2);sBox(evidence,0.1,0.05,0.08,0x333333,1.1,2.35,0);sText(evidence,'EVIDENCE — DO NOT OPEN',0.8,0.3,0,2.55,1.07,'#ffffff','#111111','bold 16px sans-serif');
+        const iso=add60Group('isolation_shack',-42,0,16);sBox(iso,8,0.08,6,0x999999,0,0.04,0);sBox(iso,4,2.5,3,0x555555,0,1.25,0);sBox(iso,1,2,0.12,0x222222,0,1,1.56);sGlow(iso,0.15,0xa8d4e8,0,1.2,1.63,0.08);for(let x of [-1,0,1])sBox(iso,0.3,0.15,0.08,0x444444,x,1.6,-1.56);sCyl(iso,0.03,0.5,0x888888,0,2.8,0);iso.rotation.y=0.15;
+        const quiet=add60Group('radio_quiet_zone',-70,0,-70);const rQ=25;for(let i=0;i<20;i++){const a=i/20*Math.PI*2;sCyl(quiet,0.03,0.6,0xffffff,Math.cos(a)*rQ,0.3,Math.sin(a)*rQ);}sCyl(quiet,0.05,2,0x333333,0,1,0);sText(quiet,'RF QUIET ZONE — ALL TRANSMISSIONS OFF',1.5,0.8,0,2.15,0,'#003366','#ffffff','bold 18px sans-serif');
+        const decon=add60Group('decon_tent',-46,0,4);for(let x of [-2,2])for(let z of [-1.5,1.5])sCyl(decon,0.1,2.5,0x888888,x,1.25,z);sPlane(decon,4,3,0xffffff,0,2.5,0,0,0,0,0.8,true);sPlane(decon,1,2,0xffffff,0,1.25,1.51,0,0,0,0.6,true);sBox(decon,0.4,0.4,0.4,0x555555,-0.6,0.2,0);sBox(decon,0.4,0.4,0.4,0x555555,0.6,0.2,0);sBox(decon,1,0.5,0.7,0x888888,0,0.35,-0.5);
+        const barricade=add60Group('containment_barricade',-25,0,44);for(let i=0;i<6;i++){const a=Math.PI-(i/5)*Math.PI;const x=Math.cos(a)*2.5,z=Math.sin(a)*2.5;sCyl(barricade,0.3,1,0x444444,x,0.5,z);}for(let i=0;i<5;i++){const a=Math.PI-(i/5)*Math.PI;const x1=Math.cos(a)*2.5,z1=Math.sin(a)*2.5;const a2=Math.PI-((i+1)/5)*Math.PI;const x2=Math.cos(a2)*2.5;const z2=Math.sin(a2)*2.5;sRod(barricade,0.01,[x1,0.8,z1],[x2,0.8,z2],0xcc0000,8);}for(let x of [-1,1])sCyl(barricade,0.3,0.7,0xff6600,x,0.35,2.8,0,0,0, null, 12);
+
+        // ----------------------------------------------------------------
+        // N. ADDITIONAL TERRAIN / GEOMORPHOLOGY (113-120)
+        // ----------------------------------------------------------------
+        const salt=add60Group('salt_flat',-55,0,35);sPlane(salt,20,20,0xe8e0d0,0,0.02,0,-Math.PI/2);for(let i=0;i<8;i++){const a=i/8*Math.PI*2;sPlane(salt,10,2,0xe8e0d0,Math.cos(a)*5,0.03,Math.sin(a)*5,-Math.PI/2,0,a*0.18);}for(let i=0;i<12;i++){const a=i/12*Math.PI*2;sRod(salt,0.012,[0,0.04,0],[Math.cos(a)*9,0.04,Math.sin(a)*9],0xc4b8a0,6);}
+        const mud=add60Group('mud_cracks',55,0,-20);sPlane(mud,10,8,0xa08060,0,0.01,0,-Math.PI/2);for(let i=0;i<20;i++){const a=(i%5)*0.7,rad=1.2+Math.floor(i/5)*0.8;sRod(mud,0.025,[Math.cos(a)*rad,0.04,Math.sin(a)*rad],[Math.cos(a+0.35)* (rad+1),0.04,Math.sin(a+0.35)*(rad+1)],0x7a5a40,6);}
+        const fan=add60Group('alluvial_fan',50,0,42);const shape=new THREE.Shape();shape.moveTo(0,0);shape.lineTo(15,5);shape.lineTo(15,-5);shape.lineTo(0,0);const fanMesh=new THREE.Mesh(new THREE.ShapeGeometry(shape),S(0xc4a882));fanMesh.rotation.x=-Math.PI/2;fanMesh.castShadow=true;fanMesh.receiveShadow=true;fan.add(fanMesh);for(let i=0;i<15;i++){const t=i/14;const ang=(Math.random()-0.5)*1.2;const d=2+t*10;sSphere(fan,0.1+Math.random()*0.12, i%2?0x888888:0xaaaaaa,Math.cos(ang)*d,0.1,Math.sin(ang)*d*0.35);}
+        function addMounds(g,ox,oz){for(let i=0;i<4;i++){const x=ox+(i%2)*2.5,z=oz+Math.floor(i/2)*2.5;sCyl(g,0.25,1,0x8a6a4a,x,0.5,z,0,0,0,null,12);for(let j=0;j<3;j++)sCyl(g,0.05,0.1,0x4a3a2a,x+(j-1)*0.12,0.95,z+0.1);}}
+        const mounds=add60Group('termite_mounds',58,0,24);addMounds(mounds,-2.5,-2.5);
+        const wind=add60Group('wind_erosion_arc',58,0,70);for(let i=0;i<3;i++)sTorus(wind,1,0.1,0xc4a882,i*2,1,0,Math.PI/2,0,0,Math.PI);
+        const tracks=add60Group('animal_track',2,0,59);for(let i=0;i<12;i++){const row=i%2,col=Math.floor(i/2);sPlane(tracks,0.1,0.05,0xb8926a,row?0.22:-0.22,-0.01,-5+col*1.8,0,0,0,0.5,true);}
+        const burrow=add60Group('burrow',-50,0,-8);[[0,0],[2,0],[1,1.8]].forEach(([x,z],i)=>{sPlane(burrow,0.3,0.3,0x5a4a3a,x, -0.01,z,-Math.PI/2);if(i===0)sCyl(burrow,0.1,0.2,0x4a3a2a,x,-0.05,z,Math.PI,0,0, null,12);});
+        const outcrop=add60Group('rock_outcrop_line',-5,0,72);for(let i=0;i<8;i++){const rock=sSphere(outcrop,0.6+0.1*(i%3),0x9a8a7a,-10+i*2.8,0.4,(i%2)*0.6,[1.4,0.7,0.9]);rock.rotation.y=i*0.35;}
+
+        // ----------------------------------------------------------------
+        // O. ADDITIONAL VEGETATION (121-128)
+        // ----------------------------------------------------------------
+        function addPaddle(g,x,y,z,s){const m=sBox(g,0.4*s,0.03,0.1*s,0x4a7a4a,x,y,z);m.rotation.y=(Math.random()-0.5);return m;}
+        const pear=add60Group('prickly_pear_grove',42,0,-45);for(let i=0;i<10;i++){const x=(i%5)*0.9-1.8,z=Math.floor(i/5)*1.2-0.6;for(let j=0;j<4;j++)addPaddle(pear,x+(j%2)*0.12,0.35+j*0.25,z+(j%3)*0.08,1);if(i<3)sSphere(pear,0.05,0xff44aa,x,1.35,z);}
+        const nopal=add60Group('nopal_cactus',46,0,-40);for(let lvl=0;lvl<3;lvl++)for(let i=0;i<3;i++)sBox(nopal,0.5,0.04,0.15,0x3a6a3a,(i-1)*0.38,0.5+lvl*0.35,(i%2?0.18:-0.18));for(let i=0;i<5;i++)sSphere(nopal,0.06,0xffaa00,-0.5+i*0.25,1.5,(i%2?0.12:-0.12));
+        function addCholla(name,x,z){const g=add60Group(name,x,0,z);for(let i=0;i<3;i++){sCyl(g,0.08,1.5,0x5a7a4a,i*0.45-0.45,0.8,0);for(let j=0;j<6;j++)sTorus(g,0.08,0.02,0x6a8a5a,i*0.45-0.45,0.2+j*0.2,0,Math.PI/2,0,0,Math.PI*2);if(i<2)for(let k=0;k<6;k++)sCyl(g,0.01,0.05,0xcccccc,i*0.45-0.45,0.4+k*0.18,0.09,0,Math.PI/2,k*0.8);}}
+        addCholla('cholla_cactus',50,-44);const devil=add60Group("devil's_tongue",53,0,-44);for(let i=0;i<5;i++){sCyl(devil,0.05,0.8,0x8a4a3a,(i-2)*0.55,0.4,0);for(let j=0;j<4;j++)sCyl(devil,0.01,0.03,0xffaa00,(i-2)*0.55,0.25+j*0.18,0.05,0,Math.PI/2,j);}
+        function addWillow(name,x,z,scale){const g=add60Group(name,x,0,z);sCyl(g,0.15*scale,3*scale,0x5a4a3a,0,1.5*scale,0);for(let i=0;i<5;i++){const a=-1+0.5*i;sRod(g,0.05*scale,[0,1.2*scale,0],[Math.cos(a)*1.5*scale,2.1*scale,Math.sin(a)*1.5*scale],0x5a4a3a);sSphere(g,0.8*scale,0x6a8a5a,Math.cos(a)*1.5*scale,2.5*scale,Math.sin(a)*1.5*scale,[1,0.6,1]);}}
+        addWillow('desert_willow',-55,-48,1);addWillow('desert_willow_2',-60,-44,0.7);
+        const sage=add60Group('sagebrush_cluster',-48,0,-48);for(let i=0;i<8;i++){const a=i/8*Math.PI*2,rr=1.5+0.2*(i%3);sSphere(sage,0.4,0x8a9a6a,Math.cos(a)*rr,0.4,Math.sin(a)*rr);for(let j=0;j<3;j++)sCyl(sage,0.03,0.3,0x6a5a4a,Math.cos(a)*rr,0.35+j*0.05,Math.sin(a)*rr);}
+        const deadShrub=add60Group('dead_shrub',-60,0,-20);for(let i=0;i<5;i++){const a=i*1.1;for(let j=0;j<4;j++)sRod(deadShrub,0.03,[i*1.2-3,0.1,Math.sin(a)*0.5],[i*1.2-3+Math.cos(a+j)*0.3,0.8,Math.sin(a+j)*0.4],0x8a7a6a,8);}
+
+        // ----------------------------------------------------------------
+        // P. ADDITIONAL INFRASTRUCTURE (129-136)
+        // ----------------------------------------------------------------
+        function addUnderground(name,x,z,label,color){const g=add60Group(name,x,0,z);sCyl(g,0.5,0.1,color,0,0.05,0);sCyl(g,0.03,0.15,0x888888,-0.12,0.12,0);sCyl(g,0.03,0.15,0x888888,0.12,0.12,0);sPlane(g,3,3,0x999999,0,0.01,0,-Math.PI/2);sText(g,label,0.6,0.3,0,0.2,0,'#ffcc00','#111111','bold 20px sans-serif');}
+        addUnderground('underground_tank_1',-35,47,'FUEL',0x555555);addUnderground('underground_tank_2',-30,47,'WATER',0x666666);
+        const trench=add60Group('cable_trench',-40,0,-2);for(let i=0;i<4;i++){const z=-4.5+i*3;sBox(trench,0.3,0.2,15,0x8a7a6a,-5+i*3,0.1,z);for(let p=0;p<5;p++)sBox(trench,0.35,0.05,0.4,0xaaaaaa,-5+i*3,0.23,z-5.6+p*2.8);}
+        function addManhole(name,x,z){const g=add60Group(name,x,0,z);sCyl(g,0.3,0.1,0x555555,0,0.05,0);sCyl(g,0.275,0.05,0x666666,0,0.13,0);for(let dx of [-0.12,0.12])sCyl(g,0.025,0.1,0x888888,dx,0.18,0,0,0,0,null,10);}
+        addManhole('manhole_1',-8,52);addManhole('manhole_2',-2,52);addManhole('manhole_3',4,52);
+        const pad1=add60Group('concrete_pad_1',38,0,-48);for(let i=0;i<5;i++){const x=(i-2)*4; sBox(pad1,3,0.15,3,0xaaaaaa,x,0.075,0);if(i<2)for(let dx of [-1.15,1.15])for(let dz of [-1.15,1.15])sCyl(pad1,0.05,0.1,0x888888,x+dx,0.2,dz);}
+        const pad2=add60Group('concrete_pad_2',30,0,-48);sBox(pad2,4,0.15,4,0xaaaaaa,0,0.075,0);for(let i=0;i<8;i++){const a=i/8*Math.PI*2;sCyl(pad2,0.05,0.1,0x888888,Math.cos(a)*1.5,0.2,Math.sin(a)*1.5);}for(let a of [0,Math.PI/2,Math.PI,Math.PI*1.5])sRod(pad2,0.03,[Math.cos(a)*2,0.17,Math.sin(a)*2],[Math.cos(a+0.35)*2,0.17,Math.sin(a+0.35)*2],0xffcc00,6);
+
+        // ----------------------------------------------------------------
+        // Q. DETAILS & AMBIENCE (137-150)
+        // ----------------------------------------------------------------
+        const board=add60Group('sandwich_board',0,0,31);for(let x of [-0.32,0.32])sBox(board,0.05,0.8,0.05,0x555555,x,0.4,0);sPlane(board,0.6,0.8,0x222222,0,0.6,0,0,0,0);sText(board,'MEETING 0800 — WORKSHOP',0.6,0.8,0,0.6,0.03,'#222222','#ffffff','bold 12px sans-serif');
+        const bottles=add60Group('water_bottles',4,1.7,30);for(let i=0;i<4;i++)sCyl(bottles,0.05,0.25,0x4a8acc,-0.45+i*0.3,0.15,0,0,0,0,new THREE.MeshStandardMaterial({color:0x4a8acc,transparent:true,opacity:0.8,roughness:0.2}));
+        const backpacks=add60Group('backpacks',-20,0,-20);sBox(backpacks,0.3,0.4,0.2,0x4a5a3a,-0.5,1,0);sBox(backpacks,0.3,0.4,0.2,0x555555,0.5,1,0);
+        const toolBox=add60Group('tool_box',15,0,18);sBox(toolBox,0.5,0.2,0.3,0xcc0000,0,0.1,0);const lid=sBox(toolBox,0.5,0.02,0.3,0xcc0000,0,0.32,0);lid.rotation.z=Math.PI/4;for(let i=0;i<3;i++)sCyl(toolBox,0.02,0.3,0xaaaaaa,-0.12+i*0.12,0.45,0,0,0,Math.PI/2);
+        const ladder=add60Group('ladder',-24,0,6);for(let x of [-0.3,0.3])sBox(ladder,0.05,0.05,3,0xaaaaaa,x,1.5,0);for(let i=0;i<5;i++)sBox(ladder,0.5,0.03,0.03,0xaaaaaa,0,0.4+i*0.5,0);
+        const cord=add60Group('extension_cord',12,0,20);for(let i=0;i<3;i++)sTorus(cord,0.45-i*0.1,0.02,0xffcc00,0,0.15+i*0.02,0,Math.PI/2,0,0,Math.PI*2);for(let x of [-0.9,0.9])sBox(cord,0.05,0.03,0.03,0xffcc00,x,0.12,0);
+        const wheelbarrow=add60Group('wheelbarrow',-12,0,12);sBox(wheelbarrow,0.8,0.3,0.5,0x555555,0,0.5,0);sCyl(wheelbarrow,0.15,0.1,0x333333,0,0.2,0.35,0,Math.PI/2,0);for(let x of [-0.28,0.28])sCyl(wheelbarrow,0.03,0.5,0x555555,x,0.55,-0.25,0,0,Math.PI/2);sSphere(wheelbarrow,0.3,0x8a6a4a,0,0.72,0);
+        const shovels=add60Group('shovels',-23,0,5);for(let i=0;i<3;i++){sCyl(shovels,0.03,1.2,0x8a7a5a,-0.4+i*0.4,0.8,0,0,0,0);sPlane(shovels,0.2,0.3,0x888888,-0.4+i*0.4,1.38,0.02,0,0,0);}
+        const gas=add60Group('gas_can',16,0,20);for(let x of [-0.2,0.2]){sBox(gas,0.25,0.3,0.15,0xcc0000,x,0.15,0);sCyl(gas,0.05,0.03,0x333333,x,0.34,0);}
+        const firstBox=add60Group('first_aid_box',2,2.2,28);sBox(firstBox,0.4,0.2,0.3,0xffffff,0,0,0);sPlane(firstBox,0.15,0.15,0xcc0000,0,0,0.16);sCyl(firstBox,0.02,0.08,0xaaaaaa,-0.1,0.13,0.17,Math.PI/2);sCyl(firstBox,0.02,0.08,0xaaaaaa,0.1,0.13,0.17,Math.PI/2);
+        const handheld=add60Group('radio_handheld',-16,1.8,4);for(let x of [-0.18,0.18]){sBox(handheld,0.08,0.15,0.04,0x222222,x,0,0);sCyl(handheld,0.01,0.1,0x333333,x,0.12,0);sGlow(handheld,0.01,0x00ff00,x+0.02,0.05,0.03,0.08);}
+        const laptop=add60Group('laptop_outdoor',12,0,-24);sBox(laptop,0.3,0.02,0.2,0x555555,0,0.02,0);const ls=sPlane(laptop,0.3,0.2,0x111111,0,0.13,0,0.35,0,0);sGlow(laptop,0.01,0x00ff00,0.12,0.08,0,0.05);
+        const charger=add60Group('solar_charger',10,0,19);sBox(charger,0.2,0.02,0.15,0x333333,0,0.01,0);sPlane(charger,0.2,0.15,0x1a3a5c,0,0.03,0,-Math.PI/2);for(let i=0;i<3;i++)sGlow(charger,0.01,i===2?0xffff00:0x00ff00,-0.06+i*0.06,0.05,0,0.05);
+        const securityCameras=add60Group('security_camera_1',0,0,0);
+        function addSecurityCamPart(g,x,z){sCyl(g,0.03,3,0x555555,x,1.5,z);sBox(g,0.15,0.08,0.1,0x333333,x,3,z);sCyl(g,0.03,0.02,0x111111,x,3,z+0.07,Math.PI/2);sGlow(g,0.01,0xff0000,x,3.04,z+0.09,0.06);}
+        [[0,40],[-25,0],[-25,45],[20,-30]].forEach(([x,z])=>addSecurityCamPart(securityCameras,x,z));
+
+        // ----------------------------------------------------------------
+        // R. ANIMALS & LIFE (151-156)
+        // ----------------------------------------------------------------
+        function addBird(name,x,y,z,color,flight=false){const g=add60Group(name,x,y,z);sSphere(g,0.05,color,0,0,0);sCyl(g,0.02,0.02,0xffaa00,0,0,0.07,Math.PI/2);sPlane(g,0.04,0.02,0x444444,-0.04,flight?0.02:0,0,0,0,flight?0.52:0);sPlane(g,0.04,0.02,0x444444,0.04,flight?0.02:0,0,0,0,flight?-0.52:0);}
+        addBird('bird_1',30,10,30,0x333333);addBird('bird_2',-4,3,16,0x555555);addBird('bird_3',60,5,-35,0x444444,true);
+        const rabbit=add60Group('rabbit',-9,0,-10);sSphere(rabbit,0.15,0x8a7a6a,0,0.15,0,[1,0.7,1]);sSphere(rabbit,0.08,0x8a7a6a,0.16,0.22,0);for(let x of [0.12,0.2])sCyl(rabbit,0.02,0.1,0x8a7a6a,x,0.34,0);for(let i=0;i<4;i++)sCyl(rabbit,0.02,0.05,0x7a6a5a,(i<2?0.08:-0.08),0.05,(i%2?0.07:-0.07),Math.PI/2);
+        const scorp=add60Group('scorpion',-45,0,-40);sSphere(scorp,0.03,0x5a3a2a,0,0.03,0);for(let i=0;i<8;i++){const a=i/8*Math.PI*2;sRod(scorp,0.005,[0,0.03,0],[Math.cos(a)*0.05,0.03,Math.sin(a)*0.05],0x4a2a1a,6);}for(let i=0;i<5;i++)sCyl(scorp,0.01,0.02,0x5a3a2a,0.05+i*0.02,0.04,0.02*Math.sin(i));sCyl(scorp,0.01,0.02,0x4a2a1a,0.09,0.06,0.04);
+        const lizard=add60Group('lizard',-1,0,9);sBox(lizard,0.1,0.03,0.02,0x6a7a4a,0,0.03,0);sBox(lizard,0.03,0.03,0.03,0x6a7a4a,0.06,0.04,0);for(let x of [-0.03,0.03])for(let z of [-0.015,0.015])sCyl(lizard,0.01,0.03,0x5a6a3a,x,0.02,z,0,0,Math.PI/2);sCyl(lizard,0.005,0.08,0x5a6a3a,-0.07,0.03,0,0,0,Math.PI/2);
+
+        // ----------------------------------------------------------------
+        // S. SKY & ATMOSPHERE (157-160)
+        // ----------------------------------------------------------------
+        function addCloud(name,x,y,z,count,opacity){const g=add60Group(name,x,y,z);for(let i=0;i<count;i++)sSphere(g,0.8+0.25*(i%3),0xffffff,(i-count/2)*0.8,(i%2)*0.25,Math.sin(i)*0.5,[1,0.65,1],new THREE.MeshStandardMaterial({color:0xffffff,transparent:true,opacity,roughness:0.9}));return g;}
+        const cloud1=addCloud('cloud_1',-30,100,-30,5,0.6);animated60.push(()=>cloud1.position.x+=0.001);
+        const cloud2=addCloud('cloud_2',30,80,35,4,0.5);
+        const sun=add60Group('sun_glow',50,200,30);sGlow(sun,2,0xffffcc,0,0,0,0.15,0.3);const sunLight=new THREE.PointLight(0xfff5e0,0.5,250);sunLight.position.set(0,0,0);sun.add(sunLight);
+        const haze=add60Group('heat_haze',0,0,60);for(let i=0;i<3;i++){const p=sPlane(haze,5,0.5,0xffffff,0,0.2+i*0.02,-5+i*5,0.1,0,0,0.05,true,new THREE.MeshStandardMaterial({color:0xffffff,transparent:true,opacity:0.05,side:THREE.DoubleSide}));animated60.push(()=>{p.material.opacity=0.055+Math.sin(performance.now()*0.003+i)*0.025;});}
+
+        // ----------------------------------------------------------------
+        // EXACT 70-NAME REGISTER CHECK
+        // ----------------------------------------------------------------
+        const expected91_160 = [
+            'garden_beds','garden_path','garden_lamp_1','garden_lamp_2','garden_lamp_3','garden_lamp_4','flower_bed','flower_bed_2','flower_bed_3','hedge_row','fountain','garden_bench',
+            'quarantine_zone','restricted_gate','cage_area','bio_hazard_zone','drone_exclusion','evidence_storage','isolation_shack','radio_quiet_zone','decon_tent','containment_barricade',
+            'salt_flat','mud_cracks','alluvial_fan','termite_mounds','wind_erosion_arc','animal_track','burrow','rock_outcrop_line',
+            'prickly_pear_grove','nopal_cactus','cholla_cactus',"devil's_tongue",'desert_willow','desert_willow_2','sagebrush_cluster','dead_shrub',
+            'underground_tank_1','underground_tank_2','cable_trench','manhole_1','manhole_2','manhole_3','concrete_pad_1','concrete_pad_2',
+            'sandwich_board','water_bottles','backpacks','tool_box','ladder','extension_cord','wheelbarrow','shovels','gas_can','first_aid_box','radio_handheld','laptop_outdoor','solar_charger','security_camera_1',
+            'bird_1','bird_2','bird_3','rabbit','scorpion','lizard','cloud_1','cloud_2','sun_glow','heat_haze'
+        ];
+        const missing91_160 = expected91_160.filter(n => !scene.getObjectByName(n));
+        console.assert(ADDITIONAL91_160.length === 70, `ARANRUTH: expected 70 numbered groups (91-160), got ${ADDITIONAL91_160.length}`);
+        console.assert(missing91_160.length === 0, `ARANRUTH: missing groups: ${missing91_160.join(', ')}`);
+        console.log(`ARANRUTH: ${ADDITIONAL91_160.length} numbered groups (91-160) registered. Missing: ${missing91_160.length}`);
+
+        // ----------------------------------------------------------------
+        // EXACT 90-NAME REGISTER CHECK
+        // ----------------------------------------------------------------
+        const expected90 = [
+            'mess_hall','dormitory','security_post','medical','server_room','transformer_station','pump_house','laundry','shower','fuel_pump_station','waste_storage','radio_shack',
+            'parabolic_1','parabolic_2','yagi_1','yagi_2','waveguide_run_1','waveguide_run_2','anechoic_chamber','spectrum_analyzer_outdoor','gps_antenna','magnetometer','barometric_station','lightning_rod',
+            'atv_1','atv_2','flatbed_truck','jeep','boat','drone_warehouse',
+            'well_pump','septic_tank','rain_harvest','water_pipes','drainage_channel','fire_hydrant',
+            'cell_tower','fiber_splice','network_rack_outdoor','mesh_node_1','mesh_node_2','mesh_node_3',
+            'dry_creek','rock_formation_1','rock_formation_2','scree_slope','playa_area','dune_line','exposed_bedrock','erosion_gullies',
+            'mesquite_11','mesquite_12','mesquite_13','creosote_cluster','ocotillo','ocotillo_2','ocotillo_3','agave','agave_2','dead_tree',
+            'road_sign_1','road_sign_2','hazard_sign','hazard_sign_2','directional_sign','no_smoking','emergency_sign','survey_markers',
+            'tool_cabinet','air_compressor','welding_station','crane','scissor_lift','pipe_rack','pallet_stack','concrete_mixers',
+            'fire_extinguisher_2','fire_extinguisher_3','first_aid_kit','emergency_light','emergency_shower','spill_kit',
+            'picnic_table','bbq_grill','laundry_line','trash_cans','bike_rack','notice_board','dog_kennel','radio_antenna_whip'
+        ];
+        const missing90 = expected90.filter(n => !scene.getObjectByName(n));
+        console.assert(ADD90.length === 90, `ARANRUTH: expected 90 additional groups, got ${ADD90.length}`);
+        console.assert(missing90.length === 0, `ARANRUTH: missing groups: ${missing90.join(', ')}`);
+        console.log(`ARANRUTH: ${ADD90.length} additional groups registered. Missing: ${missing90.length}`);
+
+
+        // ==========================================
+        // RAYCASTER, INTERACTIVITY & UI
+        // ==========================================
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+        let hoveredObject = null;
+        const tooltip = document.getElementById('tooltip');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarTitle = document.getElementById('sidebarTitle');
+        const sidebarContent = document.getElementById('sidebarContent');
+        const closeSidebar = document.getElementById('closeSidebar');
+
+        function onPointerMove(event) {
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(interactiveObjects, true);
+
+            if (intersects.length > 0) {
+                let topGroup = intersects[0].object;
+                while (topGroup.parent && topGroup.parent !== scene) {
+                    topGroup = topGroup.parent;
+                }
+
+                if (interactiveObjects.includes(topGroup)) {
+                    if (hoveredObject !== topGroup) {
+                        hoveredObject = topGroup;
+                    }
+                    const nameKey = topGroup.name;
+                    const spec = objectSpecs[nameKey];
+                    if (spec) {
+                        tooltip.style.display = 'block';
+                        tooltip.style.left = event.clientX + 'px';
+                        tooltip.style.top = event.clientY + 'px';
+                        tooltip.textContent = spec.title;
+                    }
+                    document.body.style.cursor = 'pointer';
+                    return;
+                }
+            }
+
+            hoveredObject = null;
+            tooltip.style.display = 'none';
+            document.body.style.cursor = 'default';
+        }
+
+        function onPointerClick(event) {
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(interactiveObjects, true);
+
+            if (intersects.length > 0) {
+                let topGroup = intersects[0].object;
+                while (topGroup.parent && topGroup.parent !== scene) {
+                    topGroup = topGroup.parent;
+                }
+
+                if (interactiveObjects.includes(topGroup)) {
+                    const nameKey = topGroup.name;
+                    const spec = objectSpecs[nameKey];
+                    if (spec) {
+                        sidebarTitle.textContent = spec.title;
+                        sidebarContent.innerHTML = `
+                            <h4>Description & Specifications</h4>
+                            <p>${spec.specs}</p>
+                            <h4>Node Identifier</h4>
+                            <p>ID: <code>${nameKey}</code></p>
+                            <h4>Operational Status</h4>
+                            <p style="color: #2e7d32; font-weight: 600;">● Active / Calibration</p>
+                        `;
+                        sidebar.classList.add('active');
+                    }
+                }
+            }
+        }
+
+        window.addEventListener('pointermove', onPointerMove);
+        window.addEventListener('click', onPointerClick);
+
+        closeSidebar.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+        });
+
+        // Reset View button handler
+        document.getElementById('resetViewBtn').addEventListener('click', () => {
+            camera.position.copy(ISO_CAM);
+            controls.target.copy(ISO_TARGET);
+            controls.update();
+        });
+
+        // Window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // ------------------------------------------------------------------
+        // WebXR / AR integration
+        // ------------------------------------------------------------------
+        // Strategy:
+        //  - Android + any browser with WebXR "immersive-ar": <model-viewer>
+        //    consumes a GLB. We export that GLB LIVE from the exact Three.js
+        //    `scene` object above with GLTFExporter, so it always matches
+        //    whatever is currently built (all 125+ objects, materials, etc).
+        //  - iOS: Quick Look requires USDZ specifically. There is no reliable
+        //    client-side GLB->USDZ converter, so `ios-src` on the
+        //    <model-viewer> element points at a prebuilt, statically hosted
+        //    ./model.usdz (generation instructions are in the comment block
+        //    at the end of this file / README). This is a one-time build
+        //    step, not per-visitor logic.
+        const arBtn = document.getElementById('arBtn');
+        const arBtnLabel = document.getElementById('arBtnLabel');
+        const arViewer = document.getElementById('arViewer');
+        const arToast = document.getElementById('arToast');
+
+        let glbObjectUrl = null;   // cached Blob URL so we only export once
+        let isExporting = false;
+
+        function showArToast(msg, ms = 2200) {
+            arToast.textContent = msg;
+            arToast.classList.add('visible');
+            clearTimeout(showArToast._t);
+            showArToast._t = setTimeout(() => arToast.classList.remove('visible'), ms);
+        }
+
+        // Exports the live Three.js scene to a binary GLB Blob URL.
+        // Excludes helper-only objects (lights/cameras export fine and are
+        // harmless in glTF, so the whole `scene` graph is exported as-is).
+        function exportSceneToGLB() {
+            return new Promise((resolve, reject) => {
+                const exporter = new GLTFExporter();
+                exporter.parse(
+                    scene,
+                    (result) => {
+                        const blob = new Blob([result], { type: 'model/gltf-binary' });
+                        if (glbObjectUrl) URL.revokeObjectURL(glbObjectUrl);
+                        glbObjectUrl = URL.createObjectURL(blob);
+                        resolve(glbObjectUrl);
+                    },
+                    (error) => reject(error),
+                    { binary: true } // -> ArrayBuffer instead of JSON+base64
+                );
+            });
+        }
+
+        async function handleArButtonClick() {
+            if (isExporting) return;
+            try {
+                if (!glbObjectUrl) {
+                    isExporting = true;
+                    arBtn.disabled = true;
+                    arBtnLabel.textContent = 'PREPARANDO…';
+                    showArToast('Generando modelo 3D para AR…', 60000);
+                    await exportSceneToGLB();
+                    arViewer.src = glbObjectUrl;
+                    // Give model-viewer a tick to parse the new src before activating.
+                    await new Promise((r) => setTimeout(r, 50));
+                }
+                arToast.classList.remove('visible');
+                arBtn.disabled = false;
+                arBtnLabel.textContent = 'VER EN AR';
+                arViewer.activateAR();
+            } catch (err) {
+                console.error('AR export failed:', err);
+                showArToast('No se pudo preparar el modelo AR.');
+                arBtn.disabled = false;
+                arBtnLabel.textContent = 'VER EN AR';
+            } finally {
+                isExporting = false;
+            }
+        }
+
+        arBtn.addEventListener('click', handleArButtonClick);
+
+        // Only reveal the button once we know the device/browser can
+        // actually do something with it (Scene Viewer, Quick Look, or
+        // inline WebXR). Avoids showing a dead button on desktop.
+        function isLikelyIOS() {
+            return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+                   (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        }
+
+        async function updateArAvailability() {
+            if (isLikelyIOS()) {
+                // Quick Look is triggered via ios-src regardless of WebXR support.
+                arBtn.style.display = 'flex';
+                return;
+            }
+            if (window.XR8 === undefined && navigator.xr && navigator.xr.isSessionSupported) {
+                try {
+                    const supported = await navigator.xr.isSessionSupported('immersive-ar');
+                    if (supported) { arBtn.style.display = 'flex'; return; }
+                } catch (e) { /* fall through to Scene Viewer check below */ }
+            }
+            // Most Android Chrome browsers support Scene Viewer even when
+            // navigator.xr is absent/unsupported — model-viewer falls back
+            // to it automatically, so show the button on Android too.
+            if (/Android/.test(navigator.userAgent)) {
+                arBtn.style.display = 'flex';
+            }
+        }
+
+        updateArAvailability();
+
+        // Animation Loop
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            for (const update of animated60) update();
+            updateFloatingCard();
+            renderer.render(scene, camera);
+        }
+        animate();
+    </script>
+</body>
+</html>
+
+<!--
+BRANDING CHECK:
+[x] "ARANRUTH INDUSTRIES" visible en base frontal de la plataforma
+[x] "ARANRUTH INDUSTRIES" visible en tarjeta informativa (footer)
+[x] "ARANRUTH INDUSTRIES" visible en letrero 3D de entrada
+[x] Tarjeta es BLANCA con texto NEGRO
+[x] Fondo de página es claro (NO dark)
+[x] Edificios tienen contorno amarillo
+[x] Base de maqueta es beige/rosa pálido
+[x] Botón RESET visible
+SI ALGÚN CHECK ESTÁ EN [ ], CORRIGE ANTES DE TERMINAR.
+-->
+<!--
+================================================================================
+NOTAS DE INTEGRACION -- WebXR / AR (para el equipo de ingenieria)
+================================================================================
+
+QUE QUEDA AUTOMATICO (sin tocar nada):
+  - Android + navegadores con WebXR "immersive-ar": el boton "VER EN AR"
+    exporta la escena Three.js EN VIVO a un .glb (GLTFExporter, en memoria,
+    via Blob URL) y se lo pasa a <model-viewer>, que decide solo si abre
+    Scene Viewer o una sesion WebXR inline. Cero mantenimiento: si el
+    equipo de contenido agrega/quita objetos a la maqueta, el proximo
+    export ya los incluye automaticamente.
+
+QUE REQUIERE UN PASO MANUAL UNICO (no hay forma de evitarlo -- es una
+limitacion real de la plataforma, no de esta implementacion):
+  - iOS AR Quick Look SOLO acepta archivos .usdz. No existe un conversor
+    GLB->USDZ confiable que corra en el navegador del visitante. Hay que
+    generar el .usdz una vez (y de nuevo cada vez que la maqueta cambie
+    de forma relevante) como parte del build, no en runtime:
+
+    1. Descargar un .glb de referencia de la maqueta actual. La forma
+       mas simple: abrir esta pagina, pegar en la consola del navegador:
+           exportSceneToGLB().then(url => {
+             const a = document.createElement('a');
+             a.href = url; a.download = 'model.glb'; a.click();
+           });
+       (usa el mismo exportador que ya usa el boton AR).
+
+    2. Convertir ese .glb a .usdz con herramientas oficiales:
+           - macOS: Reality Converter (gratuita, Apple Developer) o el
+             CLI "usdz_converter" incluido en Reality Composer / Xcode.
+           - Alternativa multiplataforma: Google "usd_from_gltf"
+             (paquete "usd-tools" / USD Python Tools).
+       Ambas producen un model.usdz listo para Quick Look.
+
+    3. Subir model.usdz al mismo host que sirve esta pagina (ej. junto
+       a este .html) y confirmar que el atributo ios-src del elemento
+       <model-viewer id="arViewer"> apunte a esa ruta real, ej.:
+           ios-src="https://tu-dominio.com/assets/model.usdz"
+
+RECOMENDACION DE PRODUCCION (rendimiento):
+  Exportar 125+ objetos con GLTFExporter en el dispositivo del visitante
+  funciona bien, pero en gamas bajas de Android puede tardar 1-2s. Si el
+  contenido de la maqueta es estable, conviene generar tambien un
+  model.glb estatico (mismo paso 1 de arriba), alojarlo, y apuntar
+  arViewer.src directamente a esa URL en vez de exportar en cada visita.
+  El export en vivo puede quedar como fallback / modo desarrollo.
+
+RESUMEN PARA QA:
+  - Android (Chrome): boton "VER EN AR" -> Scene Viewer con el .glb.
+  - iOS (Safari): boton "VER EN AR" -> Quick Look con el .usdz.
+  - Desktop / navegadores sin AR: el boton permanece oculto.
+================================================================================
+-->
