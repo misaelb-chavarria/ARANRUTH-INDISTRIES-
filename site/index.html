@@ -956,14 +956,43 @@ section.sec.tight { padding: 56px 22px; }
       background: var(--bg-2);
       padding: 72px 22px;
     }
-    .testimonial blockquote {
-      max-width: 980px;
+    .testimonial-inner {
+      max-width: 1100px;
       margin: 0 auto;
-      font-size: clamp(20px, 3.2vw, 30px);
-      line-height: 1.4;
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 48px;
+      align-items: center;
+    }
+    .testimonial blockquote {
+      margin: 0;
+      font-size: clamp(18px, 2.8vw, 26px);
+      line-height: 1.42;
       color: var(--paper);
       font-weight: 500;
       letter-spacing: -0.005em;
+    }
+    .testimonial-photo {
+      position: relative;
+    }
+    .testimonial-photo img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
+      border: 1px solid var(--line);
+      filter: grayscale(15%) contrast(1.05);
+    }
+    @media (max-width: 800px) {
+      .testimonial-inner {
+        grid-template-columns: 1fr;
+        gap: 28px;
+      }
+      .testimonial-photo {
+        max-width: 240px;
+        margin: 0 auto;
+        order: -1;
+      }
     }
     .testimonial blockquote::before {
       content: "“";
@@ -1380,14 +1409,19 @@ section.sec.tight { padding: 56px 22px; }
 
   <!-- ===== TESTIMONIAL ===== -->
   <section class="testimonial" aria-label="Field testimonial">
-    <blockquote>
-      In modern conflict zones, situational awareness isn't a tactical advantage—it's a matter of survival. Aranruth Industries didn't just deliver a contract; they deployed actionable precision when legacy systems failed. Their technology has become a vital layer in our border security matrix.
-      <cite>
-        <strong>Colonel Tariq Al-Mansoori</strong>
-        Special Operations &amp; Border Security Command<br />
-        Joint Task Force, Middle East &amp; North Africa Region
-      </cite>
-    </blockquote>
+    <div class="testimonial-inner">
+      <blockquote>
+        In modern conflict zones, situational awareness isn't a tactical advantage—it's a matter of survival. Aranruth Industries didn't just deliver a contract; they deployed actionable precision when legacy systems failed. Their technology has become a vital layer in our border security matrix.
+        <cite>
+          <strong>Colonel Tariq Al-Mansoori</strong>
+          Special Operations &amp; Border Security Command<br />
+          Joint Task Force, Middle East &amp; North Africa Region
+        </cite>
+      </blockquote>
+      <div class="testimonial-photo">
+        <img src="assets/img/coronel.jpg" alt="Colonel Tariq Al-Mansoori" width="320" height="400" loading="lazy" />
+      </div>
+    </div>
   </section>
 
   <!-- ===== ABOUT ===== -->
