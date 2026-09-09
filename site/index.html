@@ -32,8 +32,628 @@
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png" />
 
   <link rel="preconnect" href="https://cdn.jsdelivr.net" />
-  <link rel="stylesheet" href="assets/css/aranruth.css" />
+  <!-- styles inlined below -->
   <style>
+/* ===== GLOBAL STYLES (inlined from aranruth.css) ===== */
+/* ============================================================
+   ARANRUTH INDUSTRIES — GLOBAL STYLESHEET
+   Autonomous defense infrastructure. One visual system.
+   ============================================================ */
+
+:root {
+  --bg: #050505;
+  --bg-2: #0b0b0b;
+  --panel: #101010;
+  --paper: #ece8df;
+  --text: #f2efe8;
+  --muted: #c9c4ba;
+  --dim: #8a8680;
+  --faint: #6d6d6d;
+  --line: rgba(236, 232, 223, 0.14);
+  --line-strong: rgba(236, 232, 223, 0.32);
+  --amber: #c4a35a;
+  --ink: #111111;
+  --content-width: 1180px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Arial Narrow", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+}
+
+img { display: block; max-width: 100%; height: auto; }
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; }
+::selection { background: var(--amber); color: #111; }
+
+.wrap { max-width: var(--content-width); margin: 0 auto; padding: 0 22px; }
+
+/* Boot progress line (shared) */
+.boot-bar {
+  position: fixed;
+  top: 0; left: 0;
+  z-index: 90;
+  height: 2px; width: 0;
+  background: var(--amber);
+  pointer-events: none;
+  animation: bootline 1.2s cubic-bezier(0.22, 0.8, 0.28, 1) forwards;
+}
+@keyframes bootline {
+  0% { width: 0; opacity: 1; }
+  75% { width: 100%; opacity: 1; }
+  100% { width: 100%; opacity: 0; }
+}
+
+/* ---------- Top bar (all pages) ---------- */
+.topbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 22px;
+  background: linear-gradient(to bottom, rgba(5, 5, 5, 0.92), transparent);
+}
+.topbar .wordmark {
+  letter-spacing: 0.22em;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+}
+.topbar .toplinks {
+  display: flex;
+  gap: 22px;
+  align-items: center;
+}
+.topbar .toplinks a {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #c9c4ba;
+}
+.topbar .toplinks a:hover { color: var(--paper); }
+@media (max-width: 760px) {
+  .topbar .toplinks { display: none; }
+}
+
+/* ---------- Hamburger ---------- */
+.burger {
+  position: fixed;
+  top: 12px; right: 14px;
+  z-index: 80;
+  width: 46px; height: 46px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  padding: 0;
+}
+.burger span {
+  display: block;
+  width: 26px; height: 2px;
+  background: var(--paper);
+  transition: transform 0.3s ease, opacity 0.3s ease, background 0.3s ease;
+}
+.burger:hover span { background: var(--amber); }
+body.menu-open .burger span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+body.menu-open .burger span:nth-child(2) { opacity: 0; }
+body.menu-open .burger span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+/* ---------- Full-screen menu overlay ---------- */
+.menu-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  background: rgba(5, 5, 5, 0.97);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 96px 22px 40px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+  overflow-y: auto;
+}
+body.menu-open .menu-overlay { opacity: 1; pointer-events: auto; }
+.menu-overlay .menu-col {
+  display: grid;
+  gap: 4px;
+}
+.menu-overlay a.m-link {
+  font-size: clamp(30px, 6vw, 54px);
+  font-weight: 600;
+  line-height: 1.14;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--text);
+  padding: 6px 0;
+  border: 0;
+  opacity: 0;
+  transform: translateY(14px);
+  transition: color 0.2s ease, transform 0.5s ease, opacity 0.5s ease;
+}
+body.menu-open .menu-overlay a.m-link { opacity: 1; transform: translateY(0); }
+.menu-overlay a.m-link:hover { color: var(--amber); }
+.menu-overlay a.m-link small {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--dim);
+  margin-bottom: 2px;
+  font-weight: 400;
+}
+.menu-overlay .menu-foot {
+  margin-top: 40px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 28px;
+  color: var(--dim);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.menu-overlay .menu-foot a { color: var(--muted); }
+.menu-overlay .menu-foot a:hover { color: var(--amber); }
+
+/* ---------- Page hero (inner pages) ---------- */
+.page-head {
+  padding: 140px 22px 64px;
+  border-bottom: 1px solid var(--line);
+  background: var(--bg);
+}
+.page-head .crumb {
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 18px;
+}
+.page-head h1 {
+  font-size: clamp(38px, 7vw, 72px);
+  line-height: 0.95;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  font-weight: 700;
+  max-width: 16ch;
+}
+.page-head .lede {
+  margin-top: 20px;
+  max-width: 640px;
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+/* ---------- Typo atoms ---------- */
+.k-label {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 12px;
+}
+h2.sec {
+  font-size: clamp(30px, 5vw, 46px);
+  line-height: 1.02;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+.prose {
+  color: var(--muted);
+  font-size: 16.5px;
+  line-height: 1.65;
+  max-width: 72ch;
+}
+.prose p { margin-bottom: 1.1em; }
+.prose strong { color: var(--text); font-weight: 600; }
+.prose h3 {
+  color: var(--text);
+  font-size: 22px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  margin: 2em 0 0.6em;
+}
+.prose h4 {
+  color: var(--paper);
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 1.6em 0 0.5em;
+}
+.prose ul { list-style: none; margin: 0.8em 0 1.2em; }
+.prose ul li {
+  padding-left: 20px;
+  position: relative;
+  margin-bottom: 0.5em;
+}
+.prose ul li::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  color: var(--amber);
+}
+
+/* ---------- Dense data table ---------- */
+table.spec {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  margin: 1.4em 0 2em;
+}
+table.spec caption {
+  text-align: left;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--dim);
+  padding-bottom: 10px;
+}
+table.spec th, table.spec td {
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+table.spec th {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dim);
+  font-weight: 400;
+  white-space: nowrap;
+}
+table.spec td { color: var(--muted); }
+table.spec td:first-child { color: var(--text); }
+@media (max-width: 640px) {
+  table.spec th, table.spec td { padding: 8px 8px; font-size: 13px; }
+  /* Dense spec tables wrap header cells and scroll horizontally on
+     phones instead of blowing out the page width. */
+  table.spec th { white-space: normal; letter-spacing: 0.1em; }
+  table.spec { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+}
+
+/* ---------- Zone / card grid ---------- */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
+@media (max-width: 900px) { .grid-3, .grid-4 { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } }
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  padding: 22px;
+}
+.card .card-k {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 10px;
+}
+.card h3 {
+  font-size: 19px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+.card p { color: var(--muted); font-size: 14.5px; line-height: 1.55; }
+.card .metric {
+  font-size: clamp(30px, 4vw, 40px);
+  font-weight: 700;
+  color: var(--paper);
+  line-height: 1;
+}
+.card .metric small {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--dim);
+  text-transform: uppercase;
+  margin-top: 6px;
+  font-weight: 400;
+}
+
+/* ---------- Field evidence figure ---------- */
+figure.field { margin: 0; }
+figure.field img { width: 100%; aspect-ratio: 16/10; object-fit: cover; filter: grayscale(24%) contrast(1.04); }
+figure.field figcaption {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 8px;
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+/* ---------- Footer (shared) ---------- */
+footer.site {
+  border-top: 1px solid var(--line);
+  background: var(--bg);
+  padding: 8px 22px 24px;
+}
+footer.site .block { border-top: 1px solid var(--line); padding: 8px 0 10px; }
+footer.site .block:first-child { border-top: 0; }
+footer.site .block-h {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  letter-spacing: 0.18em;
+  font-size: 12px;
+  color: var(--dim);
+  background: none;
+  border: 0;
+  padding: 16px 0;
+  cursor: pointer;
+  text-align: left;
+  text-transform: uppercase;
+}
+footer.site .sign { font-size: 18px; line-height: 1; color: var(--muted); }
+footer.site .links { display: none; padding-bottom: 12px; }
+footer.site .block.open .links { display: block; }
+footer.site .links a {
+  display: block;
+  font-size: clamp(26px, 6.5vw, 34px);
+  line-height: 1.25;
+  color: var(--text);
+  padding: 4px 0;
+}
+footer.site .links a:hover { color: var(--amber); }
+footer.site .links a .sub {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  color: var(--dim);
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+footer.site .legal {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: var(--faint);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  text-transform: uppercase;
+}
+
+/* ---------- Buttons ---------- */
+.btn-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--paper);
+  padding: 12px 18px;
+  letter-spacing: 0.16em;
+  font-size: 11px;
+  text-transform: uppercase;
+  background: none;
+  color: var(--text);
+  cursor: pointer;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.btn-line:hover { border-color: var(--amber); color: var(--amber); }
+
+/* ---------- Operator testimonial (shared) ---------- */
+.t-quote { border-left: 2px solid var(--amber); padding: 6px 0 6px 24px; margin: 1.8em 0 1.2em; }
+.t-quote p {
+  color: var(--paper);
+  font-size: clamp(18px, 2.4vw, 25px);
+  line-height: 1.42;
+  letter-spacing: 0.01em;
+}
+.t-quote cite {
+  display: block;
+  font-style: normal;
+  margin-top: 16px;
+  font-size: 11.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.t-quote cite strong { color: var(--amber); font-weight: 600; }
+
+/* ---------- Newsroom releases (shared) ---------- */
+.release { border-top: 1px solid var(--line); padding: 26px 0 24px; }
+.release:first-of-type { border-top: 0; }
+.release .r-date {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+.release .r-tag {
+  display: inline-block;
+  margin-left: 14px;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--amber);
+  border: 1px solid rgba(196, 163, 90, 0.35);
+  padding: 2px 8px;
+}
+.release h3 {
+  color: var(--text);
+  font-size: clamp(20px, 3vw, 27px);
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  margin: 10px 0 8px;
+  font-weight: 600;
+  line-height: 1.15;
+}
+.release p { color: var(--muted); font-size: 15.5px; line-height: 1.62; max-width: 72ch; margin: 0; }
+
+/* ---------- Dense spec table with caption (uses table.spec) ---------- */
+table.spec caption { padding-top: 4px; }
+.spec-note {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-top: -1.2em;
+  margin-bottom: 2em;
+}
+
+/* ---------- Inline link rows ---------- */
+.linkrow { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 26px; }
+
+/* ---------- Page sectioning ---------- */
+section.sec { padding: 84px 22px; border-bottom: 1px solid var(--line); }
+section.sec.alt { background: var(--bg-2); }
+section.sec.tight { padding: 56px 22px; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+/* ============================================================
+   ACCESS / INTAKE FORM (shared: mother page + access.html)
+   ============================================================ */
+.access { padding: 84px 22px 72px; border-top: 1px solid var(--line); }
+.access-grid { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 44px; }
+@media (max-width: 860px) { .access-grid { grid-template-columns: 1fr; } }
+.access .mission-note {
+  border-left: 2px solid var(--amber);
+  padding-left: 18px;
+  color: var(--muted);
+  font-size: 14.5px;
+  line-height: 1.6;
+}
+.access .emails { margin-top: 26px; display: grid; gap: 10px; }
+.access .emails a {
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 6px;
+  display: inline-block;
+  max-width: 340px;
+}
+.access .emails a:hover { color: var(--amber); border-color: var(--amber); }
+.access .emails a small {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-bottom: 2px;
+}
+.access-form { display: grid; gap: 14px; }
+.access-form .frow { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 640px) { .access-form .frow { grid-template-columns: 1fr; } }
+.access-form label {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 6px;
+}
+.access-form input, .access-form select, .access-form textarea {
+  width: 100%;
+  background: #0b0b0b;
+  border: 1px solid var(--line-strong);
+  color: var(--text);
+  padding: 12px 12px;
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+.access-form input:focus, .access-form select:focus, .access-form textarea:focus { border-color: var(--amber); }
+.access-form textarea { min-height: 110px; resize: vertical; }
+.captcha-box {
+  border: 1px solid var(--line-strong);
+  background: #0b0b0b;
+  padding: 14px;
+}
+.captcha-box .cb-k {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.captcha-box .cb-k span:last-child { color: #737373; cursor: pointer; }
+.captcha-box .cb-k span:last-child:hover { color: var(--amber); }
+.captcha-box .cb-q {
+  background: #000;
+  border: 1px solid #333;
+  padding: 12px 14px;
+  font-family: "Courier New", monospace;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  color: #fff;
+  user-select: none;
+  margin-bottom: 10px;
+}
+.captcha-box input {
+  font-family: "Courier New", monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+.form-status {
+  display: none;
+  border: 1px solid var(--amber);
+  color: var(--amber);
+  padding: 12px 14px;
+  font-size: 12.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.form-status.show { display: block; }
+.form-status.err { border-color: #b03a2e; color: #cd6155; }
+.submit-btn {
+  justify-self: start;
+  background: var(--amber);
+  border: 1px solid var(--amber);
+  color: #111;
+  font-weight: 700;
+  padding: 14px 24px;
+  letter-spacing: 0.18em;
+  font-size: 11px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.submit-btn:hover { background: #d4b56c; border-color: #d4b56c; }
+.privacy-note {
+  font-size: 11.5px;
+  color: var(--faint);
+  line-height: 1.55;
+  max-width: 56ch;
+}
+
+
     /* ===== Page-specific styles ===== */
     .boot-bar {
       position: fixed;
@@ -298,7 +918,7 @@
     }
     .range-stats {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 0;
       border: 1px solid var(--line);
       border-top: 0;
@@ -322,9 +942,7 @@
       color: var(--dim);
     }
     @media (max-width: 900px) {
-      .range-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .range-stats > div:nth-child(2) { border-right: 0; }
-      .range-stats > div:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+      .range-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     }
     @media (max-width: 560px) {
       .range-stats { grid-template-columns: minmax(0, 1fr); }
@@ -753,7 +1371,6 @@
         <iframe src="mapa.html" title="The Volume — interactive technical model of the Mapimí Basin proving ground" loading="lazy" allow="fullscreen"></iframe>
       </div>
       <div class="range-stats">
-        <div><span class="n">$200M+</span><span class="t">Capital Investment</span></div>
         <div><span class="n">4,020 ha</span><span class="t">Manufacturing Footprint</span></div>
         <div><span class="n">100+</span><span class="t">New Jobs by 2030</span></div>
         <div><span class="n">$800M+</span><span class="t">Annual Economic Output</span></div>
@@ -983,12 +1600,23 @@
         <a href="mailto:defense@aranruth.com"><span class="sub">Defense programs</span>defense@aranruth.com</a>
         <a href="mailto:ventas@aranruth.com"><span class="sub">Sales</span>ventas@aranruth.com</a>
         <a href="mailto:careers@aranruth.com"><span class="sub">Careers</span>careers@aranruth.com</a>
+        <a href="mailto:press@aranruth.com"><span class="sub">Press</span>press@aranruth.com</a>
+        <a href="mailto:sustainability@aranruth.com"><span class="sub">Sustainability</span>sustainability@aranruth.com</a>
+        <a href="mailto:compliance@aranruth.com"><span class="sub">Compliance</span>compliance@aranruth.com</a>
+        <a href="mailto:ir@aranruth.com"><span class="sub">Investor Relations</span>ir@aranruth.com</a>
+        <a href="tel:+13077015548"><span class="sub">Phone</span>+1 307-701-5548</a>
       </div>
     </div>
 
     <div class="legal">
       <span>© 2026 ARANRUTH INDUSTRIES</span>
-      <span>RESTRICTED ACCESS</span>
+      <span>
+        <a href="privacy.html" style="color:inherit;text-decoration:none;opacity:0.85">Privacy Notice</a>
+        <span style="opacity:0.4;margin:0 6px">·</span>
+        <a href="terms.html" style="color:inherit;text-decoration:none;opacity:0.85">Terms &amp; IP</a>
+        <span style="opacity:0.4;margin:0 6px">·</span>
+        RESTRICTED ACCESS
+      </span>
     </div>
   </footer>
 

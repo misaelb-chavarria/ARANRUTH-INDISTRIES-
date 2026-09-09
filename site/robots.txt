@@ -1,0 +1,17 @@
+# Aranruth Industries – robots.txt
+# https://aranruthindustries.com/
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://aranruthindustries.com/sitemap.xml
+
+# Optional: block common non-content paths if they exist
+Disallow: /admin/
+Disallow: /private/
+Disallow: /tmp/
+Disallow: /*.json$
+Disallow: /*?*utm_*
+Disallow: /*?*fbclid=*
+Disallow: /*?*gclid=*
